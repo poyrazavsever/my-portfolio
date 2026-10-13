@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Portfolio.Entities;
-using Portfolio.Entitites;
 
 namespace Portfolio.Context
 {

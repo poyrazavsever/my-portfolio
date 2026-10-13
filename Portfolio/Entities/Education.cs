@@ -1,4 +1,4 @@
-﻿namespace Portfolio.Entitites
+﻿namespace Portfolio.Entities
 {
     public class Education
     {
