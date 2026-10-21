@@ -53,6 +53,37 @@ namespace Portfolio.Migrations
                     b.ToTable("Abouts");
                 });
 
+            modelBuilder.Entity("Portfolio.Entities.Contact", b =>
+                {
+                    b.Property<int>("ContactId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ContactId"));
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Github")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Linkedin")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Location")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SubDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ContactId");
+
+                    b.ToTable("Contacts");
+                });
+
             modelBuilder.Entity("Portfolio.Entities.Education", b =>
                 {
                     b.Property<int>("EducationId")
@@ -107,6 +138,31 @@ namespace Portfolio.Migrations
                     b.HasKey("ExperienceId");
 
                     b.ToTable("Experiences");
+                });
+
+            modelBuilder.Entity("Portfolio.Entities.HeroSection", b =>
+                {
+                    b.Property<int>("HeroSectionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("HeroSectionId"));
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SubTitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("HeroSectionId");
+
+                    b.ToTable("HeroSections");
                 });
 
             modelBuilder.Entity("Portfolio.Entities.Message", b =>

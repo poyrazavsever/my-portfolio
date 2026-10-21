@@ -17,6 +17,13 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.13" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ViewComponents\AdminViewComponents\" />
+    <Folder Include="ViewComponents\StatisticsViewComponents\" />
+    <Folder Include="Views\Shared\Components\" />
   </ItemGroup>
 
 </Project>

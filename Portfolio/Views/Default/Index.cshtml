@@ -1,0 +1,2363 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poyraz Alsever | Bilgisayar Mühendisi & Full Stack Developer</title>
+
+    <!-- Google Fonts: Plus Jakarta Sans & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+            :root {
+              --bg-primary: #FAFBFF;
+              --bg-secondary: #F4F6FC;
+              --lavender-accent: #E9E4FA;
+              --soft-blue: #DCEBFA;
+              --mint-green: #DDF3E8;
+              --warm-peach: #FFEBDD;
+              --text-primary: #26334A;
+              --text-secondary: #78849A;
+              --accent-purple: #8276D9;
+              --accent-purple-hover: #6E61C7;
+              --border-color: #E7EAF2;
+              --card-bg: #FFFFFF;
+              --shadow-soft: 0 10px 30px rgba(130, 118, 217, 0.08);
+              --shadow-hover: 0 16px 36px rgba(130, 118, 217, 0.14);
+              --transition-smooth: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            }
+
+            html {
+              scroll-behavior: smooth;
+            }
+
+            body {
+              font-family: 'Plus Jakarta Sans', sans-serif;
+              background-color: var(--bg-primary);
+              color: var(--text-primary);
+              line-height: 1.65;
+              overflow-x: hidden;
+              position: relative;
+            }
+
+            /* Typography & Hierarchy */
+            h1, h2, h3, h4, h5, h6 {
+              color: var(--text-primary);
+              font-weight: 700;
+              letter-spacing: -0.02em;
+            }
+
+            .section-eyebrow {
+              display: inline-flex;
+              align-items: center;
+              gap: 0.5rem;
+              font-size: 0.8125rem;
+              font-weight: 700;
+              letter-spacing: 0.12em;
+              text-transform: uppercase;
+              color: var(--accent-purple);
+              background-color: var(--lavender-accent);
+              padding: 0.35rem 0.9rem;
+              border-radius: 50px;
+              margin-bottom: 0.85rem;
+            }
+
+            .section-title {
+              font-size: 2.35rem;
+              font-weight: 800;
+              margin-bottom: 0.65rem;
+              line-height: 1.25;
+            }
+
+            .section-subtitle {
+              color: var(--text-secondary);
+              font-size: 1.05rem;
+              max-width: 650px;
+              margin-left: auto;
+              margin-right: auto;
+              font-weight: 400;
+            }
+
+            /* Section Spacing & Smooth Anchor offset */
+            section {
+              padding: 6.5rem 0;
+              position: relative;
+              scroll-margin-top: 85px;
+            }
+
+            /* Ambient Pastel Blobs */
+            .blob-bg {
+              position: absolute;
+              border-radius: 50%;
+              filter: blur(80px);
+              z-index: -1;
+              opacity: 0.55;
+              pointer-events: none;
+            }
+            .blob-1 {
+              width: 420px;
+              height: 420px;
+              background: var(--lavender-accent);
+              top: -50px;
+              right: -80px;
+            }
+            .blob-2 {
+              width: 380px;
+              height: 380px;
+              background: var(--soft-blue);
+              top: 30%;
+              left: -100px;
+            }
+            .blob-3 {
+              width: 350px;
+              height: 350px;
+              background: var(--warm-peach);
+              bottom: 10%;
+              right: 5%;
+            }
+
+            /* Custom Navbar */
+            .custom-navbar {
+              background: rgba(255, 255, 255, 0.82);
+              backdrop-filter: blur(14px);
+              -webkit-backdrop-filter: blur(14px);
+              border-bottom: 1px solid rgba(231, 234, 242, 0.7);
+              transition: var(--transition-smooth);
+              z-index: 1030;
+              padding: 0.85rem 0;
+            }
+
+            .custom-navbar.scrolled {
+              box-shadow: 0 8px 24px rgba(38, 51, 74, 0.05);
+              background: rgba(255, 255, 255, 0.94);
+              padding: 0.65rem 0;
+            }
+
+            .brand-mark {
+              width: 34px;
+              height: 34px;
+              background: linear-gradient(135deg, var(--accent-purple), #9E91F0);
+              color: white;
+              border-radius: 10px;
+              display: inline-flex;
+              align-items: center;
+              justify-content: center;
+              font-weight: 800;
+              font-size: 1.1rem;
+              box-shadow: 0 4px 12px rgba(130, 118, 217, 0.3);
+              margin-right: 0.5rem;
+            }
+
+            .brand-name {
+              font-weight: 800;
+              font-size: 1.35rem;
+              color: var(--text-primary);
+              text-decoration: none;
+              letter-spacing: -0.03em;
+            }
+
+            .brand-name span {
+              color: var(--accent-purple);
+            }
+
+            .nav-link {
+              color: var(--text-secondary) !important;
+              font-weight: 500;
+              font-size: 0.925rem;
+              padding: 0.5rem 0.9rem !important;
+              position: relative;
+              transition: var(--transition-smooth);
+              border-radius: 8px;
+            }
+
+            .nav-link:hover {
+              color: var(--accent-purple) !important;
+              background-color: rgba(233, 228, 250, 0.4);
+            }
+
+            .nav-link.active {
+              color: var(--accent-purple) !important;
+              font-weight: 700;
+              background-color: var(--lavender-accent);
+            }
+
+            .nav-link.active::after {
+              content: '';
+              position: absolute;
+              bottom: 2px;
+              left: 50%;
+              transform: translateX(-50%);
+              width: 14px;
+              height: 3px;
+              background-color: var(--accent-purple);
+              border-radius: 3px;
+            }
+
+            .btn-custom-primary {
+              background: linear-gradient(135deg, var(--accent-purple) 0%, #7365CE 100%);
+              color: #FFFFFF !important;
+              border: none;
+              padding: 0.68rem 1.45rem;
+              border-radius: 50px;
+              font-weight: 600;
+              font-size: 0.925rem;
+              box-shadow: 0 6px 18px rgba(130, 118, 217, 0.28);
+              transition: var(--transition-smooth);
+              display: inline-flex;
+              align-items: center;
+              gap: 0.5rem;
+              text-decoration: none;
+            }
+
+            .btn-custom-primary:hover {
+              background: linear-gradient(135deg, #7467CD 0%, #6355C4 100%);
+              transform: translateY(-2px);
+              box-shadow: 0 10px 24px rgba(130, 118, 217, 0.38);
+            }
+
+            .btn-custom-outline {
+              background: #FFFFFF;
+              color: var(--text-primary) !important;
+              border: 1.5px solid var(--border-color);
+              padding: 0.65rem 1.45rem;
+              border-radius: 50px;
+              font-weight: 600;
+              font-size: 0.925rem;
+              transition: var(--transition-smooth);
+              display: inline-flex;
+              align-items: center;
+              gap: 0.5rem;
+              text-decoration: none;
+            }
+
+            .btn-custom-outline:hover {
+              border-color: var(--accent-purple);
+              color: var(--accent-purple) !important;
+              background: var(--lavender-accent);
+              transform: translateY(-2px);
+            }
+
+            /* Hero Section */
+            #home {
+              padding-top: 8rem;
+              padding-bottom: 5.5rem;
+              min-height: 90vh;
+              display: flex;
+              align-items: center;
+            }
+
+            .hero-badge {
+              display: inline-flex;
+              align-items: center;
+              gap: 0.5rem;
+              padding: 0.45rem 1.1rem;
+              background: #FFFFFF;
+              border: 1px solid var(--border-color);
+              border-radius: 50px;
+              font-size: 0.875rem;
+              font-weight: 600;
+              color: var(--text-primary);
+              box-shadow: 0 4px 14px rgba(0,0,0,0.03);
+              margin-bottom: 1.4rem;
+            }
+
+            .hero-title {
+              font-size: 3.25rem;
+              font-weight: 800;
+              line-height: 1.18;
+              margin-bottom: 1rem;
+            }
+
+            .hero-name-gradient {
+              background: linear-gradient(135deg, var(--accent-purple) 20%, #4B7BEC 100%);
+              -webkit-background-clip: text;
+              -webkit-text-fill-color: transparent;
+              display: inline-block;
+              position: relative;
+            }
+
+            /* Typing Text Feature */
+            .typing-container {
+              font-size: 1.55rem;
+              font-weight: 700;
+              color: var(--accent-purple);
+              min-height: 2.4rem;
+              display: flex;
+              align-items: center;
+              margin-bottom: 1.4rem;
+            }
+
+            .typing-cursor {
+              display: inline-block;
+              width: 2.5px;
+              height: 1.4em;
+              background-color: var(--accent-purple);
+              margin-left: 4px;
+              animation: blink 0.85s infinite;
+              vertical-align: middle;
+              border-radius: 2px;
+            }
+
+            @@keyframes blink {
+              0%, 49% { opacity: 1; }
+              50%, 100% { opacity: 0; }
+            }
+
+            .hero-desc {
+              font-size: 1.125rem;
+              color: var(--text-secondary);
+              max-width: 530px;
+              margin-bottom: 2rem;
+              line-height: 1.7;
+            }
+
+            .social-btn {
+              width: 40px;
+              height: 40px;
+              border-radius: 50%;
+              display: inline-flex;
+              align-items: center;
+              justify-content: center;
+              background: #FFFFFF;
+              border: 1px solid var(--border-color);
+              color: var(--text-secondary);
+              transition: var(--transition-smooth);
+              text-decoration: none;
+              font-size: 1.05rem;
+            }
+
+            .social-btn:hover {
+              color: var(--accent-purple);
+              border-color: var(--accent-purple);
+              background: var(--lavender-accent);
+              transform: translateY(-3px);
+            }
+
+            /* Hero Portrait Area */
+            .hero-image-wrapper {
+              position: relative;
+              max-width: 480px;
+              margin: 0 auto;
+            }
+
+            .hero-image-frame {
+              position: relative;
+              border-radius: 28px;
+              overflow: hidden;
+              box-shadow: 0 20px 45px rgba(130, 118, 217, 0.16);
+              border: 6px solid #FFFFFF;
+              background: #FFFFFF;
+              aspect-ratio: 1/1;
+            }
+
+            .hero-image-frame img {
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+              display: block;
+              transition: transform 0.5s ease;
+            }
+
+            .hero-image-frame:hover img {
+              transform: scale(1.03);
+            }
+
+            /* Floating Badges */
+            .floating-card {
+              position: absolute;
+              background: rgba(255, 255, 255, 0.94);
+              backdrop-filter: blur(8px);
+              padding: 0.75rem 1.1rem;
+              border-radius: 18px;
+              border: 1px solid var(--border-color);
+              box-shadow: 0 12px 28px rgba(38, 51, 74, 0.08);
+              display: flex;
+              align-items: center;
+              gap: 0.75rem;
+              z-index: 2;
+              animation: float 4s ease-in-out infinite;
+            }
+
+            .float-top-left {
+              top: -15px;
+              left: -20px;
+              animation-delay: 0s;
+            }
+
+            .float-bottom-right {
+              bottom: -15px;
+              right: -15px;
+              animation-delay: 2s;
+            }
+
+            .float-icon-box {
+              width: 40px;
+              height: 40px;
+              border-radius: 12px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 1.15rem;
+            }
+
+            .bg-icon-purple {
+              background-color: var(--lavender-accent);
+              color: var(--accent-purple);
+            }
+            .bg-icon-mint {
+              background-color: var(--mint-green);
+              color: #2E8B57;
+            }
+            .bg-icon-blue {
+              background-color: var(--soft-blue);
+              color: #2F80ED;
+            }
+            .bg-icon-peach {
+              background-color: var(--warm-peach);
+              color: #E67E22;
+            }
+
+            @@keyframes float {
+              0%, 100% { transform: translateY(0); }
+              50% { transform: translateY(-8px); }
+            }
+
+            /* About Section */
+            .about-visual-box {
+              background: linear-gradient(145deg, #FFFFFF, var(--bg-secondary));
+              border: 1px solid var(--border-color);
+              border-radius: 24px;
+              padding: 2.5rem;
+              position: relative;
+              box-shadow: var(--shadow-soft);
+            }
+
+            .info-list-item {
+              display: flex;
+              justify-content: space-between;
+              padding: 0.85rem 0;
+              border-bottom: 1px dashed var(--border-color);
+              font-size: 0.95rem;
+            }
+
+            .info-list-item:last-child {
+              border-bottom: none;
+            }
+
+            .info-label {
+              color: var(--text-secondary);
+              font-weight: 500;
+            }
+
+            .info-value {
+              color: var(--text-primary);
+              font-weight: 600;
+            }
+
+            .highlight-card {
+              background: #FFFFFF;
+              border: 1px solid var(--border-color);
+              border-radius: 18px;
+              padding: 1.35rem 1.25rem;
+              transition: var(--transition-smooth);
+              height: 100%;
+              box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+            }
+
+            .highlight-card:hover {
+              transform: translateY(-4px);
+              box-shadow: var(--shadow-soft);
+              border-color: var(--accent-purple);
+            }
+
+            /* Timeline Styles (Education & Experience) */
+            .timeline-container {
+              position: relative;
+              padding: 1rem 0;
+            }
+
+            .timeline-container::before {
+              content: '';
+              position: absolute;
+              top: 20px;
+              bottom: 20px;
+              left: 50%;
+              width: 2px;
+              background: linear-gradient(180deg, var(--lavender-accent), var(--accent-purple), var(--soft-blue));
+              transform: translateX(-50%);
+            }
+
+            .timeline-item {
+              position: relative;
+              margin-bottom: 2.8rem;
+            }
+
+            .timeline-marker {
+              position: absolute;
+              top: 1.5rem;
+              left: 50%;
+              transform: translateX(-50%);
+              width: 44px;
+              height: 44px;
+              border-radius: 50%;
+              background: #FFFFFF;
+              border: 3px solid var(--accent-purple);
+              color: var(--accent-purple);
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 1.15rem;
+              z-index: 2;
+              box-shadow: 0 0 0 6px var(--lavender-accent);
+            }
+
+            .timeline-content-card {
+              background: var(--card-bg);
+              border: 1px solid var(--border-color);
+              border-radius: 20px;
+              padding: 1.85rem;
+              box-shadow: var(--shadow-soft);
+              transition: var(--transition-smooth);
+              position: relative;
+            }
+
+            .timeline-content-card:hover {
+              transform: translateY(-4px);
+              box-shadow: var(--shadow-hover);
+              border-color: rgba(130, 118, 217, 0.4);
+            }
+
+            .badge-year {
+              font-size: 0.8125rem;
+              font-weight: 700;
+              padding: 0.35rem 0.85rem;
+              border-radius: 50px;
+              display: inline-flex;
+              align-items: center;
+              gap: 0.35rem;
+            }
+
+            .tech-tag {
+              font-size: 0.8rem;
+              font-weight: 500;
+              padding: 0.3rem 0.75rem;
+              background: var(--bg-secondary);
+              color: var(--text-primary);
+              border-radius: 30px;
+              display: inline-block;
+              margin: 0.2rem;
+              border: 1px solid var(--border-color);
+              transition: var(--transition-smooth);
+            }
+
+            .tech-tag:hover {
+              background: var(--lavender-accent);
+              color: var(--accent-purple);
+              border-color: var(--accent-purple);
+            }
+
+            /* Skills Cards */
+            .skill-group-card {
+              background: #FFFFFF;
+              border: 1px solid var(--border-color);
+              border-radius: 22px;
+              padding: 2rem 1.75rem;
+              height: 100%;
+              box-shadow: var(--shadow-soft);
+              transition: var(--transition-smooth);
+            }
+
+            .skill-group-card:hover {
+              transform: translateY(-5px);
+              box-shadow: var(--shadow-hover);
+              border-color: var(--accent-purple);
+            }
+
+            .skill-chip {
+              background: #FFFFFF;
+              border: 1px solid var(--border-color);
+              padding: 0.5rem 0.95rem;
+              border-radius: 12px;
+              font-weight: 600;
+              font-size: 0.875rem;
+              color: var(--text-primary);
+              display: inline-flex;
+              align-items: center;
+              gap: 0.5rem;
+              margin: 0.3rem;
+              transition: var(--transition-smooth);
+            }
+
+            .skill-chip:hover {
+              background: var(--lavender-accent);
+              color: var(--accent-purple);
+              border-color: var(--accent-purple);
+              transform: translateY(-2px);
+            }
+
+            /* Soft Marquee */
+            .marquee-container {
+              overflow: hidden;
+              white-space: nowrap;
+              position: relative;
+              background: #FFFFFF;
+              border-top: 1px solid var(--border-color);
+              border-bottom: 1px solid var(--border-color);
+              padding: 1.1rem 0;
+            }
+
+            .marquee-track {
+              display: inline-flex;
+              animation: marquee 28s linear infinite;
+            }
+
+            .marquee-item {
+              display: inline-flex;
+              align-items: center;
+              gap: 0.5rem;
+              margin: 0 1.5rem;
+              font-weight: 600;
+              color: var(--text-secondary);
+              font-size: 0.95rem;
+            }
+
+            .marquee-item i {
+              color: var(--accent-purple);
+            }
+
+            @@keyframes marquee {
+              0% { transform: translateX(0); }
+              100% { transform: translateX(-50%); }
+            }
+
+            /* Project Cards & Filters */
+            .filter-btn {
+              background: #FFFFFF;
+              border: 1px solid var(--border-color);
+              color: var(--text-secondary);
+              padding: 0.5rem 1.25rem;
+              border-radius: 50px;
+              font-size: 0.9rem;
+              font-weight: 600;
+              transition: var(--transition-smooth);
+              cursor: pointer;
+            }
+
+            .filter-btn:hover {
+              color: var(--accent-purple);
+              border-color: var(--accent-purple);
+              background: var(--lavender-accent);
+            }
+
+            .filter-btn.active {
+              background: var(--accent-purple);
+              color: #FFFFFF;
+              border-color: var(--accent-purple);
+              box-shadow: 0 4px 14px rgba(130, 118, 217, 0.3);
+            }
+
+            .project-card {
+              background: #FFFFFF;
+              border: 1px solid var(--border-color);
+              border-radius: 22px;
+              overflow: hidden;
+              box-shadow: var(--shadow-soft);
+              transition: var(--transition-smooth);
+              height: 100%;
+              display: flex;
+              flex-direction: column;
+            }
+
+            .project-card:hover {
+              transform: translateY(-7px);
+              box-shadow: var(--shadow-hover);
+              border-color: rgba(130, 118, 217, 0.4);
+            }
+
+            .project-thumb {
+              height: 200px;
+              background: linear-gradient(135deg, var(--bg-secondary), var(--lavender-accent));
+              position: relative;
+              overflow: hidden;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            }
+
+            .project-thumb-preview {
+              width: 88%;
+              height: 82%;
+              background: #FFFFFF;
+              border-radius: 12px;
+              box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+              border: 1px solid var(--border-color);
+              display: flex;
+              flex-direction: column;
+              overflow: hidden;
+              transition: transform 0.4s ease;
+            }
+
+            .project-card:hover .project-thumb-preview {
+              transform: scale(1.04);
+            }
+
+            .preview-header {
+              height: 22px;
+              background: #F8F9FD;
+              border-bottom: 1px solid var(--border-color);
+              display: flex;
+              align-items: center;
+              padding: 0 8px;
+              gap: 4px;
+            }
+
+            .preview-dot {
+              width: 6px;
+              height: 6px;
+              border-radius: 50%;
+              background: #D5DAE5;
+            }
+
+            .preview-body {
+              padding: 10px;
+              flex: 1;
+              display: flex;
+              flex-direction: column;
+              gap: 6px;
+              font-size: 0.65rem;
+            }
+
+            .preview-skeleton-bar {
+              height: 6px;
+              background: #EEF2F8;
+              border-radius: 4px;
+            }
+
+            .project-body {
+              padding: 1.6rem;
+              display: flex;
+              flex-direction: column;
+              flex: 1;
+            }
+
+            .project-category-badge {
+              font-size: 0.75rem;
+              font-weight: 700;
+              text-transform: uppercase;
+              letter-spacing: 0.05em;
+              color: var(--accent-purple);
+              background: var(--lavender-accent);
+              padding: 0.25rem 0.75rem;
+              border-radius: 30px;
+              display: inline-block;
+              margin-bottom: 0.75rem;
+              width: fit-content;
+            }
+
+            .project-title {
+              font-size: 1.25rem;
+              font-weight: 700;
+              margin-bottom: 0.5rem;
+            }
+
+            .project-desc {
+              color: var(--text-secondary);
+              font-size: 0.92rem;
+              margin-bottom: 1.25rem;
+              flex: 1;
+            }
+
+            .project-footer {
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              padding-top: 1rem;
+              border-top: 1px solid var(--border-color);
+              margin-top: auto;
+            }
+
+            .project-link-btn {
+              color: var(--text-primary);
+              text-decoration: none;
+              font-size: 0.875rem;
+              font-weight: 600;
+              display: inline-flex;
+              align-items: center;
+              gap: 0.4rem;
+              transition: var(--transition-smooth);
+            }
+
+            .project-link-btn:hover {
+              color: var(--accent-purple);
+            }
+
+            /* Workflow Section */
+            .workflow-step-card {
+              background: #FFFFFF;
+              border: 1px solid var(--border-color);
+              border-radius: 20px;
+              padding: 2rem 1.5rem;
+              position: relative;
+              height: 100%;
+              box-shadow: var(--shadow-soft);
+              transition: var(--transition-smooth);
+            }
+
+            .workflow-step-card:hover {
+              transform: translateY(-4px);
+              border-color: var(--accent-purple);
+              box-shadow: var(--shadow-hover);
+            }
+
+            .workflow-num {
+              font-size: 2.25rem;
+              font-weight: 800;
+              color: var(--lavender-accent);
+              line-height: 1;
+              margin-bottom: 0.75rem;
+            }
+
+            .workflow-arrow {
+              position: absolute;
+              top: 50%;
+              right: -20px;
+              transform: translateY(-50%);
+              width: 36px;
+              height: 36px;
+              background: #FFFFFF;
+              border: 1px solid var(--border-color);
+              border-radius: 50%;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              color: var(--accent-purple);
+              z-index: 2;
+            }
+
+            /* Certificates */
+            .certificate-card {
+              background: #FFFFFF;
+              border: 1px solid var(--border-color);
+              border-radius: 20px;
+              padding: 1.75rem;
+              box-shadow: var(--shadow-soft);
+              transition: var(--transition-smooth);
+              height: 100%;
+              display: flex;
+              flex-direction: column;
+            }
+
+            .certificate-card:hover {
+              transform: translateY(-4px);
+              box-shadow: var(--shadow-hover);
+              border-color: var(--accent-purple);
+            }
+
+            /* Contact Section */
+            .contact-info-card {
+              background: linear-gradient(145deg, #FFFFFF, var(--bg-secondary));
+              border: 1px solid var(--border-color);
+              border-radius: 24px;
+              padding: 2.5rem;
+              height: 100%;
+              box-shadow: var(--shadow-soft);
+            }
+
+            .contact-item {
+              display: flex;
+              align-items: center;
+              gap: 1.1rem;
+              margin-bottom: 1.75rem;
+            }
+
+            .contact-icon {
+              width: 48px;
+              height: 48px;
+              border-radius: 16px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 1.25rem;
+              flex-shrink: 0;
+            }
+
+            .contact-form-card {
+              background: #FFFFFF;
+              border: 1px solid var(--border-color);
+              border-radius: 24px;
+              padding: 2.75rem;
+              box-shadow: var(--shadow-soft);
+            }
+
+            .form-control, .form-select {
+              border: 1.5px solid var(--border-color);
+              border-radius: 12px;
+              padding: 0.75rem 1rem;
+              font-size: 0.95rem;
+              color: var(--text-primary);
+              background-color: #FAFBFF;
+              transition: var(--transition-smooth);
+            }
+
+            .form-control:focus {
+              border-color: var(--accent-purple);
+              background-color: #FFFFFF;
+              box-shadow: 0 0 0 4px rgba(130, 118, 217, 0.15);
+              color: var(--text-primary);
+            }
+
+            .form-label {
+              font-weight: 600;
+              font-size: 0.875rem;
+              margin-bottom: 0.45rem;
+              color: var(--text-primary);
+            }
+
+            /* Footer */
+            footer {
+              background: #FFFFFF;
+              border-top: 1px solid var(--border-color);
+              padding: 4.5rem 0 2.5rem 0;
+            }
+
+            .footer-link {
+              color: var(--text-secondary);
+              text-decoration: none;
+              font-size: 0.925rem;
+              transition: var(--transition-smooth);
+            }
+
+            .footer-link:hover {
+              color: var(--accent-purple);
+            }
+
+            /* Floating Scroll to Top */
+            .scroll-to-top {
+              position: fixed;
+              bottom: 28px;
+              right: 28px;
+              width: 46px;
+              height: 46px;
+              border-radius: 50%;
+              background: #FFFFFF;
+              border: 1px solid var(--border-color);
+              color: var(--accent-purple);
+              box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 1.25rem;
+              cursor: pointer;
+              opacity: 0;
+              visibility: hidden;
+              transform: translateY(12px);
+              transition: var(--transition-smooth);
+              z-index: 1000;
+            }
+
+            .scroll-to-top.visible {
+              opacity: 1;
+              visibility: visible;
+              transform: translateY(0);
+            }
+
+            .scroll-to-top:hover {
+              background: var(--accent-purple);
+              color: #FFFFFF;
+              border-color: var(--accent-purple);
+              transform: translateY(-3px);
+            }
+
+            /* Scroll Reveal Initial State */
+            .reveal-on-scroll {
+              opacity: 0;
+              transform: translateY(22px);
+              transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+            }
+
+            .reveal-on-scroll.revealed {
+              opacity: 1;
+              transform: translateY(0);
+            }
+
+            /* Responsive Timeline Fixes */
+            @@media (max-width: 991.98px) {
+              .timeline-container::before {
+                left: 24px;
+              }
+              .timeline-marker {
+                left: 24px;
+              }
+              .timeline-content-card {
+                margin-left: 55px;
+              }
+              .hero-title {
+                font-size: 2.6rem;
+              }
+              .workflow-arrow {
+                display: none;
+              }
+              .hero-image-wrapper {
+                margin-top: 3rem;
+              }
+            }
+
+            @@media (min-width: 992px) {
+              .timeline-left {
+                padding-right: 3.5rem;
+                text-align: right;
+              }
+              .timeline-right {
+                padding-left: 3.5rem;
+                text-align: left;
+              }
+              .timeline-left .badge-year {
+                float: right;
+              }
+              .timeline-right .badge-year {
+                float: left;
+              }
+            }
+
+            @@media (prefers-reduced-motion: reduce) {
+              html {
+                scroll-behavior: auto;
+              }
+              .reveal-on-scroll {
+                opacity: 1 !important;
+                transform: none !important;
+                transition: none !important;
+              }
+              .floating-card {
+                animation: none !important;
+              }
+              .marquee-track {
+                animation: none !important;
+              }
+            }
+    </style>
+</head>
+<body data-bs-spy="scroll" data-bs-target="#mainNavbar" data-bs-offset="100">
+
+    <!-- Ambient Blobs -->
+    <div class="blob-bg blob-1"></div>
+    <div class="blob-bg blob-2"></div>
+    <div class="blob-bg blob-3"></div>
+
+    <!-- Sticky Navbar -->
+    <nav id="mainNavbar" class="navbar navbar-expand-lg fixed-top custom-navbar">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="#home">
+                <span class="brand-mark">P</span>
+                <span class="brand-name">Poyraz<span>.</span></span>
+            </a>
+
+            <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Menüyü Aç/Kapat">
+                <i class="bi bi-list fs-2 text-dark"></i>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-1">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#home">Ana Sayfa</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">Hakkımda</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#education">Eğitim Hayatım</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#experience">Deneyimlerim</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#skills">Yeteneklerim</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#projects">Projelerim</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">İletişim</a>
+                    </li>
+                </ul>
+
+                <div class="d-flex align-items-center gap-2 mt-3 mt-lg-0">
+                    <a href="#contact" class="btn-custom-primary" id="btnDownloadCv">
+                        <i class="bi bi-file-earmark-arrow-down"></i>
+                        CV İndir
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home">
+        <div class="container">
+            <div class="row align-items-center g-5">
+                <!-- Left Content -->
+                <div class="col-lg-7 reveal-on-scroll">
+                    <div class="hero-badge">
+                        <span>👋</span> Merhaba, Portfolyoma Hoş Geldiniz
+                    </div>
+
+                    <h1 class="hero-title">
+                        Merhaba, Ben <span class="hero-name-gradient">Poyraz Alsever</span>.
+                    </h1>
+
+                    <!-- Animated Typing Text Slider -->
+                    <div class="typing-container" aria-live="polite">
+                        <span id="typedText"></span><span class="typing-cursor"></span>
+                    </div>
+
+                    <p class="hero-desc">
+                        Bilgisayar mühendisliği altyapımı modern yazılım teknolojileriyle birleştirerek kullanıcı dostu, ölçeklenebilir ve yenilikçi dijital çözümler geliştiriyorum.
+                    </p>
+
+                    <div class="d-flex flex-wrap gap-3 align-items-center mb-4">
+                        <a href="#projects" class="btn-custom-primary">
+                            <i class="bi bi-grid-fill"></i>
+                            Projelerimi İncele
+                        </a>
+                        <a href="#contact" class="btn-custom-outline">
+                            <i class="bi bi-chat-dots"></i>
+                            Benimle İletişime Geç
+                        </a>
+                    </div>
+
+                    <!-- Social Links -->
+                    <div class="d-flex align-items-center gap-2 pt-2">
+                        <span class="text-secondary small fw-medium me-2">Bağlantılar:</span>
+                        <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="GitHub Profilim">
+                            <i class="bi bi-github"></i>
+                        </a>
+                        <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="LinkedIn Profilim">
+                            <i class="bi bi-linkedin"></i>
+                        </a>
+                        <a href="https://medium.com" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="Medium Yazılarım">
+                            <i class="bi bi-medium"></i>
+                        </a>
+                        <a href="mailto:poyraz.alsever@example.com" class="social-btn" aria-label="E-posta Gönder">
+                            <i class="bi bi-envelope"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Right Visual with Portrait & Floating Badges -->
+                <div class="col-lg-5 reveal-on-scroll">
+                    <div class="hero-image-wrapper">
+                        <!-- Floating badge top left -->
+                        <div class="floating-card float-top-left">
+                            <div class="float-icon-box bg-icon-purple">
+                                <i class="bi bi-code-slash"></i>
+                            </div>
+                            <div>
+                                <div class="fw-bold small text-dark">Clean Code</div>
+                                <div class="text-secondary" style="font-size: 0.72rem;">C# & ASP.NET Core</div>
+                            </div>
+                        </div>
+
+                        <!-- Main Portrait -->
+                        <div class="hero-image-frame">
+                            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBM90nUmg17t1Rwdmp5syF7ybvObe2JCYXCRhb5SArxTW6Sb07gLuO9S-IukznIPZpOgF_fkiwKlbUQnj_f_Qyk9Cmk_hywN6N9uedVOLDslZjFUZly-H53T2h4pPYZCUpldpE8o6MEl4etmOYmOq5ewjDdvQPXDBaWoOMtjP7nTgIo_fnx7HSMO6foinZwMEJijjWucA0ZsTXsXk3pAMJF1xO7JuEpTrM4SqQNXksN3rtMwEh-HmVJ" alt="Poyraz Alsever - Bilgisayar Mühendisi" loading="lazy">
+                        </div>
+
+                        <!-- Floating badge bottom right -->
+                        <div class="floating-card float-bottom-right">
+                            <div class="float-icon-box bg-icon-mint">
+                                <i class="bi bi-laptop"></i>
+                            </div>
+                            <div>
+                                <div class="fw-bold small text-dark">Software Engineer</div>
+                                <div class="text-secondary" style="font-size: 0.72rem;">Full Stack Developer</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Infinite Soft Marquee for Technologies -->
+    <div class="marquee-container">
+        <div class="marquee-track">
+            <div class="marquee-item"><i class="bi bi-check2-circle"></i> C# .NET</div>
+            <div class="marquee-item"><i class="bi bi-check2-circle"></i> ASP.NET Core</div>
+            <div class="marquee-item"><i class="bi bi-check2-circle"></i> Microsoft SQL Server</div>
+            <div class="marquee-item"><i class="bi bi-check2-circle"></i> Entity Framework Core</div>
+            <div class="marquee-item"><i class="bi bi-check2-circle"></i> RESTful API Design</div>
+            <div class="marquee-item"><i class="bi bi-check2-circle"></i> Clean Architecture</div>
+            <div class="marquee-item"><i class="bi bi-check2-circle"></i> Bootstrap 5</div>
+            <div class="marquee-item"><i class="bi bi-check2-circle"></i> JavaScript (ES6+)</div>
+            <div class="marquee-item"><i class="bi bi-check2-circle"></i> Docker & Git</div>
+            <div class="marquee-item"><i class="bi bi-check2-circle"></i> PostgreSQL</div>
+            <!-- Duplicate for seamless infinite loop -->
+            <div class="marquee-item"><i class="bi bi-check2-circle"></i> C# .NET</div>
+            <div class="marquee-item"><i class="bi bi-check2-circle"></i> ASP.NET Core</div>
+            <div class="marquee-item"><i class="bi bi-check2-circle"></i> Microsoft SQL Server</div>
+            <div class="marquee-item"><i class="bi bi-check2-circle"></i> Entity Framework Core</div>
+            <div class="marquee-item"><i class="bi bi-check2-circle"></i> RESTful API Design</div>
+            <div class="marquee-item"><i class="bi bi-check2-circle"></i> Clean Architecture</div>
+            <div class="marquee-item"><i class="bi bi-check2-circle"></i> Bootstrap 5</div>
+            <div class="marquee-item"><i class="bi bi-check2-circle"></i> JavaScript (ES6+)</div>
+            <div class="marquee-item"><i class="bi bi-check2-circle"></i> Docker & Git</div>
+            <div class="marquee-item"><i class="bi bi-check2-circle"></i> PostgreSQL</div>
+        </div>
+    </div>
+
+    <!-- About Me Section -->
+    <section id="about">
+        <div class="container">
+            <div class="text-center mb-5 reveal-on-scroll">
+                <span class="section-eyebrow">BENİ TANIYIN</span>
+                <h2 class="section-title">Hakkımda</h2>
+                <p class="section-subtitle">Teknolojiye duyduğum merakı, insanlara değer katan yazılımlara dönüştürüyorum.</p>
+            </div>
+
+            <div class="row g-5 align-items-center">
+                <!-- Left: Personal Details Card -->
+                <div class="col-lg-5 reveal-on-scroll">
+                    <div class="about-visual-box">
+                        <div class="d-flex align-items-center gap-3 mb-4">
+                            <div class="float-icon-box bg-icon-purple" style="width: 52px; height: 52px; font-size: 1.4rem;">
+                                <i class="bi bi-person-badge"></i>
+                            </div>
+                            <div>
+                                <h4 class="mb-0 fs-5 fw-bold">Poyraz Alsever</h4>
+                                <span class="text-secondary small">Bilgisayar Mühendisi</span>
+                            </div>
+                        </div>
+
+                        <div class="info-list">
+                            <div class="info-list-item">
+                                <span class="info-label"><i class="bi bi-person me-2"></i>Ad Soyad</span>
+                                <span class="info-value">Poyraz Alsever</span>
+                            </div>
+                            <div class="info-list-item">
+                                <span class="info-label"><i class="bi bi-briefcase me-2"></i>Meslek</span>
+                                <span class="info-value">Bilgisayar Mühendisi</span>
+                            </div>
+                            <div class="info-list-item">
+                                <span class="info-label"><i class="bi bi-geo-alt me-2"></i>Konum</span>
+                                <span class="info-value">İstanbul, Türkiye</span>
+                            </div>
+                            <div class="info-list-item">
+                                <span class="info-label"><i class="bi bi-layers me-2"></i>Uzmanlık</span>
+                                <span class="info-value">Full Stack Web Development</span>
+                            </div>
+                            <div class="info-list-item">
+                                <span class="info-label"><i class="bi bi-envelope me-2"></i>E-posta</span>
+                                <span class="info-value">poyraz.alsever@example.com</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 pt-2">
+                            <div class="p-3 rounded-4" style="background-color: var(--lavender-accent);">
+                                <div class="d-flex align-items-center gap-2 text-dark small fw-semibold">
+                                    <i class="bi bi-check-circle-fill text-success"></i> Yeni projelere ve iş birliklerine açık
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Biography & Highlight Cards -->
+                <div class="col-lg-7 reveal-on-scroll">
+                    <div class="pe-lg-3">
+                        <p class="fs-6 text-secondary mb-3">
+                            Merhaba, ben Poyraz Alsever. Yazılım geliştirme, sistem tasarımı ve modern web teknolojilerine ilgi duyan bir bilgisayar mühendisiyim. Üniversite yıllarında başladığım yazılım geliştirme yolculuğumu, profesyonel projeler ve sürekli öğrenme yaklaşımıyla ilerletiyorum.
+                        </p>
+                        <p class="fs-6 text-secondary mb-3">
+                            Özellikle web uygulamaları, backend sistemleri, veritabanı tasarımı ve kullanıcı deneyimine odaklanıyorum. Karmaşık problemleri sade ve sürdürülebilir çözümlere dönüştürmekten keyif alıyorum.
+                        </p>
+                        <p class="fs-6 text-secondary mb-4">
+                            Yeni teknolojileri keşfetmeyi, ekip çalışmalarında sorumluluk üstlenmeyi ve her projede kendimi geliştirmeyi önemsiyorum.
+                        </p>
+
+                        <!-- Three Small Highlight Cards -->
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <div class="highlight-card">
+                                    <div class="float-icon-box bg-icon-purple mb-3">
+                                        <i class="bi bi-cpu"></i>
+                                    </div>
+                                    <h5 class="fs-6 fw-bold mb-1">Modern Teknolojiler</h5>
+                                    <p class="text-secondary small mb-0">Güncel .NET ve web ekosistemi ile ölçeklenebilir kod mimarisi.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="highlight-card">
+                                    <div class="float-icon-box bg-icon-mint mb-3">
+                                        <i class="bi bi-puzzle"></i>
+                                    </div>
+                                    <h5 class="fs-6 fw-bold mb-1">Problem Çözme</h5>
+                                    <p class="text-secondary small mb-0">Algoritmik bakış açısıyla karmaşık gereksinimleri sadeleştirme.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="highlight-card">
+                                    <div class="float-icon-box bg-icon-blue mb-3">
+                                        <i class="bi bi-arrow-repeat"></i>
+                                    </div>
+                                    <h5 class="fs-6 fw-bold mb-1">Sürekli Gelişim</h5>
+                                    <p class="text-secondary small mb-0">Teknolojiyi yakından takip ederek her gün yeni yetkinlikler edinme.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Education Section -->
+    <section id="education" style="background-color: var(--bg-secondary);">
+        <div class="container">
+            <div class="text-center mb-5 reveal-on-scroll">
+                <span class="section-eyebrow">AKADEMİK YOLCULUĞUM</span>
+                <h2 class="section-title">Eğitim Hayatım</h2>
+                <p class="section-subtitle">Yazılım dünyasına uzanan yolculuğumun akademik temelleri.</p>
+            </div>
+
+            <div class="timeline-container">
+                <!-- 1. University -->
+                <div class="timeline-item row align-items-center g-4 reveal-on-scroll">
+                    <div class="col-lg-6 timeline-left order-2 order-lg-1">
+                        <div class="timeline-content-card">
+                            <span class="badge-year bg-icon-purple mb-2">
+                                <i class="bi bi-calendar3"></i> 2020 – 2024
+                            </span>
+                            <h4 class="fs-5 fw-bold mb-1">Marmara Üniversitesi</h4>
+                            <div class="text-primary fw-semibold small mb-2">Bilgisayar Mühendisliği — Lisans</div>
+                            <p class="text-secondary small mb-3">
+                                Algoritmalar, veri yapıları, nesne yönelimli programlama, veritabanı yönetimi, yazılım mühendisliği ve bilgisayar ağları alanlarında kapsamlı bir akademik eğitim aldım.
+                            </p>
+                            <div>
+                                <span class="tech-tag">Yazılım Mühendisliği</span>
+                                <span class="tech-tag">Veri Yapıları</span>
+                                <span class="tech-tag">Algoritmalar</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="timeline-marker">
+                        <i class="bi bi-mortarboard"></i>
+                    </div>
+                    <div class="col-lg-6 timeline-right order-1 order-lg-2 d-none d-lg-block">
+                        <div class="text-secondary fst-italic small">İstanbul, Türkiye</div>
+                    </div>
+                </div>
+
+                <!-- 2. High School -->
+                <div class="timeline-item row align-items-center g-4 reveal-on-scroll">
+                    <div class="col-lg-6 timeline-left d-none d-lg-block">
+                        <div class="text-secondary fst-italic small">İstanbul, Türkiye</div>
+                    </div>
+                    <div class="timeline-marker">
+                        <i class="bi bi-book"></i>
+                    </div>
+                    <div class="col-lg-6 timeline-right">
+                        <div class="timeline-content-card">
+                            <span class="badge-year bg-icon-mint mb-2">
+                                <i class="bi bi-calendar3"></i> 2016 – 2020
+                            </span>
+                            <h4 class="fs-5 fw-bold mb-1">İstanbul Atatürk Fen Lisesi</h4>
+                            <div class="text-primary fw-semibold small mb-2">Sayısal Bölüm</div>
+                            <p class="text-secondary small mb-3">
+                                Matematik ve fen bilimleri alanında güçlü bir temel edinirken programlama ve teknoloji dünyasına olan ilgimi geliştirdim. Algoritmik düşünme ve problem çözme becerilerimin temellerini bu dönemde oluşturdum.
+                            </p>
+                            <div>
+                                <span class="tech-tag">Matematik</span>
+                                <span class="tech-tag">Fen Bilimleri</span>
+                                <span class="tech-tag">Programlamaya Giriş</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Work Experience Section -->
+    <section id="experience">
+        <div class="container">
+            <div class="text-center mb-5 reveal-on-scroll">
+                <span class="section-eyebrow">PROFESYONEL YOLCULUK</span>
+                <h2 class="section-title">Deneyimlerim</h2>
+                <p class="section-subtitle">Gerçek dünya problemlerini çözerken edindiğim tecrübeler.</p>
+            </div>
+
+            <div class="timeline-container">
+                <!-- 1. NovaTech Solutions -->
+                <div class="timeline-item row align-items-center g-4 reveal-on-scroll">
+                    <div class="col-lg-6 timeline-left order-2 order-lg-1">
+                        <div class="timeline-content-card">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <span class="badge-year bg-icon-purple">
+                                    <i class="bi bi-briefcase"></i> 2024 – Günümüz
+                                </span>
+                                <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-1 small">Tam Zamanlı</span>
+                            </div>
+                            <h4 class="fs-5 fw-bold mb-1">Software Engineer</h4>
+                            <div class="text-primary fw-semibold small mb-3">NovaTech Solutions</div>
+                            <ul class="text-secondary small ps-3 mb-3" style="line-height: 1.6;">
+                                <li>ASP.NET Core ile ölçeklenebilir web uygulamaları geliştirme</li>
+                                <li>RESTful API geliştirme ve entegrasyonları</li>
+                                <li>SQL Server üzerinde veritabanı tasarımı ve optimizasyonu</li>
+                                <li>Yazılım geliştirme ekipleriyle Agile süreçlerde çalışma</li>
+                            </ul>
+                            <div>
+                                <span class="tech-tag">C#</span>
+                                <span class="tech-tag">ASP.NET Core</span>
+                                <span class="tech-tag">SQL Server</span>
+                                <span class="tech-tag">Entity Framework Core</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="timeline-marker">
+                        <i class="bi bi-building"></i>
+                    </div>
+                    <div class="col-lg-6 timeline-right order-1 order-lg-2 d-none d-lg-block">
+                        <div class="text-secondary small fst-italic">Kurumsal Web Çözümleri</div>
+                    </div>
+                </div>
+
+                <!-- 2. PixelWave Digital -->
+                <div class="timeline-item row align-items-center g-4 reveal-on-scroll">
+                    <div class="col-lg-6 timeline-left d-none d-lg-block">
+                        <div class="text-secondary small fst-italic">Dijital Ürün & Web Ajansı</div>
+                    </div>
+                    <div class="timeline-marker">
+                        <i class="bi bi-pc-display"></i>
+                    </div>
+                    <div class="col-lg-6 timeline-right">
+                        <div class="timeline-content-card">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <span class="badge-year bg-icon-blue">
+                                    <i class="bi bi-briefcase"></i> 2023 – 2024
+                                </span>
+                                <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-3 py-1 small">Yarı Zamanlı</span>
+                            </div>
+                            <h4 class="fs-5 fw-bold mb-1">Junior Software Developer</h4>
+                            <div class="text-primary fw-semibold small mb-3">PixelWave Digital</div>
+                            <ul class="text-secondary small ps-3 mb-3" style="line-height: 1.6;">
+                                <li>Kurumsal web uygulamalarının geliştirilmesine katkı sağlama</li>
+                                <li>Backend servisleri ve frontend bileşenleri geliştirme</li>
+                                <li>Mevcut uygulamalarda performans iyileştirmeleri</li>
+                                <li>Kod inceleme ve hata giderme süreçlerine katılma</li>
+                            </ul>
+                            <div>
+                                <span class="tech-tag">C#</span>
+                                <span class="tech-tag">JavaScript</span>
+                                <span class="tech-tag">Bootstrap</span>
+                                <span class="tech-tag">PostgreSQL</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. CodeBridge Technology -->
+                <div class="timeline-item row align-items-center g-4 reveal-on-scroll">
+                    <div class="col-lg-6 timeline-left order-2 order-lg-1">
+                        <div class="timeline-content-card">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <span class="badge-year bg-icon-peach">
+                                    <i class="bi bi-briefcase"></i> 2022 – 2022
+                                </span>
+                                <span class="badge bg-warning-subtle text-warning border border-warning-subtle rounded-pill px-3 py-1 small">Staj</span>
+                            </div>
+                            <h4 class="fs-5 fw-bold mb-1">Software Development Intern</h4>
+                            <div class="text-primary fw-semibold small mb-3">CodeBridge Technology</div>
+                            <ul class="text-secondary small ps-3 mb-3" style="line-height: 1.6;">
+                                <li>Web uygulaması geliştirme süreçlerini deneyimleme</li>
+                                <li>Temel CRUD uygulamaları geliştirme</li>
+                                <li>Veritabanı işlemleri ve API kullanımını öğrenme</li>
+                                <li>Takım içi yazılım geliştirme süreçlerine katılma</li>
+                            </ul>
+                            <div>
+                                <span class="tech-tag">.NET</span>
+                                <span class="tech-tag">HTML5 / CSS3</span>
+                                <span class="tech-tag">JavaScript</span>
+                                <span class="tech-tag">Git</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="timeline-marker">
+                        <i class="bi bi-award"></i>
+                    </div>
+                    <div class="col-lg-6 timeline-right order-1 order-lg-2 d-none d-lg-block">
+                        <div class="text-secondary small fst-italic">Ar-Ge ve Yazılım Stajı</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technical Skills Section -->
+    <section id="skills" style="background-color: var(--bg-secondary);">
+        <div class="container">
+            <div class="text-center mb-5 reveal-on-scroll">
+                <span class="section-eyebrow">TEKNİK YETKİNLİKLER</span>
+                <h2 class="section-title">Yeteneklerim</h2>
+                <p class="section-subtitle">Fikirleri çalışan yazılımlara dönüştürürken kullandığım teknolojiler.</p>
+            </div>
+
+            <div class="row g-4">
+                <!-- 1. Backend Development -->
+                <div class="col-lg-4 col-md-6 reveal-on-scroll">
+                    <div class="skill-group-card">
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            <div class="float-icon-box bg-icon-purple">
+                                <i class="bi bi-hdd-network"></i>
+                            </div>
+                            <h4 class="fs-5 fw-bold mb-0">Backend Development</h4>
+                        </div>
+                        <p class="text-secondary small mb-3">Güvenli, modüler ve yüksek performanslı sunucu taraflı mimariler.</p>
+                        <div class="d-flex flex-wrap">
+                            <span class="skill-chip"><i class="bi bi-check text-success"></i> C#</span>
+                            <span class="skill-chip"><i class="bi bi-check text-success"></i> ASP.NET Core</span>
+                            <span class="skill-chip"><i class="bi bi-check text-success"></i> Web API</span>
+                            <span class="skill-chip"><i class="bi bi-check text-success"></i> EF Core</span>
+                            <span class="skill-chip"><i class="bi bi-check text-success"></i> LINQ</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Frontend Development -->
+                <div class="col-lg-4 col-md-6 reveal-on-scroll">
+                    <div class="skill-group-card">
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            <div class="float-icon-box bg-icon-blue">
+                                <i class="bi bi-browser-chrome"></i>
+                            </div>
+                            <h4 class="fs-5 fw-bold mb-0">Frontend Development</h4>
+                        </div>
+                        <p class="text-secondary small mb-3">Erişilebilir, duyarlı ve temiz kullanıcı arayüzleri.</p>
+                        <div class="d-flex flex-wrap">
+                            <span class="skill-chip"><i class="bi bi-check text-success"></i> HTML5</span>
+                            <span class="skill-chip"><i class="bi bi-check text-success"></i> CSS3</span>
+                            <span class="skill-chip"><i class="bi bi-check text-success"></i> JavaScript (ES6+)</span>
+                            <span class="skill-chip"><i class="bi bi-check text-success"></i> Bootstrap 5</span>
+                            <span class="skill-chip"><i class="bi bi-check text-success"></i> Responsive Design</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Database Technologies -->
+                <div class="col-lg-4 col-md-6 reveal-on-scroll">
+                    <div class="skill-group-card">
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            <div class="float-icon-box bg-icon-mint">
+                                <i class="bi bi-database"></i>
+                            </div>
+                            <h4 class="fs-5 fw-bold mb-0">Database Technologies</h4>
+                        </div>
+                        <p class="text-secondary small mb-3">İlişkisel modelleme, sorgu optimizasyonu ve veri bütünlüğü.</p>
+                        <div class="d-flex flex-wrap">
+                            <span class="skill-chip"><i class="bi bi-check text-success"></i> MS SQL Server</span>
+                            <span class="skill-chip"><i class="bi bi-check text-success"></i> PostgreSQL</span>
+                            <span class="skill-chip"><i class="bi bi-check text-success"></i> MongoDB</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. Tools & Practices -->
+                <div class="col-lg-6 col-md-6 reveal-on-scroll">
+                    <div class="skill-group-card">
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            <div class="float-icon-box bg-icon-peach">
+                                <i class="bi bi-tools"></i>
+                            </div>
+                            <h4 class="fs-5 fw-bold mb-0">Tools & Practices</h4>
+                        </div>
+                        <p class="text-secondary small mb-3">Modern DevOps araçları, sürüm kontrolü ve çevik çalışma kültürü.</p>
+                        <div class="d-flex flex-wrap">
+                            <span class="skill-chip"><i class="bi bi-check text-success"></i> Git & GitHub</span>
+                            <span class="skill-chip"><i class="bi bi-check text-success"></i> Docker</span>
+                            <span class="skill-chip"><i class="bi bi-check text-success"></i> Postman</span>
+                            <span class="skill-chip"><i class="bi bi-check text-success"></i> Swagger</span>
+                            <span class="skill-chip"><i class="bi bi-check text-success"></i> Agile / Scrum</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. Software Architecture -->
+                <div class="col-lg-6 col-md-12 reveal-on-scroll">
+                    <div class="skill-group-card">
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            <div class="float-icon-box bg-icon-purple">
+                                <i class="bi bi-diagram-3"></i>
+                            </div>
+                            <h4 class="fs-5 fw-bold mb-0">Software Architecture</h4>
+                        </div>
+                        <p class="text-secondary small mb-3">Sürdürülebilir, test edilebilir ve endüstri standardı prensipler.</p>
+                        <div class="d-flex flex-wrap">
+                            <span class="skill-chip"><i class="bi bi-check text-success"></i> OOP (Nesne Yönelimli)</span>
+                            <span class="skill-chip"><i class="bi bi-check text-success"></i> SOLID Principles</span>
+                            <span class="skill-chip"><i class="bi bi-check text-success"></i> Clean Architecture</span>
+                            <span class="skill-chip"><i class="bi bi-check text-success"></i> RESTful API Design</span>
+                            <span class="skill-chip"><i class="bi bi-check text-success"></i> Design Patterns</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Projects Section -->
+    <section id="projects">
+        <div class="container">
+            <div class="text-center mb-4 reveal-on-scroll">
+                <span class="section-eyebrow">SEÇİLMİŞ ÇALIŞMALAR</span>
+                <h2 class="section-title">Projelerim</h2>
+                <p class="section-subtitle">Öğrendiklerimi gerçek ürünlere dönüştürdüğüm çalışmalar.</p>
+            </div>
+
+            <!-- Category Filter Buttons -->
+            <div class="d-flex justify-content-center flex-wrap gap-2 mb-5 reveal-on-scroll" id="projectFilterGroup">
+                <button class="filter-btn active" data-filter="all">Tümü</button>
+                <button class="filter-btn" data-filter="web-app">Web Uygulamaları</button>
+                <button class="filter-btn" data-filter="dashboard">Dashboard</button>
+                <button class="filter-btn" data-filter="api-projects">API Projeleri</button>
+            </div>
+
+            <!-- Project Cards Grid -->
+            <div class="row g-4" id="projectGrid">
+                <!-- 1. TaskFlow -->
+                <div class="col-lg-4 col-md-6 project-item" data-category="web-app">
+                    <div class="project-card reveal-on-scroll">
+                        <div class="project-thumb">
+                            <div class="project-thumb-preview">
+                                <div class="preview-header">
+                                    <div class="preview-dot" style="background:#FF5F56;"></div>
+                                    <div class="preview-dot" style="background:#FFBD2E;"></div>
+                                    <div class="preview-dot" style="background:#27C93F;"></div>
+                                    <span class="ms-auto text-muted" style="font-size:0.6rem;">TaskFlow Kanban</span>
+                                </div>
+                                <div class="preview-body">
+                                    <div class="preview-skeleton-bar" style="width: 40%; background: var(--accent-purple);"></div>
+                                    <div class="d-flex gap-2 my-1">
+                                        <div class="p-1 rounded bg-light border flex-fill">Yapılacaklar</div>
+                                        <div class="p-1 rounded bg-light border flex-fill">Süreçte</div>
+                                        <div class="p-1 rounded bg-light border flex-fill">Tamamlandı</div>
+                                    </div>
+                                    <div class="preview-skeleton-bar" style="width: 75%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="project-body">
+                            <span class="project-category-badge">Web Application</span>
+                            <h3 class="project-title">TaskFlow — Görev Yönetim Sistemi</h3>
+                            <p class="project-desc">Ekiplerin görevlerini planlayabildiği, proje süreçlerini takip edebildiği ve iş akışlarını yönetebildiği modern görev yönetim uygulaması.</p>
+                            <div class="mb-3">
+                                <span class="tech-tag">ASP.NET Core</span>
+                                <span class="tech-tag">EF Core</span>
+                                <span class="tech-tag">SQL Server</span>
+                                <span class="tech-tag">Bootstrap</span>
+                            </div>
+                            <div class="project-footer">
+                                <a href="https://github.com/poyrazalsever/taskflow" target="_blank" rel="noopener" class="project-link-btn">
+                                    <i class="bi bi-github"></i> GitHub
+                                </a>
+                                <a href="#projects" class="project-link-btn text-primary">
+                                    <i class="bi bi-box-arrow-up-right"></i> Canlı Demo
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. ShopEase -->
+                <div class="col-lg-4 col-md-6 project-item" data-category="web-app">
+                    <div class="project-card reveal-on-scroll">
+                        <div class="project-thumb">
+                            <div class="project-thumb-preview">
+                                <div class="preview-header">
+                                    <div class="preview-dot"></div><div class="preview-dot"></div><div class="preview-dot"></div>
+                                    <span class="ms-auto text-muted" style="font-size:0.6rem;">ShopEase Store</span>
+                                </div>
+                                <div class="preview-body">
+                                    <div class="d-flex justify-content-between">
+                                        <div class="preview-skeleton-bar" style="width: 35%; background: var(--accent-purple);"></div>
+                                        <div class="preview-skeleton-bar" style="width: 20%;"></div>
+                                    </div>
+                                    <div class="d-flex gap-2 my-1">
+                                        <div class="p-2 rounded bg-light border flex-fill text-center">Ürün Kartı 1</div>
+                                        <div class="p-2 rounded bg-light border flex-fill text-center">Ürün Kartı 2</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="project-body">
+                            <span class="project-category-badge">E-Commerce</span>
+                            <h3 class="project-title">ShopEase — E-Ticaret Platformu</h3>
+                            <p class="project-desc">Ürün yönetimi, kategori filtreleme, sepet işlemleri ve sipariş süreçlerini içeren kullanıcı dostu e-ticaret uygulaması.</p>
+                            <div class="mb-3">
+                                <span class="tech-tag">ASP.NET Core MVC</span>
+                                <span class="tech-tag">C#</span>
+                                <span class="tech-tag">JavaScript</span>
+                                <span class="tech-tag">SQL Server</span>
+                            </div>
+                            <div class="project-footer">
+                                <a href="https://github.com/poyrazalsever/shopease" target="_blank" rel="noopener" class="project-link-btn">
+                                    <i class="bi bi-github"></i> GitHub
+                                </a>
+                                <a href="#projects" class="project-link-btn text-primary">
+                                    <i class="bi bi-box-arrow-up-right"></i> Canlı Demo
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. DataVista -->
+                <div class="col-lg-4 col-md-6 project-item" data-category="dashboard">
+                    <div class="project-card reveal-on-scroll">
+                        <div class="project-thumb">
+                            <div class="project-thumb-preview">
+                                <div class="preview-header">
+                                    <div class="preview-dot"></div><div class="preview-dot"></div><div class="preview-dot"></div>
+                                    <span class="ms-auto text-muted" style="font-size:0.6rem;">DataVista Analytics</span>
+                                </div>
+                                <div class="preview-body">
+                                    <div class="preview-skeleton-bar" style="width: 50%;"></div>
+                                    <div class="d-flex gap-1 align-items-end h-50 mt-1">
+                                        <div style="width:20%; height:40%; background:var(--soft-blue); border-radius:3px;"></div>
+                                        <div style="width:20%; height:85%; background:var(--accent-purple); border-radius:3px;"></div>
+                                        <div style="width:20%; height:60%; background:var(--mint-green); border-radius:3px;"></div>
+                                        <div style="width:20%; height:100%; background:var(--lavender-accent); border-radius:3px;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="project-body">
+                            <span class="project-category-badge">Dashboard</span>
+                            <h3 class="project-title">DataVista — Analitik Dashboard</h3>
+                            <p class="project-desc">Satış, performans ve kullanıcı verilerini anlaşılır grafiklerle sunan etkileşimli analiz paneli.</p>
+                            <div class="mb-3">
+                                <span class="tech-tag">ASP.NET Core</span>
+                                <span class="tech-tag">Web API</span>
+                                <span class="tech-tag">Chart.js</span>
+                                <span class="tech-tag">Bootstrap</span>
+                            </div>
+                            <div class="project-footer">
+                                <a href="https://github.com/poyrazalsever/datavista" target="_blank" rel="noopener" class="project-link-btn">
+                                    <i class="bi bi-github"></i> GitHub
+                                </a>
+                                <a href="#projects" class="project-link-btn text-primary">
+                                    <i class="bi bi-box-arrow-up-right"></i> Canlı Demo
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. EventHub -->
+                <div class="col-lg-4 col-md-6 project-item" data-category="web-app">
+                    <div class="project-card reveal-on-scroll">
+                        <div class="project-thumb">
+                            <div class="project-thumb-preview">
+                                <div class="preview-header">
+                                    <div class="preview-dot"></div><div class="preview-dot"></div><div class="preview-dot"></div>
+                                    <span class="ms-auto text-muted" style="font-size:0.6rem;">EventHub Portal</span>
+                                </div>
+                                <div class="preview-body">
+                                    <div class="preview-skeleton-bar" style="width: 60%; background: var(--accent-purple);"></div>
+                                    <div class="p-2 my-1 rounded bg-light border small text-muted">Bilet & Rezervasyon #2026</div>
+                                    <div class="preview-skeleton-bar" style="width: 80%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="project-body">
+                            <span class="project-category-badge">Web Platform</span>
+                            <h3 class="project-title">EventHub — Etkinlik Yönetim Platformu</h3>
+                            <p class="project-desc">Etkinlik oluşturma, katılımcı yönetimi ve rezervasyon süreçlerini dijital ortama taşıyan web platformu.</p>
+                            <div class="mb-3">
+                                <span class="tech-tag">C#</span>
+                                <span class="tech-tag">ASP.NET Core</span>
+                                <span class="tech-tag">PostgreSQL</span>
+                                <span class="tech-tag">JavaScript</span>
+                            </div>
+                            <div class="project-footer">
+                                <a href="https://github.com/poyrazalsever/eventhub" target="_blank" rel="noopener" class="project-link-btn">
+                                    <i class="bi bi-github"></i> GitHub
+                                </a>
+                                <a href="#projects" class="project-link-btn text-primary">
+                                    <i class="bi bi-box-arrow-up-right"></i> Canlı Demo
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. BlogSphere -->
+                <div class="col-lg-4 col-md-6 project-item" data-category="web-app">
+                    <div class="project-card reveal-on-scroll">
+                        <div class="project-thumb">
+                            <div class="project-thumb-preview">
+                                <div class="preview-header">
+                                    <div class="preview-dot"></div><div class="preview-dot"></div><div class="preview-dot"></div>
+                                    <span class="ms-auto text-muted" style="font-size:0.6rem;">BlogSphere CMS</span>
+                                </div>
+                                <div class="preview-body">
+                                    <div class="preview-skeleton-bar" style="width: 70%;"></div>
+                                    <div class="preview-skeleton-bar" style="width: 45%;"></div>
+                                    <div class="mt-2 p-1 rounded bg-light border text-truncate">Modern .NET Mimari Yazıları</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="project-body">
+                            <span class="project-category-badge">Content Management</span>
+                            <h3 class="project-title">BlogSphere — Kişisel Blog Sistemi</h3>
+                            <p class="project-desc">Kategori, etiket, yorum ve içerik yönetimi özelliklerine sahip modern blog ve içerik yönetim sistemi.</p>
+                            <div class="mb-3">
+                                <span class="tech-tag">ASP.NET Core MVC</span>
+                                <span class="tech-tag">EF Core</span>
+                                <span class="tech-tag">Bootstrap</span>
+                            </div>
+                            <div class="project-footer">
+                                <a href="https://github.com/poyrazalsever/blogsphere" target="_blank" rel="noopener" class="project-link-btn">
+                                    <i class="bi bi-github"></i> GitHub
+                                </a>
+                                <a href="#projects" class="project-link-btn text-primary">
+                                    <i class="bi bi-box-arrow-up-right"></i> Canlı Demo
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6. WeatherScope -->
+                <div class="col-lg-4 col-md-6 project-item" data-category="api-projects">
+                    <div class="project-card reveal-on-scroll">
+                        <div class="project-thumb">
+                            <div class="project-thumb-preview">
+                                <div class="preview-header">
+                                    <div class="preview-dot"></div><div class="preview-dot"></div><div class="preview-dot"></div>
+                                    <span class="ms-auto text-muted" style="font-size:0.6rem;">WeatherScope API</span>
+                                </div>
+                                <div class="preview-body text-center">
+                                    <div class="fs-6 fw-bold text-primary">22°C Güneşli</div>
+                                    <div class="text-muted" style="font-size:0.65rem;">İstanbul, TR • Nem: %54</div>
+                                    <div class="preview-skeleton-bar mt-2 mx-auto" style="width: 50%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="project-body">
+                            <span class="project-category-badge">API Integration</span>
+                            <h3 class="project-title">WeatherScope — Hava Durumu Uygulaması</h3>
+                            <p class="project-desc">Harici hava durumu servislerinden elde edilen verileri modern ve kullanıcı dostu bir arayüzle sunan uygulama.</p>
+                            <div class="mb-3">
+                                <span class="tech-tag">JavaScript</span>
+                                <span class="tech-tag">REST API</span>
+                                <span class="tech-tag">HTML5</span>
+                                <span class="tech-tag">CSS3</span>
+                            </div>
+                            <div class="project-footer">
+                                <a href="https://github.com/poyrazalsever/weatherscope" target="_blank" rel="noopener" class="project-link-btn">
+                                    <i class="bi bi-github"></i> GitHub
+                                </a>
+                                <a href="#projects" class="project-link-btn text-primary">
+                                    <i class="bi bi-box-arrow-up-right"></i> Canlı Demo
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Personal Workflow Section -->
+    <section id="workflow" style="background-color: var(--bg-secondary);">
+        <div class="container">
+            <div class="text-center mb-5 reveal-on-scroll">
+                <span class="section-eyebrow">NASIL ÇALIŞIYORUM?</span>
+                <h2 class="section-title">Fikirden Ürüne Yolculuk</h2>
+                <p class="section-subtitle">Her projeye planlı, sürdürülebilir ve kullanıcı odaklı bir yaklaşımla başlıyorum.</p>
+            </div>
+
+            <div class="row g-4 position-relative">
+                <!-- Step 1 -->
+                <div class="col-lg-3 col-md-6 reveal-on-scroll">
+                    <div class="workflow-step-card">
+                        <div class="workflow-num">01</div>
+                        <div class="float-icon-box bg-icon-purple mb-3">
+                            <i class="bi bi-search"></i>
+                        </div>
+                        <h4 class="fs-5 fw-bold mb-2">Analiz</h4>
+                        <p class="text-secondary small mb-0">İhtiyaçları ve hedefleri anlayarak doğru çözümü planlarım.</p>
+                        <div class="workflow-arrow d-none d-lg-flex">
+                            <i class="bi bi-arrow-right-short fs-5"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="col-lg-3 col-md-6 reveal-on-scroll">
+                    <div class="workflow-step-card">
+                        <div class="workflow-num">02</div>
+                        <div class="float-icon-box bg-icon-blue mb-3">
+                            <i class="bi bi-palette"></i>
+                        </div>
+                        <h4 class="fs-5 fw-bold mb-2">Tasarım</h4>
+                        <p class="text-secondary small mb-0">Uygulama mimarisini ve kullanıcı deneyimini şekillendiririm.</p>
+                        <div class="workflow-arrow d-none d-lg-flex">
+                            <i class="bi bi-arrow-right-short fs-5"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="col-lg-3 col-md-6 reveal-on-scroll">
+                    <div class="workflow-step-card">
+                        <div class="workflow-num">03</div>
+                        <div class="float-icon-box bg-icon-mint mb-3">
+                            <i class="bi bi-code-square"></i>
+                        </div>
+                        <h4 class="fs-5 fw-bold mb-2">Geliştirme</h4>
+                        <p class="text-secondary small mb-0">Temiz, sürdürülebilir ve ölçeklenebilir kod geliştiririm.</p>
+                        <div class="workflow-arrow d-none d-lg-flex">
+                            <i class="bi bi-arrow-right-short fs-5"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="col-lg-3 col-md-6 reveal-on-scroll">
+                    <div class="workflow-step-card">
+                        <div class="workflow-num">04</div>
+                        <div class="float-icon-box bg-icon-peach mb-3">
+                            <i class="bi bi-check2-circle"></i>
+                        </div>
+                        <h4 class="fs-5 fw-bold mb-2">Test ve İyileştirme</h4>
+                        <p class="text-secondary small mb-0">Kalite, performans ve kullanılabilirlik odaklı testler gerçekleştiririm.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Certifications Section -->
+    <section id="certificates">
+        <div class="container">
+            <div class="text-center mb-5 reveal-on-scroll">
+                <span class="section-eyebrow">SÜREKLİ ÖĞRENME</span>
+                <h2 class="section-title">Sertifikalarım</h2>
+                <p class="section-subtitle">Teknik becerilerimi geliştirmek için tamamladığım eğitimler.</p>
+            </div>
+
+            <div class="row g-4">
+                <!-- Cert 1 -->
+                <div class="col-lg-3 col-md-6 reveal-on-scroll">
+                    <div class="certificate-card">
+                        <div class="float-icon-box bg-icon-purple mb-3">
+                            <i class="bi bi-patch-check"></i>
+                        </div>
+                        <span class="badge bg-light text-secondary border rounded-pill px-2 py-1 mb-2 align-self-start small">2024</span>
+                        <h4 class="fs-6 fw-bold mb-1">ASP.NET Core Web Development</h4>
+                        <div class="text-secondary small mb-3">Microsoft Learn & BTK Akademi</div>
+                        <div class="mt-auto">
+                            <a href="#certificates" class="project-link-btn text-primary">
+                                Sertifikayı Görüntüle <i class="bi bi-arrow-up-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cert 2 -->
+                <div class="col-lg-3 col-md-6 reveal-on-scroll">
+                    <div class="certificate-card">
+                        <div class="float-icon-box bg-icon-blue mb-3">
+                            <i class="bi bi-patch-check"></i>
+                        </div>
+                        <span class="badge bg-light text-secondary border rounded-pill px-2 py-1 mb-2 align-self-start small">2023</span>
+                        <h4 class="fs-6 fw-bold mb-1">Modern JavaScript Fundamentals</h4>
+                        <div class="text-secondary small mb-3">Coursera & Udemy</div>
+                        <div class="mt-auto">
+                            <a href="#certificates" class="project-link-btn text-primary">
+                                Sertifikayı Görüntüle <i class="bi bi-arrow-up-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cert 3 -->
+                <div class="col-lg-3 col-md-6 reveal-on-scroll">
+                    <div class="certificate-card">
+                        <div class="float-icon-box bg-icon-mint mb-3">
+                            <i class="bi bi-patch-check"></i>
+                        </div>
+                        <span class="badge bg-light text-secondary border rounded-pill px-2 py-1 mb-2 align-self-start small">2023</span>
+                        <h4 class="fs-6 fw-bold mb-1">SQL & Database Design</h4>
+                        <div class="text-secondary small mb-3">HackerRank & DataCamp</div>
+                        <div class="mt-auto">
+                            <a href="#certificates" class="project-link-btn text-primary">
+                                Sertifikayı Görüntüle <i class="bi bi-arrow-up-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cert 4 -->
+                <div class="col-lg-3 col-md-6 reveal-on-scroll">
+                    <div class="certificate-card">
+                        <div class="float-icon-box bg-icon-peach mb-3">
+                            <i class="bi bi-patch-check"></i>
+                        </div>
+                        <span class="badge bg-light text-secondary border rounded-pill px-2 py-1 mb-2 align-self-start small">2022</span>
+                        <h4 class="fs-6 fw-bold mb-1">Git and Version Control</h4>
+                        <div class="text-secondary small mb-3">GitHub Global Training</div>
+                        <div class="mt-auto">
+                            <a href="#certificates" class="project-link-btn text-primary">
+                                Sertifikayı Görüntüle <i class="bi bi-arrow-up-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" style="background-color: var(--bg-secondary);">
+        <div class="container">
+            <div class="text-center mb-5 reveal-on-scroll">
+                <span class="section-eyebrow">İLETİŞİME GEÇELİM</span>
+                <h2 class="section-title">Birlikte Harika İşler Üretebiliriz.</h2>
+                <p class="section-subtitle">Yeni projeler, iş birlikleri veya yalnızca merhaba demek için benimle iletişime geçebilirsiniz.</p>
+            </div>
+
+            <div class="row g-5">
+                <!-- Left: Contact Details -->
+                <div class="col-lg-5 reveal-on-scroll">
+                    <div class="contact-info-card">
+                        <h4 class="fs-4 fw-bold mb-3">İletişim Bilgileri</h4>
+                        <p class="text-secondary mb-4">
+                            Aşağıdaki iletişim kanalları üzerinden doğrudan bana ulaşabilir veya formu doldurarak mesaj bırakabilirsiniz. En kısa sürede dönüş sağlayacağım.
+                        </p>
+
+                        <div class="contact-item">
+                            <div class="contact-icon bg-icon-purple">
+                                <i class="bi bi-envelope"></i>
+                            </div>
+                            <div>
+                                <div class="text-secondary small fw-medium">E-posta</div>
+                                <a href="mailto:poyraz.alsever@example.com" class="text-decoration-none fw-bold text-dark">poyraz.alsever@example.com</a>
+                            </div>
+                        </div>
+
+                        <div class="contact-item">
+                            <div class="contact-icon bg-icon-blue">
+                                <i class="bi bi-geo-alt"></i>
+                            </div>
+                            <div>
+                                <div class="text-secondary small fw-medium">Konum</div>
+                                <div class="fw-bold text-dark">İstanbul, Türkiye</div>
+                            </div>
+                        </div>
+
+                        <div class="contact-item">
+                            <div class="contact-icon bg-icon-mint">
+                                <i class="bi bi-linkedin"></i>
+                            </div>
+                            <div>
+                                <div class="text-secondary small fw-medium">LinkedIn</div>
+                                <a href="https://linkedin.com" target="_blank" rel="noopener" class="text-decoration-none fw-bold text-dark">linkedin.com/in/poyrazalsever</a>
+                            </div>
+                        </div>
+
+                        <div class="contact-item">
+                            <div class="contact-icon bg-icon-peach">
+                                <i class="bi bi-github"></i>
+                            </div>
+                            <div>
+                                <div class="text-secondary small fw-medium">GitHub</div>
+                                <a href="https://github.com" target="_blank" rel="noopener" class="text-decoration-none fw-bold text-dark">github.com/poyrazalsever</a>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 p-3 rounded-4 bg-white border border-light-subtle">
+                            <div class="d-flex align-items-center gap-2 text-secondary small">
+                                <i class="bi bi-clock-history text-primary"></i> Genellikle 24 saat içinde yanıt verilir.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Contact Form -->
+                <div class="col-lg-7 reveal-on-scroll">
+                    <div class="contact-form-card">
+                        <form id="contactForm" novalidate>
+                            <!-- Info note for ASP.NET integration -->
+                            <div class="alert alert-info border-0 rounded-3 small py-2 px-3 mb-4 d-flex align-items-center gap-2" role="alert">
+                                <i class="bi bi-info-circle-fill fs-5"></i>
+                                <div>
+                                    <strong>Demo Modu:</strong> Bu form tasarımı ASP.NET Core MVC Controller entegrasyonu için hazırdır. Gönderim simüle edilir.
+                                </div>
+                            </div>
+
+                            <div id="formSuccessMessage" class="alert alert-success border-0 rounded-3 small py-2 px-3 mb-4 d-none" role="alert">
+                                <i class="bi bi-check-circle-fill me-2"></i> Mesajınız başarıyla iletildi! Teşekkür ederiz.
+                            </div>
+
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="contactFullName" class="form-label">Adınız Soyadınız *</label>
+                                    <input type="text" class="form-control" id="contactFullName" name="FullName" placeholder="Örn: Ahmet Yılmaz" required>
+                                    <div class="invalid-feedback">Lütfen adınızı ve soyadınızı giriniz.</div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="contactEmail" class="form-label">E-posta Adresiniz *</label>
+                                    <input type="email" class="form-control" id="contactEmail" name="Email" placeholder="Örn: ahmet@example.com" required>
+                                    <div class="invalid-feedback">Geçerli bir e-posta adresi giriniz.</div>
+                                </div>
+
+                                <div class="col-12">
+                                    <label for="contactSubject" class="form-label">Konu *</label>
+                                    <input type="text" class="form-control" id="contactSubject" name="Subject" placeholder="Örn: Proje İş Birliği veya Danışmanlık" required>
+                                    <div class="invalid-feedback">Lütfen mesaj konusunu belirtiniz.</div>
+                                </div>
+
+                                <div class="col-12">
+                                    <label for="contactMessage" class="form-label">Mesajınız *</label>
+                                    <textarea class="form-control" id="contactMessage" name="Message" rows="5" placeholder="Projeniz veya paylaşmak istedikleriniz hakkında detay verebilirsiniz..." required></textarea>
+                                    <div class="invalid-feedback">Lütfen mesajınızı yazınız.</div>
+                                </div>
+
+                                <div class="col-12 mt-4">
+                                    <button type="submit" class="btn-custom-primary w-100 justify-content-center py-3">
+                                        <i class="bi bi-send-fill"></i> Mesaj Gönder
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row g-4 align-items-center mb-5">
+                <!-- Col 1: Brand -->
+                <div class="col-lg-4 text-center text-lg-start">
+                    <a class="navbar-brand d-inline-flex align-items-center mb-2" href="#home">
+                        <span class="brand-mark">P</span>
+                        <span class="brand-name">Poyraz<span>.</span></span>
+                    </a>
+                    <p class="text-secondary small mb-0">Teknoloji, tasarım ve yaratıcılıkla geliştirildi.</p>
+                </div>
+
+                <!-- Col 2: Navigation Links -->
+                <div class="col-lg-4 text-center">
+                    <ul class="list-inline mb-0">
+                        <li class="list-inline-item mx-2"><a href="#home" class="footer-link">Ana Sayfa</a></li>
+                        <li class="list-inline-item mx-2"><a href="#about" class="footer-link">Hakkımda</a></li>
+                        <li class="list-inline-item mx-2"><a href="#projects" class="footer-link">Projelerim</a></li>
+                        <li class="list-inline-item mx-2"><a href="#contact" class="footer-link">İletişim</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 3: Social Links -->
+                <div class="col-lg-4 text-center text-lg-end">
+                    <div class="d-inline-flex gap-2">
+                        <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="GitHub">
+                            <i class="bi bi-github"></i>
+                        </a>
+                        <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="LinkedIn">
+                            <i class="bi bi-linkedin"></i>
+                        </a>
+                        <a href="https://medium.com" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="Medium">
+                            <i class="bi bi-medium"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="text-secondary opacity-25 mb-4">
+
+            <div class="text-center">
+                <p class="text-secondary small mb-0">© 2026 Poyraz Alsever. Tüm hakları saklıdır.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scroll To Top Button -->
+    <button id="scrollToTopBtn" class="scroll-to-top" aria-label="Sayfanın Başına Çık">
+        <i class="bi bi-chevron-up"></i>
+    </button>
+
+    <!-- Bootstrap 5 Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Vanilla JavaScript Logic -->
+    <script>
+            document.addEventListener('DOMContentLoaded', function () {
+
+              // 1. TYPING ANIMATION (Turkish sentences, letter-by-letter, infinite loop)
+              const sentences = [
+                "Modern Web Uygulamaları Geliştiriyorum.",
+                "Yazılımla Problemlere Çözüm Üretiyorum.",
+                "Kullanıcı Odaklı Deneyimler Tasarlıyorum.",
+                "Yeni Teknolojilerle Geleceği İnşa Ediyorum."
+              ];
+
+              const typedTextElement = document.getElementById('typedText');
+              let sentenceIndex = 0;
+              let charIndex = 0;
+              let isDeleting = false;
+              const typeSpeed = 75;      // 60-90ms typing delay
+              const backSpeed = 40;      // deleting speed
+              const waitTime = 1800;     // ~1800ms display time once finished
+
+              function typeLoop() {
+                const currentSentence = sentences[sentenceIndex];
+
+                if (isDeleting) {
+                  typedTextElement.textContent = currentSentence.substring(0, charIndex - 1);
+                  charIndex--;
+                } else {
+                  typedTextElement.textContent = currentSentence.substring(0, charIndex + 1);
+                  charIndex++;
+                }
+
+                let currentDelay = isDeleting ? backSpeed : typeSpeed;
+
+                if (!isDeleting && charIndex === currentSentence.length) {
+                  currentDelay = waitTime;
+                  isDeleting = true;
+                } else if (isDeleting && charIndex === 0) {
+                  isDeleting = false;
+                  sentenceIndex = (sentenceIndex + 1) % sentences.length;
+                  currentDelay = 350; // pause before next sentence
+                }
+
+                setTimeout(typeLoop, currentDelay);
+              }
+
+              if (typedTextElement) {
+                setTimeout(typeLoop, 500);
+              }
+
+              // 2. NAVBAR SCROLL EFFECT & SCROLL TO TOP VISIBILITY
+              const navbar = document.getElementById('mainNavbar');
+              const scrollTopBtn = document.getElementById('scrollToTopBtn');
+
+              window.addEventListener('scroll', function () {
+                if (window.scrollY > 50) {
+                  navbar.classList.add('scrolled');
+                  scrollTopBtn.classList.add('visible');
+                } else {
+                  navbar.classList.remove('scrolled');
+                  scrollTopBtn.classList.remove('visible');
+                }
+              }, { passive: true });
+
+              // Scroll to Top action
+              if (scrollTopBtn) {
+                scrollTopBtn.addEventListener('click', function () {
+                  window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                  });
+                });
+              }
+
+              // Close mobile navbar on nav-link click
+              const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
+              const navbarCollapse = document.getElementById('navbarContent');
+              navLinks.forEach(function (link) {
+                link.addEventListener('click', function () {
+                  if (window.innerWidth < 992 && navbarCollapse.classList.contains('show')) {
+                    const bsCollapse = bootstrap.Collapse.getInstance(navbarCollapse);
+                    if (bsCollapse) {
+                      bsCollapse.hide();
+                    }
+                  }
+                });
+              });
+
+              // 3. PROJECT FILTERING (Vanilla JS, data-category)
+              const filterButtons = document.querySelectorAll('#projectFilterGroup .filter-btn');
+              const projectItems = document.querySelectorAll('.project-item');
+
+              filterButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                  filterButtons.forEach(btn => btn.classList.remove('active'));
+                  this.classList.add('active');
+
+                  const filterValue = this.getAttribute('data-filter');
+
+                  projectItems.forEach(item => {
+                    const itemCategory = item.getAttribute('data-category');
+                    if (filterValue === 'all' || itemCategory === filterValue) {
+                      item.style.display = 'block';
+                    } else {
+                      item.style.display = 'none';
+                    }
+                  });
+                });
+              });
+
+              // 4. SCROLL REVEAL (IntersectionObserver)
+              const revealElements = document.querySelectorAll('.reveal-on-scroll');
+              if ('IntersectionObserver' in window) {
+                const observer = new IntersectionObserver((entries, obs) => {
+                  entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                      entry.target.classList.add('revealed');
+                      obs.unobserve(entry.target);
+                    }
+                  });
+                }, {
+                  threshold: 0.12,
+                  rootMargin: "0px 0px -40px 0px"
+                });
+
+                revealElements.forEach(el => observer.observe(el));
+              } else {
+                // Fallback for older browsers
+                revealElements.forEach(el => el.classList.add('revealed'));
+              }
+
+              // 5. CONTACT FORM VALIDATION & DEMO SUBMISSION (HTML5 + Vanilla JS)
+              const contactForm = document.getElementById('contactForm');
+              const formSuccessMessage = document.getElementById('formSuccessMessage');
+
+              if (contactForm) {
+                contactForm.addEventListener('submit', function (event) {
+                  event.preventDefault();
+                  event.stopPropagation();
+
+                  if (!contactForm.checkValidity()) {
+                    contactForm.classList.add('was-validated');
+                  } else {
+                    contactForm.classList.remove('was-validated');
+                    formSuccessMessage.classList.remove('d-none');
+                    contactForm.reset();
+
+                    setTimeout(() => {
+                      formSuccessMessage.classList.add('d-none');
+                    }, 6000);
+                  }
+                });
+              }
+
+            });
+    </script>
+</body>
+</html>

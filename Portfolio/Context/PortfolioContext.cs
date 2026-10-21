@@ -5,7 +5,8 @@ namespace Portfolio.Context
 {
     public class PortfolioContext : DbContext
     {
-        public PortfolioContext(DbContextOptions<PortfolioContext> options) : base(options)
+        public PortfolioContext(DbContextOptions<PortfolioContext> options)
+            : base(options)
         {
         }
 
@@ -16,6 +17,10 @@ namespace Portfolio.Context
         public DbSet<Experience> Experiences { get; set; }
 
         public DbSet<Message> Messages { get; set; }
+
+        public DbSet<Contact> Contacts { get; set; }
+
+        public DbSet<HeroSection> HeroSections { get; set; }
 
     }
 }
