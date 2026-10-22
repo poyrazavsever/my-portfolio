@@ -1,0 +1,721 @@
+﻿ <!-- Bootstrap 5.3 Bundle JS (with Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- ==================== FRONTEND DATA & CRUD LOGIC (Vanilla JS) ==================== -->
+    <script>
+            /*
+              Poyraz Alsever Portfolio Admin Panel - Experience Management
+              ASP.NET Core MVC Razor Ready Frontend Architecture
+            */
+
+            // 18. Frontend Data Architecture: In-Memory Static Records
+            let experiences = [
+              {
+                id: 1,
+                position: "Senior Software Engineer",
+                company: "NovaTech Solutions",
+                employmentType: "Tam Zamanlı",
+                location: "İstanbul / Hibrit",
+                startDate: "Ocak 2025",
+                endDate: "Devam Ediyor",
+                startDateRaw: "2025-01",
+                endDateRaw: "",
+                isCurrent: true,
+                status: "Aktif",
+                description: "Kurumsal ölçekte web uygulamaları geliştiriyor, backend servislerinin mimarisinde görev alıyor ve yazılım geliştirme süreçlerinde teknik sorumluluk üstleniyorum.",
+                technologies: ["C#", "ASP.NET Core", "SQL Server", "Docker"]
+              },
+              {
+                id: 2,
+                position: "Software Developer",
+                company: "PixelWave Digital",
+                employmentType: "Tam Zamanlı",
+                location: "İstanbul / Uzaktan",
+                startDate: "Temmuz 2023",
+                endDate: "Aralık 2024",
+                startDateRaw: "2023-07",
+                endDateRaw: "2024-12",
+                isCurrent: false,
+                status: "Tamamlandı",
+                description: "Kurumsal web projelerinde frontend ve backend geliştirme süreçlerine katkı sağladım. REST API geliştirme, veritabanı işlemleri ve uygulama performansı üzerine çalıştım.",
+                technologies: [".NET", "JavaScript", "PostgreSQL", "Bootstrap"]
+              },
+              {
+                id: 3,
+                position: "Junior Backend Developer",
+                company: "CodeBridge Technology",
+                employmentType: "Yarı Zamanlı",
+                location: "İstanbul / Ofis",
+                startDate: "Eylül 2022",
+                endDate: "Haziran 2023",
+                startDateRaw: "2022-09",
+                endDateRaw: "2023-06",
+                isCurrent: false,
+                status: "Tamamlandı",
+                description: "Backend servislerinin geliştirilmesi, API entegrasyonları ve veritabanı işlemlerinde görev aldım. Nesne yönelimli programlama ve temiz kod prensipleriyle uygulamalar geliştirdim.",
+                technologies: ["C#", "Web API", "Entity Framework Core", "Git"]
+              },
+              {
+                id: 4,
+                position: "Software Development Intern",
+                company: "BrightSoft Labs",
+                employmentType: "Staj",
+                location: "İstanbul / Ofis",
+                startDate: "Haziran 2022",
+                endDate: "Ağustos 2022",
+                startDateRaw: "2022-06",
+                endDateRaw: "2022-08",
+                isCurrent: false,
+                status: "Tamamlandı",
+                description: "Yazılım geliştirme yaşam döngüsünü deneyimledim. Temel web uygulamaları, CRUD işlemleri, hata ayıklama ve takım içi geliştirme süreçlerinde aktif görev aldım.",
+                technologies: ["HTML", "CSS", "JavaScript", "SQL"]
+              }
+            ];
+
+            // State
+            let currentPage = 1;
+            const pageSize = 5;
+            let selectedDeleteId = null;
+            let currentViewingId = null;
+
+            // Month formatting helper (tr-TR)
+            const monthNames = [
+              "Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran",
+              "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"
+            ];
+
+            function formatRawDate(rawVal) {
+              if (!rawVal) return "";
+              const parts = rawVal.split("-");
+              if (parts.length === 2) {
+                const monthIndex = parseInt(parts[1], 10) - 1;
+                return `${monthNames[monthIndex]} ${parts[0]}`;
+              }
+              return rawVal;
+            }
+
+            // Safe DOM helper to prevent XSS
+            function escapeHtml(text) {
+              if (!text) return "";
+              const div = document.createElement("div");
+              div.textContent = text;
+              return div.innerHTML;
+            }
+
+            // DOM Elements
+            const tableBody = document.getElementById("experienceTableBody");
+            const emptyState = document.getElementById("tableEmptyState");
+            const emptyStateTitle = document.getElementById("emptyStateTitle");
+            const emptyStateDesc = document.getElementById("emptyStateDesc");
+            const emptyStateActionBtn = document.getElementById("emptyStateActionBtn");
+            const paginationRow = document.getElementById("tablePaginationRow");
+            const paginationInfo = document.getElementById("paginationInfo");
+            const tableSearchInput = document.getElementById("tableSearchInput");
+            const filterTypeSelect = document.getElementById("filterTypeSelect");
+            const filterStatusSelect = document.getElementById("filterStatusSelect");
+            const sortSelect = document.getElementById("sortSelect");
+            const resetFiltersBtn = document.getElementById("resetFiltersBtn");
+            const recordCountBadge = document.getElementById("recordCountBadge");
+
+            // Modal references
+            const formModalEl = document.getElementById("experienceFormModal");
+            const formModal = new bootstrap.Modal(formModalEl);
+            const deleteModalEl = document.getElementById("deleteConfirmModal");
+            const deleteModal = new bootstrap.Modal(deleteModalEl);
+            const viewModalEl = document.getElementById("viewDetailsModal");
+            const viewModal = new bootstrap.Modal(viewModalEl);
+
+            // Toast reference
+            const appToastEl = document.getElementById("appToast");
+            const appToast = new bootstrap.Toast(appToastEl);
+
+            // 16. Show Toast Function
+            function showToast(message, type = "success") {
+              const toastMessage = document.getElementById("toastMessage");
+              const toastIconWrap = document.getElementById("toastIconWrap");
+              const toastIcon = document.getElementById("toastIcon");
+
+              toastMessage.textContent = message;
+
+              if (type === "success") {
+                toastIconWrap.style.backgroundColor = "var(--mint-green)";
+                toastIconWrap.style.color = "var(--mint-green-text)";
+                toastIcon.className = "bi bi-check2-circle fs-6";
+              } else if (type === "warning") {
+                toastIconWrap.style.backgroundColor = "var(--peach)";
+                toastIconWrap.style.color = "var(--peach-text)";
+                toastIcon.className = "bi bi-exclamation-triangle fs-6";
+              } else if (type === "error") {
+                toastIconWrap.style.backgroundColor = "var(--soft-red)";
+                toastIconWrap.style.color = "var(--soft-red-text)";
+                toastIcon.className = "bi bi-x-circle fs-6";
+              } else {
+                toastIconWrap.style.backgroundColor = "var(--pastel-blue)";
+                toastIconWrap.style.color = "var(--pastel-blue-text)";
+                toastIcon.className = "bi bi-info-circle fs-6";
+              }
+
+              appToast.show();
+            }
+
+            // 8. Update Statistics Cards Dynamically
+            function updateStatistics() {
+              const totalCount = experiences.length;
+              const activeCount = experiences.filter(e => e.status === "Aktif").length;
+              const completedCount = experiences.filter(e => e.status === "Tamamlandı").length;
+
+              const uniqueCompanies = new Set(experiences.map(e => (e.company || "").trim().toLowerCase()));
+              const companyCount = uniqueCompanies.size;
+
+              document.getElementById("statTotalCount").textContent = totalCount;
+              document.getElementById("statActiveCount").textContent = activeCount;
+              document.getElementById("statCompletedCount").textContent = completedCount;
+              document.getElementById("statCompanyCount").textContent = companyCount;
+
+              recordCountBadge.textContent = `${totalCount} Kayıt`;
+            }
+
+            // Filter & Sort Logic
+            function getFilteredAndSortedExperiences() {
+              const query = (tableSearchInput.value || "").trim().toLowerCase();
+              const typeFilter = filterTypeSelect.value;
+              const statusFilter = filterStatusSelect.value;
+              const sortBy = sortSelect.value;
+
+              let result = experiences.filter(item => {
+                // Search in position, company, technologies
+                const matchQuery = !query ||
+                  item.position.toLowerCase().includes(query) ||
+                  item.company.toLowerCase().includes(query) ||
+                  item.technologies.some(t => t.toLowerCase().includes(query));
+
+                // Filter type
+                const matchType = !typeFilter || item.employmentType === typeFilter;
+
+                // Filter status
+                const matchStatus = !statusFilter || item.status === statusFilter;
+
+                return matchQuery && matchType && matchStatus;
+              });
+
+              // Sorting
+              result.sort((a, b) => {
+                if (sortBy === "newest") {
+                  return (b.id - a.id);
+                } else if (sortBy === "oldest") {
+                  return (a.id - b.id);
+                } else if (sortBy === "company") {
+                  return a.company.localeCompare(b.company, "tr");
+                } else if (sortBy === "position") {
+                  return a.position.localeCompare(b.position, "tr");
+                }
+                return 0;
+              });
+
+              return result;
+            }
+
+            // 10 & 15. Render Table & Empty States
+            function renderExperiences() {
+              const filtered = getFilteredAndSortedExperiences();
+              const totalFiltered = filtered.length;
+
+              // Handle completely empty dataset vs no filter matches
+              if (experiences.length === 0) {
+                tableBody.innerHTML = "";
+                emptyState.classList.remove("d-none");
+                emptyStateTitle.textContent = "Henüz deneyim eklenmemiş.";
+                emptyStateDesc.textContent = "İlk profesyonel iş deneyiminizi ekleyerek portfolyonuzu zenginleştirmeye başlayın.";
+                emptyStateActionBtn.innerHTML = '<i class="bi bi-plus-lg me-1"></i> İlk Deneyimini Ekle';
+                emptyStateActionBtn.onclick = openAddExperienceModal;
+                paginationRow.classList.add("d-none");
+                updateStatistics();
+                return;
+              }
+
+              if (totalFiltered === 0) {
+                tableBody.innerHTML = "";
+                emptyState.classList.remove("d-none");
+                emptyStateTitle.textContent = "Aradığınız kriterlere uygun deneyim bulunamadı.";
+                emptyStateDesc.textContent = "Arama terimini değiştirebilir veya filtreleri sıfırlayabilirsiniz.";
+                emptyStateActionBtn.innerHTML = '<i class="bi bi-arrow-counterclockwise me-1"></i> Filtreleri Temizle';
+                emptyStateActionBtn.onclick = resetAllFilters;
+                paginationRow.classList.add("d-none");
+                updateStatistics();
+                return;
+              }
+
+              // Show table content
+              emptyState.classList.add("d-none");
+              paginationRow.classList.remove("d-none");
+
+              // Pagination calculations
+              const totalPages = Math.ceil(totalFiltered / pageSize) || 1;
+              if (currentPage > totalPages) currentPage = totalPages;
+              if (currentPage < 1) currentPage = 1;
+
+              const startIndex = (currentPage - 1) * pageSize;
+              const endIndex = Math.min(startIndex + pageSize, totalFiltered);
+              const pageItems = filtered.slice(startIndex, endIndex);
+
+              paginationInfo.textContent = `Toplam ${totalFiltered} kayıttan ${startIndex + 1}–${endIndex} arası gösteriliyor`;
+
+              // Render Pagination Buttons
+              renderPaginationControls(totalPages);
+
+              // Render Table Rows
+              tableBody.innerHTML = "";
+              pageItems.forEach(item => {
+                const tr = document.createElement("tr");
+
+                // Monogram letter
+                const monogram = item.company.trim().charAt(0).toUpperCase() || "Ş";
+
+                // Status badge
+                const statusBadgeHtml = item.status === "Aktif"
+                  ? `<span class="badge badge-pastel badge-pastel-active"><i class="bi bi-circle-fill" style="font-size: 0.45rem;"></i> Aktif</span>`
+                  : `<span class="badge badge-pastel badge-pastel-completed"><i class="bi bi-check2"></i> Tamamlandı</span>`;
+
+                // Technologies tags (Max 3, then +N)
+                let techHtml = "";
+                if (item.technologies && item.technologies.length > 0) {
+                  const visibleTech = item.technologies.slice(0, 3);
+                  const remaining = item.technologies.length - 3;
+                  techHtml = visibleTech.map(t => `<span class="tech-tag">${escapeHtml(t)}</span>`).join(" ");
+                  if (remaining > 0) {
+                    techHtml += ` <span class="tech-tag tech-tag-more">+${remaining}</span>`;
+                  }
+                } else {
+                  techHtml = `<span class="text-muted small">-</span>`;
+                }
+
+                tr.innerHTML = `
+                  <td>
+                    <div class="d-flex align-items-center gap-3">
+                      <div class="company-avatar">${escapeHtml(monogram)}</div>
+                      <div>
+                        <div class="fw-bold text-dark" style="font-size: 0.9rem;">${escapeHtml(item.position)}</div>
+                        <div class="text-secondary small d-flex align-items-center gap-1">
+                          <span>${escapeHtml(item.company)}</span>
+                          ${item.location ? `<span>&bull;</span> <span>${escapeHtml(item.location)}</span>` : ""}
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="badge badge-pastel badge-pastel-type">${escapeHtml(item.employmentType)}</span>
+                  </td>
+                  <td>
+                    <div style="font-size: 0.84rem;">
+                      <span class="fw-semibold text-dark">${escapeHtml(item.startDate)}</span>
+                      <span class="text-secondary d-block" style="font-size: 0.76rem;">— ${escapeHtml(item.endDate || "Devam Ediyor")}</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="d-flex flex-wrap gap-1 align-items-center">${techHtml}</div>
+                  </td>
+                  <td>
+                    ${statusBadgeHtml}
+                  </td>
+                  <td class="text-end">
+                    <div class="d-inline-flex gap-1">
+                      <button type="button" class="btn-icon-action action-view" data-bs-toggle="tooltip" data-bs-title="Detayları Görüntüle" onclick="viewExperience(${item.id})">
+                        <i class="bi bi-eye"></i>
+                      </button>
+                      <button type="button" class="btn-icon-action" data-bs-toggle="tooltip" data-bs-title="Düzenle" onclick="openEditExperienceModal(${item.id})">
+                        <i class="bi bi-pencil"></i>
+                      </button>
+                      <button type="button" class="btn-icon-action action-delete" data-bs-toggle="tooltip" data-bs-title="Sil" onclick="promptDeleteExperience(${item.id})">
+                        <i class="bi bi-trash3"></i>
+                      </button>
+                    </div>
+                  </td>
+                `;
+                tableBody.appendChild(tr);
+              });
+
+              // Initialize tooltips on newly rendered action buttons
+              initTooltips();
+              updateStatistics();
+            }
+
+            // Pagination helper
+            function renderPaginationControls(totalPages) {
+              const controls = document.getElementById("paginationControls");
+              controls.innerHTML = "";
+
+              // Previous button
+              const prevLi = document.createElement("li");
+              prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+              prevLi.innerHTML = `<a class="page-link rounded-2" href="javascript:void(0)" aria-label="Önceki"><i class="bi bi-chevron-left"></i></a>`;
+              prevLi.onclick = () => {
+                if (currentPage > 1) {
+                  currentPage--;
+                  renderExperiences();
+                }
+              };
+              controls.appendChild(prevLi);
+
+              // Page numbers
+              for (let i = 1; i <= totalPages; i++) {
+                const pageLi = document.createElement("li");
+                pageLi.className = `page-item ${currentPage === i ? 'active' : ''}`;
+                const pageLink = document.createElement("a");
+                pageLink.className = "page-link rounded-2";
+                pageLink.href = "javascript:void(0)";
+                pageLink.textContent = i;
+                if (currentPage === i) {
+                  pageLink.style.backgroundColor = "var(--primary-accent)";
+                  pageLink.style.borderColor = "var(--primary-accent)";
+                }
+                pageLi.onclick = () => {
+                  currentPage = i;
+                  renderExperiences();
+                };
+                pageLi.appendChild(pageLink);
+                controls.appendChild(pageLi);
+              }
+
+              // Next button
+              const nextLi = document.createElement("li");
+              nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+              nextLi.innerHTML = `<a class="page-link rounded-2" href="javascript:void(0)" aria-label="Sonraki"><i class="bi bi-chevron-right"></i></a>`;
+              nextLi.onclick = () => {
+                if (currentPage < totalPages) {
+                  currentPage++;
+                  renderExperiences();
+                }
+              };
+              controls.appendChild(nextLi);
+            }
+
+            // Tooltip initializers
+            function initTooltips() {
+              const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+              tooltipTriggerList.forEach(el => {
+                // Avoid duplicate initialization
+                const existing = bootstrap.Tooltip.getInstance(el);
+                if (!existing) {
+                  new bootstrap.Tooltip(el, { trigger: 'hover' });
+                }
+              });
+            }
+
+            // 11. Modal Setup: Open for Add
+            function openAddExperienceModal() {
+              const form = document.getElementById("experienceForm");
+              form.reset();
+              form.classList.remove("was-validated");
+
+              document.getElementById("formExperienceId").value = "";
+              document.getElementById("experienceModalTitle").textContent = "Yeni Deneyim Ekle";
+              document.getElementById("experienceModalSubtitle").textContent = "Profesyonel geçmişinize yeni bir deneyim ekleyin.";
+              document.getElementById("btnSubmitText").textContent = "Deneyimi Kaydet";
+
+              // Reset Current checkbox and End date
+              const isCurrentCheckbox = document.getElementById("inputIsCurrent");
+              const endDateInput = document.getElementById("inputEndDate");
+              isCurrentCheckbox.checked = false;
+              endDateInput.disabled = false;
+              document.getElementById("modalTagsPreview").innerHTML = "";
+
+              formModal.show();
+            }
+
+            // 12. Modal Setup: Open for Edit
+            function openEditExperienceModal(id) {
+              const item = experiences.find(e => e.id === id);
+              if (!item) return;
+
+              const form = document.getElementById("experienceForm");
+              form.reset();
+              form.classList.remove("was-validated");
+
+              document.getElementById("formExperienceId").value = item.id;
+              document.getElementById("experienceModalTitle").textContent = "Deneyimi Güncelle";
+              document.getElementById("experienceModalSubtitle").textContent = "Mevcut deneyim bilgilerini revize edin.";
+              document.getElementById("btnSubmitText").textContent = "Değişiklikleri Kaydet";
+
+              document.getElementById("inputPosition").value = item.position;
+              document.getElementById("inputCompany").value = item.company;
+              document.getElementById("inputEmploymentType").value = item.employmentType;
+              document.getElementById("inputLocation").value = item.location || "";
+              document.getElementById("inputStartDate").value = item.startDateRaw || "";
+              document.getElementById("inputEndDate").value = item.endDateRaw || "";
+              document.getElementById("inputDescription").value = item.description || "";
+              document.getElementById("inputTechnologies").value = item.technologies.join(", ");
+
+              const isCurrentCheckbox = document.getElementById("inputIsCurrent");
+              const endDateInput = document.getElementById("inputEndDate");
+              isCurrentCheckbox.checked = !!item.isCurrent;
+              endDateInput.disabled = !!item.isCurrent;
+
+              updateModalTagsPreview(item.technologies);
+
+              // Close view modal if it was open
+              viewModal.hide();
+              formModal.show();
+            }
+
+            // Live Tag preview in modal
+            function updateModalTagsPreview(techArray) {
+              const container = document.getElementById("modalTagsPreview");
+              container.innerHTML = "";
+              techArray.forEach(t => {
+                const badge = document.createElement("span");
+                badge.className = "tech-tag";
+                badge.textContent = t;
+                container.appendChild(badge);
+              });
+            }
+
+            document.getElementById("inputTechnologies").addEventListener("input", function(e) {
+              const tags = e.target.value.split(",")
+                .map(t => t.trim())
+                .filter(t => t.length > 0);
+              updateModalTagsPreview(tags);
+            });
+
+            // Halen burada çalışıyorum toggle logic
+            document.getElementById("inputIsCurrent").addEventListener("change", function(e) {
+              const endDateInput = document.getElementById("inputEndDate");
+              if (e.target.checked) {
+                endDateInput.value = "";
+                endDateInput.disabled = true;
+                endDateInput.setCustomValidity("");
+              } else {
+                endDateInput.disabled = false;
+              }
+            });
+
+            // Form Submit (Add & Update)
+            document.getElementById("experienceForm").addEventListener("submit", function(e) {
+              e.preventDefault();
+              const form = this;
+
+              const position = document.getElementById("inputPosition").value.trim();
+              const company = document.getElementById("inputCompany").value.trim();
+              const employmentType = document.getElementById("inputEmploymentType").value;
+              const location = document.getElementById("inputLocation").value.trim();
+              const startDateRaw = document.getElementById("inputStartDate").value;
+              const endDateRaw = document.getElementById("inputEndDate").value;
+              const isCurrent = document.getElementById("inputIsCurrent").checked;
+              const description = document.getElementById("inputDescription").value.trim();
+              const technologiesRaw = document.getElementById("inputTechnologies").value;
+              const experienceIdVal = document.getElementById("formExperienceId").value;
+
+              // Validate Date range if not current
+              const endDateInput = document.getElementById("inputEndDate");
+              if (!isCurrent && startDateRaw && endDateRaw) {
+                if (endDateRaw < startDateRaw) {
+                  endDateInput.setCustomValidity("Bitiş tarihi başlangıç tarihinden önce olamaz.");
+                } else {
+                  endDateInput.setCustomValidity("");
+                }
+              } else {
+                endDateInput.setCustomValidity("");
+              }
+
+              if (!form.checkValidity()) {
+                e.stopPropagation();
+                form.classList.add("was-validated");
+                return;
+              }
+
+              // Parse technologies array
+              const technologies = technologiesRaw.split(",")
+                .map(t => t.trim())
+                .filter(t => t.length > 0);
+
+              const startDateFormatted = formatRawDate(startDateRaw);
+              const endDateFormatted = isCurrent ? "Devam Ediyor" : (formatRawDate(endDateRaw) || "-");
+              const status = isCurrent ? "Aktif" : "Tamamlandı";
+
+              if (experienceIdVal) {
+                // UPDATE OPERATION
+                const idToUpdate = parseInt(experienceIdVal, 10);
+                const index = experiences.findIndex(e => e.id === idToUpdate);
+                if (index !== -1) {
+                  experiences[index] = {
+                    ...experiences[index],
+                    position,
+                    company,
+                    employmentType,
+                    location,
+                    startDate: startDateFormatted,
+                    endDate: endDateFormatted,
+                    startDateRaw,
+                    endDateRaw: isCurrent ? "" : endDateRaw,
+                    isCurrent,
+                    status,
+                    description,
+                    technologies
+                  };
+                  showToast("Deneyim bilgileri başarıyla güncellendi.", "success");
+                }
+              } else {
+                // ADD OPERATION
+                const nextId = experiences.length > 0 ? Math.max(...experiences.map(e => e.id)) + 1 : 1;
+                const newRecord = {
+                  id: nextId,
+                  position,
+                  company,
+                  employmentType,
+                  location,
+                  startDate: startDateFormatted,
+                  endDate: endDateFormatted,
+                  startDateRaw,
+                  endDateRaw: isCurrent ? "" : endDateRaw,
+                  isCurrent,
+                  status,
+                  description,
+                  technologies
+                };
+                experiences.unshift(newRecord);
+                showToast("Yeni deneyim başarıyla eklendi.", "success");
+              }
+
+              formModal.hide();
+              renderExperiences();
+            });
+
+            // 13. Delete Prompt & Confirmation
+            function promptDeleteExperience(id) {
+              const item = experiences.find(e => e.id === id);
+              if (!item) return;
+
+              selectedDeleteId = id;
+              document.getElementById("deleteTargetPosition").textContent = item.position;
+              document.getElementById("deleteTargetCompany").textContent = item.company;
+              deleteModal.show();
+            }
+
+            document.getElementById("confirmDeleteBtn").addEventListener("click", function() {
+              if (selectedDeleteId !== null) {
+                experiences = experiences.filter(e => e.id !== selectedDeleteId);
+                selectedDeleteId = null;
+                deleteModal.hide();
+                renderExperiences();
+                showToast("Deneyim başarıyla silindi.", "success");
+              }
+            });
+
+            // 14. View Experience Details Modal
+            function viewExperience(id) {
+              const item = experiences.find(e => e.id === id);
+              if (!item) return;
+
+              currentViewingId = id;
+
+              document.getElementById("viewAvatarText").textContent = item.company.trim().charAt(0).toUpperCase() || "Ş";
+              document.getElementById("viewPositionTitle").textContent = item.position;
+              document.getElementById("viewCompanyName").textContent = item.company;
+              document.getElementById("viewEmploymentType").textContent = item.employmentType;
+              document.getElementById("viewLocation").textContent = item.location || "Belirtilmemiş";
+              document.getElementById("viewDateRange").textContent = `${item.startDate} — ${item.endDate}`;
+              document.getElementById("viewDescriptionText").textContent = item.description || "Açıklama belirtilmemiş.";
+
+              // Status Badge
+              const statusBadgeContainer = document.getElementById("viewStatusBadge");
+              if (item.status === "Aktif") {
+                statusBadgeContainer.innerHTML = `<span class="badge badge-pastel badge-pastel-active"><i class="bi bi-circle-fill" style="font-size: 0.45rem;"></i> Aktif Pozisyon</span>`;
+              } else {
+                statusBadgeContainer.innerHTML = `<span class="badge badge-pastel badge-pastel-completed"><i class="bi bi-check2"></i> Tamamlandı</span>`;
+              }
+
+              // Technologies
+              const techList = document.getElementById("viewTechnologiesList");
+              techList.innerHTML = "";
+              if (item.technologies && item.technologies.length > 0) {
+                item.technologies.forEach(t => {
+                  const span = document.createElement("span");
+                  span.className = "tech-tag";
+                  span.textContent = t;
+                  techList.appendChild(span);
+                });
+              } else {
+                techList.innerHTML = `<span class="text-muted small">Belirtilmemiş</span>`;
+              }
+
+              // Connect edit button inside view modal
+              document.getElementById("viewEditTriggerBtn").onclick = function() {
+                openEditExperienceModal(item.id);
+              };
+
+              viewModal.show();
+            }
+
+            // Filter and Search Event Listeners
+            tableSearchInput.addEventListener("input", () => {
+              currentPage = 1;
+              renderExperiences();
+            });
+
+            filterTypeSelect.addEventListener("change", () => {
+              currentPage = 1;
+              renderExperiences();
+            });
+
+            filterStatusSelect.addEventListener("change", () => {
+              currentPage = 1;
+              renderExperiences();
+            });
+
+            sortSelect.addEventListener("change", () => {
+              currentPage = 1;
+              renderExperiences();
+            });
+
+            function resetAllFilters() {
+              tableSearchInput.value = "";
+              filterTypeSelect.value = "";
+              filterStatusSelect.value = "";
+              sortSelect.value = "newest";
+              currentPage = 1;
+              renderExperiences();
+              showToast("Filtreler temizlendi.", "info");
+            }
+
+            resetFiltersBtn.addEventListener("click", resetAllFilters);
+
+            // Global Navbar Search Filter
+            document.getElementById("navbarGlobalSearch").addEventListener("input", function(e) {
+              tableSearchInput.value = e.target.value;
+              currentPage = 1;
+              renderExperiences();
+            });
+
+            // Mark notifications as read
+            document.getElementById("markAllReadBtn").addEventListener("click", function() {
+              document.querySelectorAll(".notif-item").forEach(item => {
+                item.classList.remove("unread");
+                item.style.backgroundColor = "transparent";
+              });
+              document.querySelectorAll(".unread-dot").forEach(dot => {
+                dot.remove();
+              });
+              const badge = document.getElementById("notifBadge");
+              if (badge) badge.remove();
+              showToast("Tüm bildirimler okundu olarak işaretlendi.", "success");
+            });
+
+            // Public Portfolio Simulated Link
+            function openPublicPortfolio() {
+              showToast("Poyraz Alsever'in tek sayfalık genel portfolyosuna yönlendiriliyorsunuz (Simülasyon).", "info");
+            }
+
+            // Placeholder modules toast handler
+            document.querySelectorAll(".placeholder-link").forEach(link => {
+              link.addEventListener("click", function(e) {
+                e.preventDefault();
+                const moduleName = this.getAttribute("data-module") || "Bu modül";
+                showToast(`${moduleName} modülü yakında eklenecek.`, "info");
+              });
+            });
+
+            // Initial render
+            document.addEventListener("DOMContentLoaded", () => {
+              renderExperiences();
+              initTooltips();
+            });
+    </script>
