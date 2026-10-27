@@ -1,0 +1,36 @@
+﻿<!-- ==================== MOBILE OFFCANVAS SIDEBAR ==================== -->
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="mobileSidebar" aria-labelledby="mobileSidebarLabel" style="background-color: var(--sidebar-bg); width: 280px;">
+        <div class="offcanvas-header border-bottom" style="border-color: var(--sidebar-border) !important;">
+            <div class="d-flex align-items-center gap-2">
+                <div class="brand-mark" style="width: 32px; height: 32px; font-size: 1rem;">P</div>
+                <div>
+                    <div class="fw-bold text-white fs-6 lh-1">Poyraz.</div>
+                    <small class="text-white-50" style="font-size: 0.7rem;">Portfolio Admin</small>
+                </div>
+            </div>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Kapat"></button>
+        </div>
+        <div class="offcanvas-body p-0 d-flex flex-column justify-content-between">
+            <div class="sidebar-nav-scroll p-3">
+                <div class="nav-group-title">Genel</div>
+                <a href="#" class="sidebar-link placeholder-link" data-module="Dashboard"><i class="bi bi-speedometer2"></i> Dashboard</a>
+                <a href="javascript:void(0)" onclick="openPublicPortfolio()" class="sidebar-link"><i class="bi bi-box-arrow-up-right"></i> Portfolyoyu Görüntüle</a>
+
+                <div class="nav-group-title">İçerik Yönetimi</div>
+                <a href="#" class="sidebar-link placeholder-link" data-module="Hakkımda"><i class="bi bi-person"></i> Hakkımda</a>
+                <a href="#" class="sidebar-link placeholder-link" data-module="Eğitim Hayatım"><i class="bi bi-mortarboard"></i> Eğitim Hayatım</a>
+                <a href="#deneyim-yonetimi" class="sidebar-link active" data-bs-dismiss="offcanvas"><i class="bi bi-briefcase-fill"></i> Deneyimlerim</a>
+                <a href="#" class="sidebar-link placeholder-link" data-module="Yeteneklerim"><i class="bi bi-code-slash"></i> Yeteneklerim</a>
+                <a href="#" class="sidebar-link placeholder-link" data-module="Projelerim"><i class="bi bi-grid-fill"></i> Projelerim</a>
+                <a href="#" class="sidebar-link placeholder-link" data-module="Sertifikalarım"><i class="bi bi-award"></i> Sertifikalarım</a>
+                <a href="#" class="sidebar-link placeholder-link" data-module="Çalışma Yaklaşımım"><i class="bi bi-diagram-3"></i> Çalışma Yaklaşımım</a>
+
+                <div class="nav-group-title">İletişim & Sistem</div>
+                <a href="#" class="sidebar-link placeholder-link" data-module="Gelen Mesajlar"><i class="bi bi-envelope"></i> Gelen Mesajlar</a>
+                <a href="#" class="sidebar-link placeholder-link" data-module="Site Ayarları"><i class="bi bi-gear"></i> Site Ayarları</a>
+            </div>
+            <div class="p-3 text-center border-top" style="border-color: var(--sidebar-border) !important;">
+                <small class="text-white-50" style="font-size: 0.7rem;">Portfolio CMS v1.0</small>
+            </div>
+        </div>
+    </div>
