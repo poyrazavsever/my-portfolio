@@ -3,6 +3,8 @@ using Portfolio.Context;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddDbContext<PortfolioContext>();
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 

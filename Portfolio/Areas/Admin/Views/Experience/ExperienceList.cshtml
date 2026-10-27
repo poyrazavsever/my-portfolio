@@ -1,0 +1,333 @@
+﻿@{
+    ViewData["Title"] = "ExperienceList";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+
+<!-- ==================== MAIN CONTENT WRAPPER ==================== -->
+<div id="main-content-wrapper">
+
+    <!-- STICKY TOP NAVBAR -->
+    <header class="admin-navbar">
+        <div class="d-flex align-items-center justify-content-between w-100">
+            <!-- Left: Hamburger (Mobile) + Breadcrumb -->
+            <div class="d-flex align-items-center gap-3">
+                <button class="btn btn-sm d-lg-none p-1 border-0 text-dark" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar" aria-label="Menüyü Aç">
+                    <i class="bi bi-list fs-4"></i>
+                </button>
+
+                <nav aria-label="breadcrumb" class="d-none d-sm-block">
+                    <ol class="breadcrumb mb-0 align-items-center" style="font-size: 0.825rem;">
+                        <li class="breadcrumb-item">
+                            <a href="#" class="text-decoration-none" style="color: var(--text-secondary);"><i class="bi bi-house-door-fill me-1"></i>Yönetim Paneli</a>
+                        </li>
+                        <li class="breadcrumb-item" style="color: var(--text-secondary);">İçerik Yönetimi</li>
+                        <li class="breadcrumb-item active fw-semibold" style="color: var(--primary-accent);" aria-current="page">Deneyimlerim</li>
+                    </ol>
+                </nav>
+            </div>
+
+            <!-- Right: Search, Quick Access, Notifications, Profile -->
+            <div class="d-flex align-items-center gap-2 gap-md-3">
+                <!-- Global Search -->
+                <div class="nav-search-wrap">
+                    <i class="bi bi-search"></i>
+                    <input type="text" id="navbarGlobalSearch" class="nav-search-input" placeholder="Panelde ara..." aria-label="Hızlı Ara">
+                </div>
+
+                <!-- Quick Access Dropdown -->
+                <div class="dropdown">
+                    <button class="btn btn-pastel-outline py-1 px-2 px-md-3 rounded-pill dropdown-toggle" type="button" id="quickAccessDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 0.82rem;">
+                        <i class="bi bi-lightning-charge-fill text-warning"></i>
+                        <span class="d-none d-md-inline ms-1">Hızlı Erişim</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-custom" aria-labelledby="quickAccessDropdown">
+                        <li><h6 class="dropdown-header text-uppercase text-muted" style="font-size: 0.68rem; letter-spacing: 0.05em;">Hızlı Eylemler</h6></li>
+                        <li><a class="dropdown-item" href="javascript:void(0)" onclick="openAddExperienceModal()"><i class="bi bi-plus-circle text-primary"></i> Yeni Deneyim Ekle</a></li>
+                        <li><a class="dropdown-item" href="#deneyim-tablosu"><i class="bi bi-table text-info"></i> Deneyimleri Görüntüle</a></li>
+                        <li><a class="dropdown-item" href="javascript:void(0)" onclick="openPublicPortfolio()"><i class="bi bi-box-arrow-up-right text-success"></i> Portfolyoya Git</a></li>
+                        <li><hr class="dropdown-divider my-1"></li>
+                        <li><a class="dropdown-item placeholder-link" href="#" data-module="Gelen Mesajlar"><i class="bi bi-chat-left-dots text-secondary"></i> Gelen Mesajlar</a></li>
+                    </ul>
+                </div>
+
+                <!-- Notifications Dropdown -->
+                <div class="dropdown">
+                    <button class="btn btn-icon-action position-relative rounded-circle p-2" type="button" id="notificationsDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="width: 38px; height: 38px; background: #F0F3F9;">
+                        <i class="bi bi-bell fs-6 text-dark"></i>
+                        <span id="notifBadge" class="notification-dot"></span>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-end dropdown-menu-custom p-0" aria-labelledby="notificationsDropdown" style="width: 320px;">
+                        <div class="d-flex align-items-center justify-content-between p-3 border-bottom">
+                            <span class="fw-bold" style="font-size: 0.88rem;">Bildirimler</span>
+                            <button type="button" class="btn btn-link p-0 text-decoration-none fw-semibold" id="markAllReadBtn" style="font-size: 0.75rem; color: var(--primary-accent);">Tümünü Okundu İşaretle</button>
+                        </div>
+                        <div class="p-2" id="notificationList">
+                            <div class="p-2 rounded-3 mb-1 notif-item unread d-flex gap-2" style="background-color: #F8F9FD;">
+                                <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 28px; height: 28px; background: var(--mint-green); color: var(--mint-green-text); font-size: 0.8rem;">
+                                    <i class="bi bi-check2"></i>
+                                </div>
+                                <div class="flex-grow-1" style="font-size: 0.8rem;">
+                                    <div class="text-dark fw-medium">Portfolyonuz başarıyla güncellendi.</div>
+                                    <small class="text-muted" style="font-size: 0.7rem;">10 dakika önce</small>
+                                </div>
+                                <span class="unread-dot rounded-circle bg-primary align-self-center" style="width: 6px; height: 6px;"></span>
+                            </div>
+
+                            <div class="p-2 rounded-3 mb-1 notif-item unread d-flex gap-2" style="background-color: #F8F9FD;">
+                                <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 28px; height: 28px; background: var(--pastel-blue); color: var(--pastel-blue-text); font-size: 0.8rem;">
+                                    <i class="bi bi-chat-text"></i>
+                                </div>
+                                <div class="flex-grow-1" style="font-size: 0.8rem;">
+                                    <div class="text-dark fw-medium">Yeni bir iletişim mesajınız bulunuyor.</div>
+                                    <small class="text-muted" style="font-size: 0.7rem;">2 saat önce</small>
+                                </div>
+                                <span class="unread-dot rounded-circle bg-primary align-self-center" style="width: 6px; height: 6px;"></span>
+                            </div>
+
+                            <div class="p-2 rounded-3 notif-item unread d-flex gap-2" style="background-color: #F8F9FD;">
+                                <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 28px; height: 28px; background: var(--pastel-purple); color: var(--pastel-purple-text); font-size: 0.8rem;">
+                                    <i class="bi bi-eye"></i>
+                                </div>
+                                <div class="flex-grow-1" style="font-size: 0.8rem;">
+                                    <div class="text-dark fw-medium">Deneyim bilgileriniz gözden geçirilmeyi bekliyor.</div>
+                                    <small class="text-muted" style="font-size: 0.7rem;">Dün</small>
+                                </div>
+                                <span class="unread-dot rounded-circle bg-primary align-self-center" style="width: 6px; height: 6px;"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin Profile Dropdown -->
+                <div class="dropdown">
+                    <button class="btn p-1 d-flex align-items-center gap-2 rounded-pill dropdown-toggle border-0" type="button" id="adminProfileDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="background: transparent;">
+                        <div class="sidebar-user-avatar" style="width: 34px; height: 34px; background: linear-gradient(135deg, #8276D9, #A294F9); color: white;">PA</div>
+                        <span class="d-none d-lg-inline fw-semibold" style="font-size: 0.85rem; color: var(--text-primary);">Poyraz Alsever</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-custom" aria-labelledby="adminProfileDropdown">
+                        <li class="px-3 py-2 border-bottom mb-1">
+                            <div class="fw-bold" style="font-size: 0.85rem;">Poyraz Alsever</div>
+                            <small class="text-muted">Bilgisayar Mühendisi</small>
+                        </li>
+                        <li><a class="dropdown-item placeholder-link" href="#" data-module="Profilim"><i class="bi bi-person"></i> Profilim</a></li>
+                        <li><a class="dropdown-item placeholder-link" href="#" data-module="Hesap Ayarları"><i class="bi bi-gear"></i> Hesap Ayarları</a></li>
+                        <li><a class="dropdown-item" href="javascript:void(0)" onclick="openPublicPortfolio()"><i class="bi bi-box-arrow-up-right"></i> Portfolyoyu Görüntüle</a></li>
+                        <li><hr class="dropdown-divider my-1"></li>
+                        <li><a class="dropdown-item text-danger placeholder-link" href="#" data-module="Çıkış Yap"><i class="bi bi-box-arrow-right text-danger"></i> Çıkış Yap</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN BODY CONTENT -->
+    <main class="main-body-container flex-grow-1 p-4 p-md-4 p-lg-5" id="deneyim-yonetimi">
+
+        <!-- 7. Experience Management Page Header -->
+        <section class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3 mb-4">
+            <div>
+                <span class="text-uppercase fw-bold" style="font-size: 0.72rem; letter-spacing: 0.08em; color: var(--primary-accent);">İÇERİK YÖNETİMİ</span>
+                <h1 class="h3 fw-bold mb-1 mt-1">Deneyimlerim</h1>
+                <p class="text-secondary mb-0" style="font-size: 0.9rem;">
+                    Profesyonel iş deneyimlerinizi buradan görüntüleyebilir, düzenleyebilir ve yönetebilirsiniz.
+                </p>
+            </div>
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+                <button type="button" class="btn-pastel-outline" onclick="openPublicPortfolio()">
+                    <i class="bi bi-box-arrow-up-right"></i>
+                    <span>Portfolyoda Görüntüle</span>
+                </button>
+                <button type="button" class="btn-pastel-primary" onclick="openAddExperienceModal()">
+                    <i class="bi bi-plus-lg"></i>
+                    <span>Yeni Deneyim Ekle</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- 8. Summary Statistics Cards -->
+        <section class="row g-3 mb-4" id="statsRow">
+            <!-- Card 1: Toplam Deneyim -->
+            <div class="col-12 col-sm-6 col-xl-3">
+                <div class="stat-card">
+                    <div>
+                        <div class="text-secondary fw-medium" style="font-size: 0.8rem;">Toplam Deneyim</div>
+                        <div class="h3 fw-bold my-1" id="statTotalCount">4</div>
+                        <small class="text-muted" style="font-size: 0.75rem;">Kayıtlı profesyonel deneyim</small>
+                    </div>
+                    <div class="stat-icon-wrap" style="background-color: var(--pastel-purple); color: var(--pastel-purple-text);">
+                        <i class="bi bi-briefcase-fill"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: Aktif Pozisyon -->
+            <div class="col-12 col-sm-6 col-xl-3">
+                <div class="stat-card">
+                    <div>
+                        <div class="text-secondary fw-medium" style="font-size: 0.8rem;">Aktif Pozisyon</div>
+                        <div class="h3 fw-bold my-1 text-success" id="statActiveCount">1</div>
+                        <small class="text-muted" style="font-size: 0.75rem;">Devam eden iş deneyimi</small>
+                    </div>
+                    <div class="stat-icon-wrap" style="background-color: var(--mint-green); color: var(--mint-green-text);">
+                        <i class="bi bi-person-workspace"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3: Tamamlanan Deneyim -->
+            <div class="col-12 col-sm-6 col-xl-3">
+                <div class="stat-card">
+                    <div>
+                        <div class="text-secondary fw-medium" style="font-size: 0.8rem;">Tamamlanan Deneyim</div>
+                        <div class="h3 fw-bold my-1" id="statCompletedCount">3</div>
+                        <small class="text-muted" style="font-size: 0.75rem;">Geçmiş iş deneyimleri</small>
+                    </div>
+                    <div class="stat-icon-wrap" style="background-color: var(--pastel-blue); color: var(--pastel-blue-text);">
+                        <i class="bi bi-check-circle-fill"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 4: Toplam Kurum -->
+            <div class="col-12 col-sm-6 col-xl-3">
+                <div class="stat-card">
+                    <div>
+                        <div class="text-secondary fw-medium" style="font-size: 0.8rem;">Toplam Kurum</div>
+                        <div class="h3 fw-bold my-1" id="statCompanyCount">4</div>
+                        <small class="text-muted" style="font-size: 0.75rem;">Çalışılan farklı şirket</small>
+                    </div>
+                    <div class="stat-icon-wrap" style="background-color: var(--peach); color: var(--peach-text);">
+                        <i class="bi bi-buildings-fill"></i>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 9 & 10. Experience List — Main Content Management Card -->
+        <section class="content-card" id="deneyim-tablosu">
+            <!-- Card Header -->
+            <div class="p-3 p-md-4 border-bottom d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2">
+                <div>
+                    <h2 class="h5 fw-bold mb-1">Deneyim Listesi</h2>
+                    <p class="text-secondary mb-0" style="font-size: 0.84rem;">
+                        Portfolyonuzda görüntülenen profesyonel deneyimler.
+                    </p>
+                </div>
+                <span class="badge badge-pastel badge-pastel-purple px-3 py-2 fs-7 align-self-start align-self-sm-center" id="recordCountBadge">
+                    4 Kayıt
+                </span>
+            </div>
+
+            <!-- Toolbar / Filters -->
+            <div class="p-3 p-md-4 bg-light border-bottom">
+                <div class="row g-2 align-items-center">
+                    <!-- Search field -->
+                    <div class="col-12 col-md-4 col-xl-3">
+                        <div class="position-relative">
+                            <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-secondary"></i>
+                            <input type="text" id="tableSearchInput" class="form-control ps-5" placeholder="Pozisyon veya şirket ara..." style="background-color: #fff;">
+                        </div>
+                    </div>
+
+                    <!-- Employment Type Filter -->
+                    <div class="col-6 col-md-3 col-xl-2">
+                        <select id="filterTypeSelect" class="form-select" style="background-color: #fff;">
+                            <option value="">Tüm Çalışma Türleri</option>
+                            <option value="Tam Zamanlı">Tam Zamanlı</option>
+                            <option value="Yarı Zamanlı">Yarı Zamanlı</option>
+                            <option value="Staj">Staj</option>
+                            <option value="Sözleşmeli">Sözleşmeli</option>
+                        </select>
+                    </div>
+
+                    <!-- Status Filter -->
+                    <div class="col-6 col-md-3 col-xl-2">
+                        <select id="filterStatusSelect" class="form-select" style="background-color: #fff;">
+                            <option value="">Tüm Durumlar</option>
+                            <option value="Aktif">Aktif</option>
+                            <option value="Tamamlandı">Tamamlandı</option>
+                        </select>
+                    </div>
+
+                    <!-- Sort Dropdown -->
+                    <div class="col-6 col-md-3 col-xl-2">
+                        <select id="sortSelect" class="form-select" style="background-color: #fff;">
+                            <option value="newest">En Yeni Önce</option>
+                            <option value="oldest">En Eski Önce</option>
+                            <option value="company">Şirket Adına Göre</option>
+                            <option value="position">Pozisyona Göre</option>
+                        </select>
+                    </div>
+
+                    <!-- Reset Filters Button -->
+                    <div class="col-6 col-md-3 col-xl-3 text-end ms-auto">
+                        <button type="button" class="btn btn-pastel-outline w-100 justify-content-center" id="resetFiltersBtn">
+                            <i class="bi bi-arrow-counterclockwise"></i>
+                            <span>Filtreleri Temizle</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table Container -->
+            <div class="table-responsive">
+                <table class="table table-custom align-middle" id="experienceTable">
+                    <thead>
+                        <tr>
+                            <th scope="col" style="min-width: 240px;">Pozisyon / Şirket</th>
+                            <th scope="col" style="min-width: 140px;">Çalışma Türü</th>
+                            <th scope="col" style="min-width: 150px;">Tarih Aralığı</th>
+                            <th scope="col" style="min-width: 220px;">Teknolojiler</th>
+                            <th scope="col" style="min-width: 110px;">Durum</th>
+                            <th scope="col" class="text-end" style="min-width: 130px;">İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody id="experienceTableBody">
+                        <!-- Dynamically populated via Vanilla JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Empty State Container (Hidden by default) -->
+            <div id="tableEmptyState" class="p-5 text-center d-none">
+                <div class="mb-3">
+                    <div class="d-inline-flex p-3 rounded-circle" style="background-color: var(--pastel-purple); color: var(--primary-accent); font-size: 2rem;">
+                        <i class="bi bi-folder-x"></i>
+                    </div>
+                </div>
+                <h3 class="h5 fw-bold mb-1" id="emptyStateTitle">Aradığınız kriterlere uygun deneyim bulunamadı.</h3>
+                <p class="text-secondary mb-3" style="font-size: 0.86rem;" id="emptyStateDesc">Farklı filtre kriterleri belirleyebilir veya filtreleri sıfırlayabilirsiniz.</p>
+                <button type="button" class="btn-pastel-primary" id="emptyStateActionBtn">
+                    <i class="bi bi-arrow-counterclockwise"></i>
+                    <span>Filtreleri Temizle</span>
+                </button>
+            </div>
+
+            <!-- Table Footer / Pagination -->
+            <div class="p-3 p-md-4 border-top d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2" id="tablePaginationRow">
+                <div class="text-secondary" style="font-size: 0.825rem;" id="paginationInfo">
+                    Toplam 4 kayıttan 1–4 arası gösteriliyor
+                </div>
+                <nav aria-label="Tablo sayfalama">
+                    <ul class="pagination pagination-sm mb-0 gap-1" id="paginationControls">
+                        <li class="page-item disabled" id="prevPageBtn">
+                            <a class="page-link rounded-2" href="javascript:void(0)" aria-label="Önceki"><i class="bi bi-chevron-left"></i></a>
+                        </li>
+                        <li class="page-item active" aria-current="page">
+                            <a class="page-link rounded-2" href="javascript:void(0)" style="background-color: var(--primary-accent); border-color: var(--primary-accent);">1</a>
+                        </li>
+                        <li class="page-item disabled" id="nextPageBtn">
+                            <a class="page-link rounded-2" href="javascript:void(0)" aria-label="Sonraki"><i class="bi bi-chevron-right"></i></a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </section>
+
+        <!-- Technical Architecture Footnote for ASP.NET Core -->
+        <footer class="mt-4 text-center text-muted" style="font-size: 0.75rem;">
+            <span>ASP.NET Core MVC Razor Entegrasyon Yapısı: <code>Views/Experience/Index.cshtml</code> &bull; Modüler Partial ve ViewModel uyumluluğu hazır.</span>
+        </footer>
+    </main>
+</div>
+
