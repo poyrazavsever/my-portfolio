@@ -1,0 +1,144 @@
+@model Portfolio.Entities.Experience
+
+@{
+    ViewData["Title"] = "Deneyim Düzenle";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+
+<div id="main-content-wrapper">
+    <header class="admin-navbar">
+        <div class="d-flex align-items-center justify-content-between w-100 gap-3">
+            <div class="d-flex align-items-center gap-3">
+                <button class="btn btn-sm d-lg-none p-1 border-0 text-dark"
+                        type="button"
+                        data-bs-toggle="offcanvas"
+                        data-bs-target="#mobileSidebar"
+                        aria-controls="mobileSidebar"
+                        aria-label="Menüyü aç">
+                    <i class="bi bi-list fs-4"></i>
+                </button>
+
+                <nav aria-label="Sayfa yolu" class="d-none d-sm-block">
+                    <ol class="breadcrumb mb-0 align-items-center small">
+                        <li class="breadcrumb-item">
+                            <a asp-area="Admin"
+                               asp-controller="Experience"
+                               asp-action="ExperienceList"
+                               class="text-secondary text-decoration-none">
+                                Deneyimler
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item active fw-semibold" aria-current="page">Düzenle</li>
+                    </ol>
+                </nav>
+            </div>
+
+            <a asp-area="Admin"
+               asp-controller="Experience"
+               asp-action="ExperienceList"
+               class="btn-pastel-outline text-decoration-none">
+                <i class="bi bi-arrow-left"></i>
+                <span class="d-none d-sm-inline">Listeye Dön</span>
+            </a>
+        </div>
+    </header>
+
+    <main class="main-body-container flex-grow-1 p-4 p-md-4 p-lg-5">
+        <div class="mx-auto" style="max-width: 920px;">
+            <section class="d-flex flex-column flex-sm-row align-items-sm-end justify-content-between gap-3 mb-4">
+                <div>
+                    <span class="text-uppercase fw-bold"
+                          style="font-size: 0.72rem; letter-spacing: 0.08em; color: var(--primary-accent);">
+                        Deneyim Detayı
+                    </span>
+                    <h1 class="h3 fw-bold mb-2 mt-1">Deneyimi Düzenle</h1>
+                    <p class="text-secondary mb-0">Kayıt bilgilerini kontrol et, gerekli alanları güncelle ve kaydet.</p>
+                </div>
+
+                <span class="badge badge-pastel badge-pastel-purple px-3 py-2 align-self-start align-self-sm-center">
+                    #@Model.ExperienceId
+                </span>
+            </section>
+
+            <section class="content-card overflow-hidden">
+                <div class="p-3 p-md-4 border-bottom d-flex align-items-center gap-3">
+                    <div class="stat-icon-wrap"
+                         style="background-color: var(--pastel-purple); color: var(--pastel-purple-text);">
+                        <i class="bi bi-pencil-square"></i>
+                    </div>
+                    <div>
+                        <h2 class="h5 fw-bold mb-1">@(Model.Title ?? "Deneyim bilgileri")</h2>
+                        <p class="text-secondary small mb-0">@(Model.CompanyName ?? "Şirket bilgisi belirtilmemiş")</p>
+                    </div>
+                </div>
+
+                <form asp-area="Admin"
+                      asp-controller="Experience"
+                      asp-action="UpdateExperience"
+                      method="post">
+                    <input type="hidden" asp-for="ExperienceId" />
+
+                    <div class="p-3 p-md-4">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                        <div class="row g-3">
+                            <div class="col-12 col-md-6">
+                                <label asp-for="Title" class="form-label fw-semibold">Başlık</label>
+                                <input asp-for="Title" class="form-control" placeholder="Örn. Backend Developer" />
+                                <span asp-validation-for="Title" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <label asp-for="CompanyName" class="form-label fw-semibold">Şirket Adı</label>
+                                <input asp-for="CompanyName" class="form-control" placeholder="Şirket veya kurum adı" />
+                                <span asp-validation-for="CompanyName" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <label asp-for="SideTitle" class="form-label fw-semibold">Alt Başlık</label>
+                                <input asp-for="SideTitle" class="form-control" placeholder="Örn. Yazılım Geliştirme Ekibi" />
+                                <span asp-validation-for="SideTitle" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <label asp-for="WorkType" class="form-label fw-semibold">Çalışma Türü</label>
+                                <input asp-for="WorkType" class="form-control" placeholder="Örn. Tam Zamanlı" />
+                                <span asp-validation-for="WorkType" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-12">
+                                <label asp-for="Description" class="form-label fw-semibold">Açıklama</label>
+                                <textarea asp-for="Description"
+                                          class="form-control"
+                                          rows="5"
+                                          placeholder="Pozisyon, sorumluluklar ve çalışmalar hakkında kısa açıklama"></textarea>
+                                <span asp-validation-for="Description" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="form-check form-switch p-3 ps-5 rounded-3 border bg-light">
+                                    <input asp-for="IsActive" class="form-check-input" role="switch" />
+                                    <label asp-for="IsActive" class="form-check-label fw-semibold">Portfolyoda aktif olarak göster</label>
+                                    <div class="small text-secondary mt-1">Kapalı olduğunda kayıt saklanır ancak pasif olarak işaretlenir.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-3 p-md-4 border-top bg-light d-flex flex-column-reverse flex-sm-row justify-content-end gap-2">
+                        <a asp-area="Admin"
+                           asp-controller="Experience"
+                           asp-action="ExperienceList"
+                           class="btn-pastel-outline text-decoration-none justify-content-center">
+                            Vazgeç
+                        </a>
+                        <button type="submit" class="btn-pastel-primary justify-content-center">
+                            <i class="bi bi-check2-circle"></i>
+                            Değişiklikleri Kaydet
+                        </button>
+                    </div>
+                </form>
+            </section>
+        </div>
+    </main>
+</div>

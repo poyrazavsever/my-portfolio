@@ -157,6 +157,7 @@
                                 <th scope="col" style="min-width: 280px;">Açıklama</th>
                                 <th scope="col" style="min-width: 150px;">Çalışma Türü</th>
                                 <th scope="col" style="min-width: 110px;">Durum</th>
+                                <th scope="col" class="text-end" style="min-width: 120px;">İşlemler</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -206,6 +207,34 @@
                                                 Pasif
                                             </span>
                                         }
+                                    </td>
+                                    <td class="text-end">
+                                        <div class="d-inline-flex align-items-center justify-content-end gap-2">
+                                            <a asp-area="Admin"
+                                               asp-controller="Experience"
+                                               asp-action="UpdateExperience"
+                                               asp-route-id="@experience.ExperienceId"
+                                               class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-2"
+                                               aria-label="@experience.Title deneyimini düzenle">
+                                                <i class="bi bi-pencil-square"></i>
+                                                <span>Düzenle</span>
+                                            </a>
+
+                                            <form asp-area="Admin"
+                                                  asp-controller="Experience"
+                                                  asp-action="DeleteExperience"
+                                                  asp-route-id="@experience.ExperienceId"
+                                                  method="post"
+                                                  class="m-0"
+                                                  onsubmit="return confirm('Bu deneyimi silmek istediğine emin misin?');">
+                                                <button type="submit"
+                                                        class="btn btn-sm btn-outline-danger d-inline-flex align-items-center gap-2"
+                                                        aria-label="@experience.Title deneyimini sil">
+                                                    <i class="bi bi-trash3"></i>
+                                                    <span>Sil</span>
+                                                </button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                             }
