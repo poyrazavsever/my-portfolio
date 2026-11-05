@@ -276,3 +276,24 @@ Her fazdan sonra "ne yaptık, neden yaptık" notu. Proje sonunda soru-cevap ve v
 | Geçerli PDF, sonra ikinci bir PDF | ✅ Butonlar çıktı, eski dosya silindi |
 | İndirme | ✅ `attachment; filename=Poyraz-Avsever-CV.pdf`, içerik doğru sürüm |
 | CV'yi kaldırma | ✅ Butonlar kayboldu, indirme `404` |
+
+---
+
+## Ara adım: Gerçek içerik ve seed
+
+### Ne yaptık?
+- poyrazavsever.com'dan (Hakkımda, Projeler, İletişim sayfaları) temel bilgileri topladık: rol tanımı, Hakkımda metni, 2 eğitim, 4 deneyim, 20 sertifika, 3 klasördeki 14 proje, e-posta, GitHub ve LinkedIn. Sosyal bağlantılar sitede kısa link olarak verildiği için gerçek adreslerini (`github.com/poyrazavsever`, `linkedin.com/in/poyrazavsever`) çözüp onları kullandık.
+- `Data/PortfolioSeeder.cs`: Bu içeriği kodda tutan seed sınıfı. Komut: `dotnet run -- --seed`.
+- Proje bağlantı alanı artık "Proje bağlantısı". Kart, GitHub adresiyse "Kaynak kod", değilse "Projeyi incele" yazıyor (migration gerektirmeyen bir görünüm değişikliği).
+
+### Neden seed sınıfı?
+- Veriyi admin panelinden elle girseydik sadece bu bilgisayardaki DB'de kalırdı. Seed sınıfı commit'lendiği için repoyu klonlayan biri `dotnet ef database update` + `dotnet run -- --seed` ile aynı içeriği görür. Case'in "örnek verilerle çalışır proje" teslim şartı da böylece karşılanıyor.
+- **Komut satırı argümanı:** `args.Contains("--seed")` ise web sunucusu hiç başlamıyor; seed çalışıp program çıkıyor. `CreateScope()` gerekiyor çünkü `DbContext` *scoped* bir servis; HTTP isteği olmadan kendi kapsamımızı açmamız lazım.
+- **`ExecuteDeleteAsync`:** Kayıtları belleğe çekmeden doğrudan `DELETE FROM ...` çalıştırıyor. Sıra önemli: Project → Category ilişkisi Restrict olduğu için önce projeler silinmeli.
+- **Transaction:** Silme ve ekleme tek bir transaction'da. Yarıda hata olursa DB eski haline döner; yarı silinmiş, yarı dolu bir DB kalmaz.
+- **Idempotent:** Komut kaç kez çalıştırılırsa çalıştırılsın sonuç aynı. Mesajlara ve yüklenen CV'ye dokunmuyor.
+
+### Tahmin edilen veriler (siteden alınamayanlar)
+- **Konum:** "Ankara, Türkiye". Sitede açıkça yazmıyor; OSTİM Teknik Üniversitesi'nden çıkarıldı.
+- **Yetenek seviyeleri:** Teknoloji listesi sitede var ama seviye yok. Verilen yüzdeler yer tutucu; admin → Yetenekler'den güncellenmeli.
+- **Ay bilgisi:** Eğitim tarihlerinde sitede yalnızca yıl var. Başlangıç Eylül, bitiş Haziran kabul edildi (sitede zaten yalnızca yıl gösteriliyor).
