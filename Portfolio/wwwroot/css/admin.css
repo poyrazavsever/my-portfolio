@@ -97,12 +97,10 @@
 .admin-avatar {
     width: 34px;
     height: 34px;
+    flex: none;
+    object-fit: cover;
     border-radius: 9px;
-    display: grid;
-    place-items: center;
-    font: 600 12px var(--pa-mono);
-    color: var(--pa-ink);
-    background: var(--pa-glass-strong);
+    background: var(--pa-bg-raised);
     border: 1px solid var(--pa-stroke-strong);
 }
 .admin-user b { display: block; font-size: 13.5px; font-weight: 500; line-height: 1.3; }
@@ -255,6 +253,35 @@
 
 .pa-section-title { font-size: 17px; margin: 0 0 4px; }
 .pa-section-sub { color: var(--pa-muted); font-size: 14px; margin: 0 0 24px; }
+
+/* ---------- Liste araç çubuğu (arama + filtreler) ---------- */
+.pa-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 16px; }
+.pa-toolbar .form-select { width: auto; }
+.pa-search { position: relative; flex: 1 1 260px; max-width: 360px; margin: 0; }
+.pa-search i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--pa-faint); }
+.pa-search .form-control { padding-left: 36px; }
+
+/* ---------- Gelen kutusu ---------- */
+.pa-unread-dot { display: block; width: 8px; height: 8px; border-radius: 50%; border: 1px solid var(--pa-stroke-strong); }
+.pa-inbox tr.is-unread .pa-unread-dot { background: var(--pa-red); border-color: var(--pa-red); }
+.pa-inbox tr.is-unread .cell-title,
+.pa-inbox tr.is-unread .pa-link-button { font-weight: 600; color: var(--pa-ink); }
+.pa-link-button {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--pa-muted);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+.pa-link-button:hover { color: var(--pa-ink); text-decoration: underline; text-underline-offset: 3px; }
+
+.pa-message-meta { display: flex; flex-wrap: wrap; gap: 4px 20px; margin: 8px 0 0; }
+.pa-message-meta > div { display: flex; gap: 8px; align-items: baseline; }
+.pa-message-meta dt { font: 500 11px var(--pa-mono); text-transform: uppercase; letter-spacing: .06em; color: var(--pa-faint); }
+.pa-message-meta dd { margin: 0; font-size: 13.5px; color: var(--pa-muted); }
+.pa-message-body { white-space: pre-line; font-size: 15px; line-height: 1.7; color: #D3D4D8; }
 
 .pa-panel { padding: 6px 6px 4px; }
 .pa-panel-pad { padding: 28px; }

@@ -1,78 +1,120 @@
-@model List<Message>
+@model MessageListViewModel
 
 @{
     ViewData["Title"] = "Mesajlar";
-    ViewData["Description"] = "İletişim formundan gelen mesajlar.";
+    ViewData["Description"] = "İletişim formundan gelen mesajlar. Mesaj içeriği düzenlenemez; yalnızca okundu durumu değişir.";
 
-    var messages = Model.OrderByDescending(message => message.SendDate).ToList();
-    var unreadCount = messages.Count(message => !message.IsRead);
+    // İşlemlerden sonra aynı filtreli görünüme dönmek için.
+    var returnUrl = Context.Request.Path + Context.Request.QueryString;
 }
 
-@section Actions {
-    <a class="btn btn-ghost" asp-action="CreateMessage"><i class="bi bi-plus-lg"></i>Test mesajı</a>
-}
+@* AJAX isteklerinde (modal açılınca okundu işaretleme) kullanılacak antiforgery token'ı *@
+@Html.AntiForgeryToken()
 
-@if (messages.Count == 0)
+<div class="pa-stats">
+    <span><b>@Model.TotalCount</b> mesaj</span>
+    <span><b data-unread-total>@Model.UnreadCount</b> okunmamış</span>
+    @if (Model.IsFiltered)
+    {
+        <span><b>@Model.Messages.Count</b> sonuç</span>
+    }
+</div>
+
+<form method="get" asp-action="MessageList" class="pa-toolbar" role="search">
+    <label class="pa-search">
+        <i class="bi bi-search" aria-hidden="true"></i>
+        <span class="visually-hidden">Gönderen veya konuya göre ara</span>
+        <input type="search" name="q" value="@Model.Query" class="form-control" placeholder="Gönderen, e-posta veya konu" />
+    </label>
+
+    <label class="visually-hidden" for="status">Durum</label>
+    <select id="status" name="status" class="form-select" data-autosubmit>
+        <option value="all" selected="@(Model.Status == "all")">Tümü</option>
+        <option value="unread" selected="@(Model.Status == "unread")">Okunmamış</option>
+        <option value="read" selected="@(Model.Status == "read")">Okunmuş</option>
+    </select>
+
+    <label class="visually-hidden" for="sort">Sıralama</label>
+    <select id="sort" name="sort" class="form-select" data-autosubmit>
+        <option value="newest" selected="@(Model.Sort == "newest")">En yeni önce</option>
+        <option value="oldest" selected="@(Model.Sort == "oldest")">En eski önce</option>
+    </select>
+
+    <button type="submit" class="btn btn-ghost">Uygula</button>
+    @if (Model.IsFiltered || Model.Sort != "newest")
+    {
+        <a class="btn btn-ghost" asp-action="MessageList">Temizle</a>
+    }
+</form>
+
+@if (Model.Messages.Count == 0)
 {
     <section class="glass ticks pa-empty">
         <glass-icon name="messages" size="140" />
-        <h3>Gelen kutusu boş</h3>
-        <p>Sitedeki iletişim formundan gönderilen mesajlar burada listelenir.</p>
+        @if (Model.IsFiltered)
+        {
+            <h3>Eşleşen mesaj yok</h3>
+            <p>Arama metnini veya durum filtresini değiştirin.</p>
+            <a class="btn btn-ghost" asp-action="MessageList">Filtreleri temizle</a>
+        }
+        else
+        {
+            <h3>Gelen kutusu boş</h3>
+            <p>Sitedeki iletişim formundan gönderilen mesajlar burada listelenir.</p>
+        }
     </section>
 }
 else
 {
-    <div class="pa-stats">
-        <span><b>@messages.Count</b> mesaj</span>
-        <span><b>@unreadCount</b> okunmamış</span>
-    </div>
-
     <section class="glass ticks pa-panel">
         <div class="pa-table-wrap">
-            <table class="pa-table">
+            <table class="pa-table pa-inbox">
                 <thead>
                     <tr>
+                        <th style="width:28px"><span class="visually-hidden">Durum</span></th>
                         <th>Gönderen</th>
                         <th>Konu</th>
                         <th>Tarih</th>
-                        <th>Durum</th>
                         <th class="cell-actions"><span class="visually-hidden">İşlemler</span></th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var message in messages)
+                    @foreach (var message in Model.Messages)
                     {
                         var modalId = $"message-{message.MessageId}";
-                        <tr>
+                        <tr class="@(message.IsRead ? null : "is-unread")" data-message-row="@message.MessageId">
+                            <td>
+                                <span class="pa-unread-dot" title="@(message.IsRead ? "Okundu" : "Okunmadı")"></span>
+                            </td>
                             <td>
                                 <span class="cell-title">@message.NameSurname</span>
                                 <span class="cell-sub">@message.Email</span>
                             </td>
-                            <td>@message.Subject</td>
-                            <td class="cell-mono">@message.SendDate.ToString("yyyy-MM-dd HH:mm")</td>
                             <td>
-                                @if (message.IsRead)
-                                {
-                                    <span class="pa-badge is-off">Okundu</span>
-                                }
-                                else
-                                {
-                                    <span class="pa-badge is-new">Yeni</span>
-                                }
+                                <button type="button" class="pa-link-button" data-bs-toggle="modal" data-bs-target="#@modalId">
+                                    @message.Subject
+                                </button>
+                            </td>
+                            <td class="cell-mono">
+                                <time datetime="@message.SendDate.ToString("s")">@message.SendDate.ToString("yyyy-MM-dd HH:mm")</time>
                             </td>
                             <td class="cell-actions">
                                 <button type="button" class="btn btn-ghost btn-icon" title="Görüntüle" aria-label="Görüntüle"
                                         data-bs-toggle="modal" data-bs-target="#@modalId">
                                     <i class="bi bi-eye"></i>
                                 </button>
-                                <a class="btn btn-ghost btn-icon" title="Düzenle" aria-label="Düzenle"
-                                   asp-action="UpdateMessage" asp-route-id="@message.MessageId">
-                                    <i class="bi bi-pencil"></i>
-                                </a>
-                                <form class="d-inline" method="post"
-                                      asp-action="DeleteMessage" asp-route-id="@message.MessageId"
+                                <form class="d-inline" method="post" asp-action="ToggleRead" asp-route-id="@message.MessageId">
+                                    <input type="hidden" name="returnUrl" value="@returnUrl" />
+                                    <button type="submit" class="btn btn-ghost btn-icon"
+                                            title="@(message.IsRead ? "Okunmadı işaretle" : "Okundu işaretle")"
+                                            aria-label="@(message.IsRead ? "Okunmadı işaretle" : "Okundu işaretle")">
+                                        <i class="bi @(message.IsRead ? "bi-envelope" : "bi-envelope-open")"></i>
+                                    </button>
+                                </form>
+                                <form class="d-inline" method="post" asp-action="DeleteMessage" asp-route-id="@message.MessageId"
                                       data-confirm="@message.NameSurname tarafından gönderilen mesaj kalıcı olarak silinecek."
                                       data-confirm-title="Mesaj silinsin mi?">
+                                    <input type="hidden" name="returnUrl" value="@returnUrl" />
                                     <button type="submit" class="btn btn-danger-ghost btn-icon" title="Sil" aria-label="Sil">
                                         <i class="bi bi-trash3"></i>
                                     </button>
@@ -85,24 +127,37 @@ else
         </div>
     </section>
 
-    @foreach (var message in messages)
+    @foreach (var message in Model.Messages)
     {
         var modalId = $"message-{message.MessageId}";
-        <div class="modal fade" id="@modalId" tabindex="-1" aria-labelledby="@modalId-title" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal fade" id="@modalId" tabindex="-1" aria-labelledby="@modalId-title" aria-hidden="true"
+             data-message-id="@message.MessageId"
+             data-unread="@(message.IsRead ? "false" : "true")"
+             data-mark-read-url="@Url.Action("MarkAsRead", new { id = message.MessageId })"
+             data-auto-open="@(Model.OpenId == message.MessageId ? "true" : null)">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
                         <div>
                             <h2 class="modal-title fs-5" id="@modalId-title">@message.Subject</h2>
-                            <div class="text-mono text-muted-pa" style="font-size:12.5px">
-                                @message.NameSurname · @message.Email · @message.SendDate.ToString("yyyy-MM-dd HH:mm")
-                            </div>
+                            <dl class="pa-message-meta">
+                                <div><dt>Gönderen</dt><dd>@message.NameSurname</dd></div>
+                                <div><dt>E-posta</dt><dd><a href="mailto:@message.Email">@message.Email</a></dd></div>
+                                <div><dt>Tarih</dt><dd>@message.SendDate.ToString("dd.MM.yyyy HH:mm")</dd></div>
+                            </dl>
                         </div>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
                     </div>
-                    <div class="modal-body" style="white-space:pre-line">@message.MessageDetail</div>
+                    @* Orijinal içerik salt okunur gösterilir: düzenleme alanı yok. *@
+                    <div class="modal-body pa-message-body">@message.MessageDetail</div>
                     <div class="modal-footer">
-                        <a class="btn btn-ghost" href="mailto:@message.Email?subject=Re: @Uri.EscapeDataString(message.Subject)">
+                        <form method="post" asp-action="ToggleRead" asp-route-id="@message.MessageId" class="me-auto">
+                            <input type="hidden" name="returnUrl" value="@returnUrl" />
+                            <button type="submit" class="btn btn-ghost" data-toggle-read-label>
+                                @(message.IsRead ? "Okunmadı işaretle" : "Okundu işaretle")
+                            </button>
+                        </form>
+                        <a class="btn btn-ghost" href="mailto:@message.Email?subject=@Uri.EscapeDataString("Re: " + message.Subject)">
                             <i class="bi bi-reply"></i>Yanıtla
                         </a>
                         <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Kapat</button>

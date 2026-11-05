@@ -96,9 +96,79 @@
         });
     }
 
-    if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", showFlash);
-    } else {
+    /* ---------- 3. Filtre seçimleri değişince formu gönder ---------- */
+    document.addEventListener("change", function (event) {
+        const select = event.target;
+        if (select instanceof HTMLSelectElement && select.hasAttribute("data-autosubmit") && select.form) {
+            select.form.submit();
+        }
+    });
+
+    /* ---------- 4. Gelen kutusu: modal açılınca mesajı okundu işaretle (AJAX) ----------
+       Bootstrap her modal açılırken "show.bs.modal" olayını yayınlar; tek dinleyiciyle hepsini yakalıyoruz. */
+    document.addEventListener("show.bs.modal", function (event) {
+        const modal = event.target;
+        if (modal.dataset.unread !== "true" || !modal.dataset.markReadUrl) return;
+
+        const tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
+        modal.dataset.unread = "pending"; // aynı modal hızlıca iki kez açılırsa ikinci istek gitmesin
+
+        fetch(modal.dataset.markReadUrl, {
+            method: "POST",
+            headers: { "RequestVerificationToken": tokenInput ? tokenInput.value : "" }, // [ValidateAntiForgeryToken] bu header'ı okur
+            credentials: "same-origin"
+        })
+            .then(function (response) {
+                if (!response.ok) throw new Error("HTTP " + response.status);
+                return response.json();
+            })
+            .then(function (data) {
+                modal.dataset.unread = "false";
+                markRowAsRead(modal.dataset.messageId);
+                updateUnreadCounters(data.unread);
+                const label = modal.querySelector("[data-toggle-read-label]");
+                if (label) label.textContent = "Okunmadı işaretle";
+            })
+            .catch(function () {
+                modal.dataset.unread = "true"; // sessizce başarısız: bir sonraki açılışta tekrar denenir
+            });
+    });
+
+    function markRowAsRead(id) {
+        const row = document.querySelector('[data-message-row="' + id + '"]');
+        if (!row) return;
+        row.classList.remove("is-unread");
+        const dot = row.querySelector(".pa-unread-dot");
+        if (dot) dot.title = "Okundu";
+    }
+
+    function updateUnreadCounters(unread) {
+        document.querySelectorAll("[data-unread-total]").forEach(function (el) { el.textContent = unread; });
+        // Sidebar'daki rozet (masaüstü ve mobil menüde ayrı ayrı var)
+        document.querySelectorAll(".admin-nav-link .pa-count").forEach(function (badge) {
+            if (unread > 0) {
+                badge.textContent = unread;
+                badge.title = unread + " okunmamış";
+            } else {
+                badge.remove();
+            }
+        });
+    }
+
+    /* ---------- 5. "?open=12" ile gelindiyse ilgili mesajın modalını aç ---------- */
+    function autoOpenModal() {
+        const target = document.querySelector('.modal[data-auto-open="true"]');
+        if (target && window.bootstrap) bootstrap.Modal.getOrCreateInstance(target).show();
+    }
+
+    function init() {
         showFlash();
+        autoOpenModal();
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", init);
+    } else {
+        init();
     }
 })();
