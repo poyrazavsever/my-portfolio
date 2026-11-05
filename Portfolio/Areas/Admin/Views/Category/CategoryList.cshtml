@@ -1,0 +1,66 @@
+@model List<CategoryListItemViewModel>
+
+@{
+    ViewData["Title"] = "Kategoriler";
+    ViewData["Description"] = "Proje kategorileri. İçinde proje olan bir kategori silinemez.";
+}
+
+@section Actions {
+    <a class="btn btn-primary" asp-action="CreateCategory"><i class="bi bi-plus-lg"></i>Yeni kategori</a>
+}
+
+@if (Model.Count == 0)
+{
+    <section class="glass ticks pa-empty">
+        <glass-icon name="workflow" size="140" />
+        <h3>Henüz kategori yok</h3>
+        <p>Proje eklemeden önce en az bir kategori oluşturun.</p>
+        <a class="btn btn-primary" asp-action="CreateCategory"><i class="bi bi-plus-lg"></i>İlk kategoriyi ekle</a>
+    </section>
+}
+else
+{
+    <div class="pa-stats">
+        <span><b>@Model.Count</b> kategori</span>
+        <span><b>@Model.Sum(category => category.ProjectCount)</b> proje</span>
+    </div>
+
+    <section class="glass ticks pa-panel">
+        <div class="pa-table-wrap">
+            <table class="pa-table">
+                <thead>
+                    <tr>
+                        <th>Kategori</th>
+                        <th>Proje</th>
+                        <th>Aktif proje</th>
+                        <th class="cell-actions"><span class="visually-hidden">İşlemler</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var category in Model)
+                    {
+                        <tr>
+                            <td><span class="cell-title">@category.CategoryName</span></td>
+                            <td class="cell-mono">@category.ProjectCount</td>
+                            <td class="cell-mono">@category.ActiveProjectCount</td>
+                            <td class="cell-actions">
+                                <a class="btn btn-ghost btn-icon" title="Düzenle" aria-label="Düzenle"
+                                   asp-action="UpdateCategory" asp-route-id="@category.CategoryId">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <form class="d-inline" method="post"
+                                      asp-action="DeleteCategory" asp-route-id="@category.CategoryId"
+                                      data-confirm="@category.CategoryName kategorisi silinecek."
+                                      data-confirm-title="Kategori silinsin mi?">
+                                    <button type="submit" class="btn btn-danger-ghost btn-icon" title="Sil" aria-label="Sil">
+                                        <i class="bi bi-trash3"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </section>
+}

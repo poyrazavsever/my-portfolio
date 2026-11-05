@@ -1,0 +1,20 @@
+@model Category
+
+@{
+    ViewData["Title"] = "Yeni kategori";
+    ViewData["Description"] = "Projeleri gruplamak ve sitede filtrelemek için kullanılır.";
+}
+
+<form asp-action="CreateCategory" method="post" class="glass ticks pa-panel-pad">
+    <partial name="_CategoryForm" model="Model" />
+
+    <div class="pa-form-actions">
+        <a class="btn btn-ghost" asp-action="CategoryList">Vazgeç</a>
+        <button type="submit" class="btn btn-primary"><i class="bi bi-check2"></i>Kaydet</button>
+    </div>
+</form>
+
+@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <partial name="_ValidationScriptsPartial" />
+}

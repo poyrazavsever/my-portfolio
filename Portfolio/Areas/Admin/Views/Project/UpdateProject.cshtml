@@ -1,0 +1,21 @@
+@model Project
+
+@{
+    ViewData["Title"] = "Projeyi düzenle";
+    ViewData["Description"] = Model.Title;
+}
+
+<form asp-action="UpdateProject" method="post" enctype="multipart/form-data" class="glass ticks pa-panel-pad">
+    <input type="hidden" asp-for="ProjectId" />
+    <partial name="_ProjectForm" model="Model" />
+
+    <div class="pa-form-actions">
+        <a class="btn btn-ghost" asp-action="ProjectList">Vazgeç</a>
+        <button type="submit" class="btn btn-primary"><i class="bi bi-check2"></i>Değişiklikleri kaydet</button>
+    </div>
+</form>
+
+@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,61 @@
+@model Project
+
+<div asp-validation-summary="ModelOnly"></div>
+
+<div class="row g-4">
+    <div class="col-md-7">
+        <label asp-for="Title" class="form-label"></label>
+        <input asp-for="Title" class="form-control" placeholder="Portfolyo CMS" />
+        <span asp-validation-for="Title"></span>
+    </div>
+
+    <div class="col-md-5">
+        <label asp-for="CategoryId" class="form-label"></label>
+        <select asp-for="CategoryId" asp-items="ViewBag.Categories" class="form-select">
+            <option value="0">Kategori seçin</option>
+        </select>
+        <span asp-validation-for="CategoryId"></span>
+    </div>
+
+    <div class="col-12">
+        <label asp-for="Description" class="form-label"></label>
+        <textarea asp-for="Description" class="form-control" rows="4"
+                  placeholder="Problem, çözüm ve kullanılan teknolojiler"></textarea>
+        <span asp-validation-for="Description"></span>
+    </div>
+
+    <div class="col-12">
+        <label asp-for="GithubUrl" class="form-label"></label>
+        <input asp-for="GithubUrl" class="form-control" placeholder="https://github.com/..." />
+        <span asp-validation-for="GithubUrl"></span>
+    </div>
+
+    <div class="col-12">
+        <label class="form-label" for="coverImage">Kapak görseli</label>
+        <div class="d-flex align-items-start gap-3 flex-wrap">
+            @if (!string.IsNullOrWhiteSpace(Model.CoverImageUrl))
+            {
+                <div>
+                    <img class="pa-image-preview" src="@Model.CoverImageUrl" alt="Mevcut kapak görseli" />
+                    <div class="form-check mt-2">
+                        <input class="form-check-input" type="checkbox" id="removeImage" name="removeImage" value="true" />
+                        <label class="form-check-label small" for="removeImage">Görseli kaldır</label>
+                    </div>
+                </div>
+            }
+            <div class="flex-grow-1">
+                <input id="coverImage" name="coverImage" type="file" class="form-control" accept=".jpg,.jpeg,.png,.webp" />
+                <div class="form-text">JPG, PNG veya WEBP, en fazla 2 MB. 16:10 oranı kartlarda en iyi görünür.</div>
+                <span asp-validation-for="CoverImageUrl"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12">
+        <div class="form-check form-switch">
+            <input asp-for="IsActive" class="form-check-input" role="switch" />
+            <label asp-for="IsActive" class="form-check-label">Portfolyoda göster</label>
+        </div>
+        <div class="form-text">Kapalıysa proje saklanır ama sitede görünmez.</div>
+    </div>
+</div>

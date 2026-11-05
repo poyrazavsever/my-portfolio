@@ -1,0 +1,126 @@
+@model List<Project>
+
+@{
+    ViewData["Title"] = "Projeler";
+    ViewData["Description"] = "Sitede kart olarak gösterilen projeler. Pasif projeler gizlenir.";
+
+    var categories = (List<Category>)ViewBag.Categories;
+    var selectedCategoryId = (int?)ViewBag.SelectedCategoryId;
+    var activeCount = Model.Count(project => project.IsActive);
+}
+
+@section Actions {
+    <a class="btn btn-primary" asp-action="CreateProject"><i class="bi bi-plus-lg"></i>Yeni proje</a>
+}
+
+@if (categories.Count > 0)
+{
+    <form method="get" asp-action="ProjectList" class="d-flex align-items-center gap-2 mb-3 flex-wrap">
+        <label for="categoryId" class="form-label m-0">Kategori</label>
+        <select id="categoryId" name="categoryId" class="form-select" style="width:auto" onchange="this.form.submit()">
+            <option value="">Tümü</option>
+            @foreach (var category in categories)
+            {
+                <option value="@category.CategoryId" selected="@(category.CategoryId == selectedCategoryId)">@category.CategoryName</option>
+            }
+        </select>
+        <noscript><button class="btn btn-ghost" type="submit">Filtrele</button></noscript>
+    </form>
+}
+
+@if (Model.Count == 0)
+{
+    <section class="glass ticks pa-empty">
+        <glass-icon name="projects" size="140" />
+        @if (selectedCategoryId is not null)
+        {
+            <h3>Bu kategoride proje yok</h3>
+            <p>Başka bir kategori seçin ya da bu kategoriye proje ekleyin.</p>
+            <a class="btn btn-ghost" asp-action="ProjectList">Filtreyi temizle</a>
+        }
+        else
+        {
+            <h3>Henüz proje eklenmedi</h3>
+            <p>Projeleriniz sitede kategoriye göre filtrelenebilir kartlar olarak görünür.</p>
+            <a class="btn btn-primary" asp-action="CreateProject"><i class="bi bi-plus-lg"></i>İlk projeyi ekle</a>
+        }
+    </section>
+}
+else
+{
+    <div class="pa-stats">
+        <span><b>@Model.Count</b> proje</span>
+        <span><b>@activeCount</b> aktif</span>
+        <span><b>@(Model.Count - activeCount)</b> pasif</span>
+    </div>
+
+    <section class="glass ticks pa-panel">
+        <div class="pa-table-wrap">
+            <table class="pa-table">
+                <thead>
+                    <tr>
+                        <th>Proje</th>
+                        <th>Kategori</th>
+                        <th>Eklenme</th>
+                        <th>Durum</th>
+                        <th class="cell-actions"><span class="visually-hidden">İşlemler</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var project in Model)
+                    {
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center gap-3">
+                                    @if (!string.IsNullOrWhiteSpace(project.CoverImageUrl))
+                                    {
+                                        <img class="pa-thumb" src="@project.CoverImageUrl" alt="" loading="lazy" />
+                                    }
+                                    else
+                                    {
+                                        <span class="pa-thumb pa-thumb-empty"><i class="bi bi-image"></i></span>
+                                    }
+                                    <div>
+                                        <span class="cell-title">@project.Title</span>
+                                        @if (!string.IsNullOrWhiteSpace(project.GithubUrl))
+                                        {
+                                            <a class="cell-sub" href="@project.GithubUrl" target="_blank" rel="noopener">
+                                                <i class="bi bi-github"></i> GitHub
+                                            </a>
+                                        }
+                                    </div>
+                                </div>
+                            </td>
+                            <td>@project.Category?.CategoryName</td>
+                            <td class="cell-mono">@project.CreatedDate.ToString("yyyy-MM-dd")</td>
+                            <td>
+                                @if (project.IsActive)
+                                {
+                                    <span class="pa-badge is-on">Aktif</span>
+                                }
+                                else
+                                {
+                                    <span class="pa-badge is-off">Pasif</span>
+                                }
+                            </td>
+                            <td class="cell-actions">
+                                <a class="btn btn-ghost btn-icon" title="Düzenle" aria-label="Düzenle"
+                                   asp-action="UpdateProject" asp-route-id="@project.ProjectId">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <form class="d-inline" method="post"
+                                      asp-action="DeleteProject" asp-route-id="@project.ProjectId"
+                                      data-confirm="@project.Title ve kapak görseli kalıcı olarak silinecek."
+                                      data-confirm-title="Proje silinsin mi?">
+                                    <button type="submit" class="btn btn-danger-ghost btn-icon" title="Sil" aria-label="Sil">
+                                        <i class="bi bi-trash3"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </section>
+}

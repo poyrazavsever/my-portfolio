@@ -1,0 +1,21 @@
+@model Category
+
+@{
+    ViewData["Title"] = "Kategoriyi düzenle";
+    ViewData["Description"] = Model.CategoryName;
+}
+
+<form asp-action="UpdateCategory" method="post" class="glass ticks pa-panel-pad">
+    <input type="hidden" asp-for="CategoryId" />
+    <partial name="_CategoryForm" model="Model" />
+
+    <div class="pa-form-actions">
+        <a class="btn btn-ghost" asp-action="CategoryList">Vazgeç</a>
+        <button type="submit" class="btn btn-primary"><i class="bi bi-check2"></i>Değişiklikleri kaydet</button>
+    </div>
+</form>
+
+@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <partial name="_ValidationScriptsPartial" />
+}

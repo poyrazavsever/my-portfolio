@@ -1,0 +1,11 @@
+@model Category
+
+<div asp-validation-summary="ModelOnly"></div>
+
+<div class="row g-4">
+    <div class="col-md-8">
+        <label asp-for="CategoryName" class="form-label"></label>
+        <input asp-for="CategoryName" class="form-control" placeholder="Web, Backend, Mobil..." autofocus />
+        <span asp-validation-for="CategoryName"></span>
+    </div>
+</div>

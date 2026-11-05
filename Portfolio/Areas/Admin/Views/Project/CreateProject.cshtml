@@ -1,0 +1,20 @@
+@model Project
+
+@{
+    ViewData["Title"] = "Yeni proje";
+    ViewData["Description"] = "Sitede kart olarak gösterilir ve kategoriye göre filtrelenebilir.";
+}
+
+<form asp-action="CreateProject" method="post" enctype="multipart/form-data" class="glass ticks pa-panel-pad">
+    <partial name="_ProjectForm" model="Model" />
+
+    <div class="pa-form-actions">
+        <a class="btn btn-ghost" asp-action="ProjectList">Vazgeç</a>
+        <button type="submit" class="btn btn-primary"><i class="bi bi-check2"></i>Kaydet</button>
+    </div>
+</form>
+
+@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <partial name="_ValidationScriptsPartial" />
+}
