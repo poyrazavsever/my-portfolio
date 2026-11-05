@@ -359,3 +359,25 @@ Her fazdan sonra "ne yaptık, neden yaptık" notu. Proje sonunda soru-cevap ve v
 5. **Proje:** Yeni proje ekle (kategori dropdown'u, kapak görseli) → sitede kartın ve filtrenin güncellendiğini göster → projeyi pasif yap, sitede kaybolduğunu göster.
 6. **Kategori:** İçinde proje olan kategoriyi silmeyi dene (Restrict mesajı).
 7. **CV:** Ayarlar'dan PDF yükle → sitede "CV indir" butonunun çıktığını ve dosyanın anlamlı adla indiğini göster.
+
+---
+
+## Ara adım: Demo videosu ve README animasyonu
+
+### Ne yaptık?
+- `design/video/build.py`: 40 saniyelik tanıtım videosunun üretim hattı. Dört aşaması var: `shots` → `tts` → `render` → `compose`.
+  - **Görüntü (ücretsiz):** Headless Chrome ile ekran görüntüleri; ana sayfa için uzun bir tam sayfa görüntüsü.
+  - **Sahne kartları (ücretsiz):** Başlık, mimari ve kapanış kartları ile tarayıcı/telefon çerçeveleri, kendi tasarım sistemimizle HTML olarak çizilip PNG'ye çevrildi. Çerçevelerin pencere içi şeffaf; ekran görüntüsü ffmpeg ile altına yerleşiyor.
+  - **Hareket:** ffmpeg `crop` filtresinin `y` değeri zamana bağlı bir ifade (`(1-cos(PI*t/T))/2`, yavaş başlayıp yavaş duran "ease"). Uzun ekran görüntüsünün içinde kayarak gerçek bir kaydırma gibi görünüyor.
+  - **Seslendirme (Higgsfield, İngilizce):** Inworld TTS ile sahne başına bir cümle. Her sahnenin süresi kendi cümlesinin süresine göre hesaplanıyor, böylece ses ve görüntü senkron.
+- Çıktılar: `docs/demo.mp4` (1280×720, sesli, 2.9 MB, LinkedIn için) ve `docs/demo.webp` (960×540, sessiz, sonsuz döngü, 2.2 MB, README'nin en üstünde).
+
+### Neden böyle?
+- **Maliyet:** Video modeliyle ekran kaydı "üretmek" hem pahalı hem de gerçek arayüzü göstermez. Gerçek ekran görüntülerini ffmpeg ile hareketlendirmek ücretsiz ve birebir doğru. Kredi yalnızca seslendirmeye harcandı: toplam **28 kredi**.
+- **Sahne başına ses:** Tek parça seslendirmede hangi cümlenin hangi saniyede bittiğini bilemezdik. Ayrı kliplerle her sahne kendi cümlesi kadar sürüyor.
+- **README için neden WebP, neden GIF değil?** GIF 256 renkle sınırlı; koyu, ince çizgili bir arayüzde bantlanma yapar ve aynı süre için çok daha büyük olur. Animasyonlu WebP tam renkli ve GitHub'da otomatik oynuyor.
+
+### Yaşadığımız sorunlar
+- **İlk seslendirme 53 saniyeydi:** Konuşma saniyede yaklaşık 2 kelime. Altı cümleyi kısaltıp yeniden ürettik (yalnızca onlar için ~12 kredi). Bütün klipleri baştan/sondan sessizliği kırpıp perdeyi bozmadan %10 hızlandırdık (`atempo=1.1`). Sonuç: 40.6 saniye.
+- **Telefon sahnesi:** 390×844 görüntü 300 px'e ölçeklenince 649.2 px yüksekliğe düşüyordu; 650 px'lik kırpma geçersiz oldu. `scale=300:-2` ile yüksekliği çift sayıya yuvarladık.
+- **WebP süre doğrulaması:** Pillow kare sürelerini 0 okudu. Dosyayı Chrome'un `ImageDecoder` API'siyle (GitHub'ın kullanacağı motorla aynı) okuyunca 229 kare, 40.6 saniye ve sonsuz döngü doğrulandı. Ders: Bir dosyayı, onu gerçekten kullanacak araçla test et.
