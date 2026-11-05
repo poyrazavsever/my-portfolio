@@ -1,0 +1,59 @@
+@model About
+
+@{
+    ViewData["Title"] = "Hakkımda";
+    ViewData["Description"] = "Sitedeki Hakkımda bölümünün içeriği.";
+}
+
+<form asp-action="Index" method="post" class="glass ticks pa-panel-pad">
+    <div asp-validation-summary="ModelOnly"></div>
+
+    <div class="row g-4">
+        <div class="col-md-6">
+            <label asp-for="NameSurname" class="form-label"></label>
+            <input asp-for="NameSurname" class="form-control" />
+            <span asp-validation-for="NameSurname"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label asp-for="Expert" class="form-label"></label>
+            <input asp-for="Expert" class="form-control" placeholder="Backend, veri modelleme" />
+            <span asp-validation-for="Expert"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label asp-for="Location" class="form-label"></label>
+            <input asp-for="Location" class="form-control" placeholder="İstanbul, Türkiye" />
+            <span asp-validation-for="Location"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label asp-for="Email" class="form-label"></label>
+            <input asp-for="Email" type="email" class="form-control" />
+            <span asp-validation-for="Email"></span>
+        </div>
+
+        <div class="col-12">
+            <label asp-for="Description" class="form-label"></label>
+            <textarea asp-for="Description" class="form-control" rows="8"></textarea>
+            <span asp-validation-for="Description"></span>
+        </div>
+
+        <div class="col-12">
+            <div class="form-check form-switch">
+                <input asp-for="OpenToWork" class="form-check-input" role="switch" />
+                <label asp-for="OpenToWork" class="form-check-label"></label>
+            </div>
+            <div class="form-text">Açıksa sitede "Yeni projelere açık" durumu gösterilir.</div>
+        </div>
+    </div>
+
+    <div class="pa-form-actions">
+        <button type="submit" class="btn btn-primary"><i class="bi bi-check2"></i>Kaydet</button>
+    </div>
+</form>
+
+@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <partial name="_ValidationScriptsPartial" />
+}

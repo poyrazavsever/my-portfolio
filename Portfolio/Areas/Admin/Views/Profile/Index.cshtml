@@ -1,0 +1,103 @@
+@model ProfileViewModel
+
+@{
+    ViewData["Title"] = "Profil";
+    ViewData["Description"] = "Ana sayfada ve iletişim bölümünde görünen bilgiler.";
+}
+
+<form asp-action="UpdateHero" method="post" enctype="multipart/form-data" class="glass ticks pa-panel-pad mb-4">
+    <h2 class="pa-section-title">Ana sayfa</h2>
+    <p class="pa-section-sub">Ad, unvan, tanıtım metni ve profil görseli.</p>
+
+    <div class="row g-4">
+        <div class="col-md-6">
+            <label asp-for="Hero.Title" class="form-label"></label>
+            <input asp-for="Hero.Title" class="form-control" placeholder="Poyraz Avsever" />
+            <span asp-validation-for="Hero.Title"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label asp-for="Hero.SubTitle" class="form-label"></label>
+            <input asp-for="Hero.SubTitle" class="form-control" placeholder="Backend Developer" />
+            <span asp-validation-for="Hero.SubTitle"></span>
+        </div>
+
+        <div class="col-12">
+            <label asp-for="Hero.Description" class="form-label"></label>
+            <textarea asp-for="Hero.Description" class="form-control" rows="3"></textarea>
+            <span asp-validation-for="Hero.Description"></span>
+        </div>
+
+        <div class="col-12">
+            <label class="form-label" for="profileImage">Profil görseli</label>
+            <div class="d-flex align-items-center gap-3">
+                @if (!string.IsNullOrWhiteSpace(Model.Hero.ImageUrl))
+                {
+                    <img class="pa-image-preview" src="@Model.Hero.ImageUrl" alt="Mevcut profil görseli" />
+                }
+                <div class="flex-grow-1">
+                    <input id="profileImage" name="profileImage" type="file" class="form-control"
+                           accept=".jpg,.jpeg,.png,.webp" />
+                    <div class="form-text">JPG, PNG veya WEBP, en fazla 2 MB. Boş bırakırsanız mevcut görsel kalır.</div>
+                    <span asp-validation-for="Hero.ImageUrl"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="pa-form-actions">
+        <button type="submit" class="btn btn-primary"><i class="bi bi-check2"></i>Ana sayfayı kaydet</button>
+    </div>
+</form>
+
+<form asp-action="UpdateContact" method="post" class="glass ticks pa-panel-pad">
+    <h2 class="pa-section-title">İletişim ve sosyal bağlantılar</h2>
+    <p class="pa-section-sub">İletişim bölümünde ve site genelindeki bağlantılarda kullanılır.</p>
+
+    <div class="row g-4">
+        <div class="col-md-6">
+            <label asp-for="Contact.Email" class="form-label"></label>
+            <input asp-for="Contact.Email" type="email" class="form-control" placeholder="ornek@eposta.com" />
+            <span asp-validation-for="Contact.Email"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label asp-for="Contact.Location" class="form-label"></label>
+            <input asp-for="Contact.Location" class="form-control" placeholder="İstanbul, Türkiye" />
+            <span asp-validation-for="Contact.Location"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label asp-for="Contact.Linkedin" class="form-label"></label>
+            <input asp-for="Contact.Linkedin" class="form-control" placeholder="https://linkedin.com/in/..." />
+            <span asp-validation-for="Contact.Linkedin"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label asp-for="Contact.Github" class="form-label"></label>
+            <input asp-for="Contact.Github" class="form-control" placeholder="https://github.com/..." />
+            <span asp-validation-for="Contact.Github"></span>
+        </div>
+
+        <div class="col-12">
+            <label asp-for="Contact.Description" class="form-label"></label>
+            <input asp-for="Contact.Description" class="form-control" placeholder="Birlikte çalışalım" />
+            <span asp-validation-for="Contact.Description"></span>
+        </div>
+
+        <div class="col-12">
+            <label asp-for="Contact.SubDescription" class="form-label"></label>
+            <textarea asp-for="Contact.SubDescription" class="form-control" rows="2"></textarea>
+            <span asp-validation-for="Contact.SubDescription"></span>
+        </div>
+    </div>
+
+    <div class="pa-form-actions">
+        <button type="submit" class="btn btn-primary"><i class="bi bi-check2"></i>İletişimi kaydet</button>
+    </div>
+</form>
+
+@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <partial name="_ValidationScriptsPartial" />
+}

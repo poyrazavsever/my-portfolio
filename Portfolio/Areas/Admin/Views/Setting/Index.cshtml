@@ -1,0 +1,23 @@
+@model SiteSetting
+
+@{
+    ViewData["Title"] = "Ayarlar";
+    ViewData["Description"] = "Sitenin genel ayarları.";
+}
+
+<form asp-action="Index" method="post" class="glass ticks pa-panel-pad">
+    <h2 class="pa-section-title">Genel</h2>
+    <p class="pa-section-sub">Tarayıcı sekmesinde ve paylaşım önizlemelerinde görünen başlık.</p>
+
+    <div class="row g-4">
+        <div class="col-md-8">
+            <label asp-for="SiteTitle" class="form-label"></label>
+            <input asp-for="SiteTitle" class="form-control" placeholder="Poyraz Avsever · Backend Developer" />
+            <span asp-validation-for="SiteTitle"></span>
+        </div>
+    </div>
+
+    <div class="pa-form-actions">
+        <button type="submit" class="btn btn-primary"><i class="bi bi-check2"></i>Kaydet</button>
+    </div>
+</form>
