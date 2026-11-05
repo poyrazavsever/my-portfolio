@@ -9,6 +9,8 @@
     <main class="main-body-container flex-grow-1 p-4 p-md-4 p-lg-5">
         <div class="container-sm">
             <form method="post">
+                <div asp-validation-summary="All" class="text-danger small mb-3"></div>
+
                 <div class="mb-3">
                     <label asp-for="Title" class="form-label">Başlık</label>
                     <input type="text" asp-for="Title" class="form-control" />
@@ -32,6 +34,18 @@
                 <div class="mb-3">
                     <label asp-for="WorkType" class="form-label">Çalışma Türü</label>
                     <input type="text" asp-for="WorkType" class="form-control" />
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="StartDate" class="form-label">Başlangıç Tarihi</label>
+                    <input asp-for="StartDate" class="form-control" />
+                    <span asp-validation-for="StartDate" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="EndDate" class="form-label">Bitiş Tarihi (devam ediyorsa boş bırakın)</label>
+                    <input asp-for="EndDate" class="form-control" />
+                    <span asp-validation-for="EndDate" class="text-danger small"></span>
                 </div>
 
                 <button type="submit" class="btn btn-info">Kaydet</button>

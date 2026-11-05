@@ -18,7 +18,10 @@ namespace Portfolio.Areas.Admin.Controllers
         public IActionResult ExperienceList()
         {
 
-            var values = _context.Experiences.ToList();
+            // En güncel deneyim en üstte; devam edenler (EndDate = null) kendi başlangıç tarihine göre sıralanır.
+            var values = _context.Experiences
+                .OrderByDescending(experience => experience.StartDate)
+                .ToList();
 
             return View(values);
         }
@@ -30,8 +33,14 @@ namespace Portfolio.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult CreateExperience(Experience experience)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(experience);
+            }
+
             _context.Experiences.Add(experience);
             _context.SaveChanges();
             return RedirectToAction("ExperienceList");
@@ -87,6 +96,8 @@ namespace Portfolio.Areas.Admin.Controllers
             values.Description = experience.Description;
             values.SideTitle = experience.SideTitle;
             values.WorkType = experience.WorkType;
+            values.StartDate = experience.StartDate;
+            values.EndDate = experience.EndDate;
             values.IsActive = experience.IsActive;
 
             _context.SaveChanges();
