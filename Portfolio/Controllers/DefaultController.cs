@@ -1,22 +1,43 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Portfolio.Context;
 using Portfolio.Entities;
 using Portfolio.Infrastructure;
+using Portfolio.Services;
 
 namespace Portfolio.Controllers
 {
     public class DefaultController : Controller
     {
         private readonly PortfolioContext _context;
+        private readonly ICvStorage _cvStorage;
 
-        public DefaultController(PortfolioContext context)
+        public DefaultController(PortfolioContext context, ICvStorage cvStorage)
         {
             _context = context;
+            _cvStorage = cvStorage;
         }
 
         public IActionResult Index()
         {
             return View();
+        }
+
+        // CV dosyası wwwroot dışında (App_Data/cv). Ziyaretçi dosyaya yalnızca bu action üzerinden ulaşır:
+        // indirilen adı ("Poyraz-Avsever-CV.pdf") ve içerik türünü biz belirleriz, diskteki Guid'li ad hiç görünmez.
+        [HttpGet]
+        public async Task<IActionResult> DownloadCv()
+        {
+            var setting = await _context.SiteSettings.AsNoTracking().FirstOrDefaultAsync();
+            var fullPath = _cvStorage.GetFullPath(setting?.CvFilePath);
+
+            if (fullPath is null)
+            {
+                return NotFound();
+            }
+
+            // fileDownloadName verildiğinde ASP.NET "Content-Disposition: attachment" ekler: tarayıcı dosyayı indirir.
+            return PhysicalFile(fullPath, "application/pdf", setting!.CvDownloadName ?? "CV.pdf");
         }
 
         // [Bind(...)]: Formdan YALNIZCA bu dört alan alınır. Message'daki IsRead, SendDate, MessageId

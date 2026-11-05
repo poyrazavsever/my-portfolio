@@ -254,6 +254,22 @@
 .pa-section-title { font-size: 17px; margin: 0 0 4px; }
 .pa-section-sub { color: var(--pa-muted); font-size: 14px; margin: 0 0 24px; }
 
+/* ---------- Yüklü dosya satırı (CV) ---------- */
+.pa-file {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 14px 16px;
+    border: 1px solid var(--pa-stroke);
+    border-radius: var(--pa-radius-sm);
+    background: rgba(0, 0, 0, .2);
+}
+.pa-file-info { flex: 1; min-width: 200px; }
+.pa-file-info b { display: block; font-weight: 500; overflow-wrap: anywhere; }
+.pa-file-info span { font: 12.5px var(--pa-mono); color: var(--pa-muted); }
+.pa-file-actions { display: flex; gap: 8px; }
+
 /* ---------- Liste araç çubuğu (arama + filtreler) ---------- */
 .pa-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 16px; }
 .pa-toolbar .form-select { width: auto; }

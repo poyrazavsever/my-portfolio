@@ -8,3 +8,6 @@ design/icons/raw/
 
 # Admin panelinden yüklenen dosyalar (kullanıcı içeriği, repoya girmez)
 Portfolio/wwwroot/uploads/
+
+# Admin panelinden yüklenen CV (wwwroot dışında saklanır)
+Portfolio/App_Data/

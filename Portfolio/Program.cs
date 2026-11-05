@@ -12,6 +12,7 @@ builder.Services.AddDbContext<PortfolioContext>(options =>
 
 // IImageStorage isteyen her controller'a ImageStorage verilir (istek başına bir tane).
 builder.Services.AddScoped<IImageStorage, ImageStorage>();
+builder.Services.AddScoped<ICvStorage, CvStorage>();
 
 var app = builder.Build();
 

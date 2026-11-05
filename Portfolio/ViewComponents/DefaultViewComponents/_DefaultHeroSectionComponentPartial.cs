@@ -1,17 +1,21 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Portfolio.Context;
+using Portfolio.Infrastructure;
 using Portfolio.Models;
+using Portfolio.Services;
 
 namespace Portfolio.ViewComponents.DefaultViewComponents
 {
     public class _DefaultHeroSectionComponentPartial : ViewComponent
     {
         private readonly PortfolioContext _context;
+        private readonly ICvStorage _cvStorage;
 
-        public _DefaultHeroSectionComponentPartial(PortfolioContext context)
+        public _DefaultHeroSectionComponentPartial(PortfolioContext context, ICvStorage cvStorage)
         {
             _context = context;
+            _cvStorage = cvStorage;
         }
 
         public async Task<IViewComponentResult> InvokeAsync()
@@ -21,7 +25,7 @@ namespace Portfolio.ViewComponents.DefaultViewComponents
             var hero = await _context.HeroSections.AsNoTracking().FirstOrDefaultAsync();
             var about = await _context.Abouts.AsNoTracking().FirstOrDefaultAsync();
             var contact = await _context.Contacts.AsNoTracking().FirstOrDefaultAsync();
-            var hasCv = await _context.SiteSettings.AsNoTracking().AnyAsync(setting => setting.CvFilePath != null);
+            var hasCv = await SiteQueries.HasCvAsync(_context, _cvStorage);
 
             var model = new HeroViewModel
             {

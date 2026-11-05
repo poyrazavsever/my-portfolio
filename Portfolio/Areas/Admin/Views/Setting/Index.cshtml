@@ -2,8 +2,61 @@
 
 @{
     ViewData["Title"] = "Ayarlar";
-    ViewData["Description"] = "Sitenin genel ayarları.";
+    ViewData["Description"] = "Sitenin genel ayarları ve CV dosyası.";
+
+    var cvExists = ViewData["CvExists"] is true;
+    var cvSizeKb = ViewData["CvSizeKb"] as int? ?? 0;
+    var cvMissing = ViewData["CvMissingFile"] is true;
 }
+
+<section class="glass ticks pa-panel-pad mb-4">
+    <h2 class="pa-section-title">CV</h2>
+    <p class="pa-section-sub">Sitedeki "CV indir" butonları bu dosyayı indirir. Yalnızca PDF, en fazla 5 MB.</p>
+
+    @if (cvExists)
+    {
+        <div class="pa-file">
+            <glass-icon name="cv" size="64" />
+            <div class="pa-file-info">
+                <b>@Model.CvDownloadName</b>
+                <span>@cvSizeKb KB · @Model.CvUpdatedAt?.ToString("dd.MM.yyyy HH:mm") tarihinde yüklendi</span>
+            </div>
+            <div class="pa-file-actions">
+                <a class="btn btn-ghost" asp-action="PreviewCv" target="_blank" rel="noopener"><i class="bi bi-box-arrow-up-right"></i>Önizle</a>
+                <form method="post" asp-action="DeleteCv"
+                      data-confirm="Sitedeki CV indir butonları gizlenecek ve dosya silinecek."
+                      data-confirm-title="CV kaldırılsın mı?" data-confirm-button="Kaldır">
+                    <button type="submit" class="btn btn-danger-ghost"><i class="bi bi-trash3"></i>Kaldır</button>
+                </form>
+            </div>
+        </div>
+    }
+    else if (cvMissing)
+    {
+        <div class="pa-alert is-error" role="alert">
+            <i class="bi bi-exclamation-octagon"></i>Kayıtlı CV dosyası diskte bulunamadı. Lütfen yeniden yükleyin.
+        </div>
+    }
+
+    <form method="post" asp-action="UploadCv" enctype="multipart/form-data" class="mt-4">
+        <div class="row g-4 align-items-end">
+            <div class="col-md-6">
+                <label class="form-label" for="cvFile">@(cvExists ? "Yeni CV ile değiştir" : "CV dosyası")</label>
+                <input id="cvFile" name="cvFile" type="file" class="form-control" accept="application/pdf,.pdf" required
+                       data-max-bytes="@Portfolio.Services.CvStorage.MaxBytes" data-max-label="5 MB" />
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" for="downloadName">İndirilecek dosya adı</label>
+                <input id="downloadName" name="downloadName" class="form-control"
+                       value="@Model.CvDownloadName" placeholder="Poyraz-Avsever-CV.pdf" maxlength="140" />
+                <div class="form-text">Boş bırakırsanız ad soyadınızdan oluşturulur.</div>
+            </div>
+        </div>
+        <div class="pa-form-actions">
+            <button type="submit" class="btn btn-primary"><i class="bi bi-upload"></i>@(cvExists ? "CV'yi değiştir" : "CV yükle")</button>
+        </div>
+    </form>
+</section>
 
 <form asp-action="Index" method="post" class="glass ticks pa-panel-pad">
     <h2 class="pa-section-title">Genel</h2>

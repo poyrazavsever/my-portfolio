@@ -11,7 +11,7 @@ namespace Portfolio.Entities
         [StringLength(100)]
         public string? SiteTitle { get; set; }
 
-        // wwwroot'a göre göreli yol, örn. "/uploads/cv/3f2a...pdf"
+        // App_Data klasörüne göre göreli yol, örn. "cv/3f2a...pdf" (wwwroot DIŞINDA; bkz. CvStorage)
         [StringLength(500)]
         public string? CvFilePath { get; set; }
 
