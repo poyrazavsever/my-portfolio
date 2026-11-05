@@ -1,4 +1,4 @@
-﻿@model List<Experience>
+@model List<Experience>
 
 @{
     ViewData["Title"] = "Deneyim";
@@ -69,7 +69,8 @@ else
                                 </a>
                                 <form class="d-inline" method="post"
                                       asp-action="DeleteExperience" asp-route-id="@experience.ExperienceId"
-                                      onsubmit="return confirm('Bu deneyim kalıcı olarak silinecek. Emin misiniz?');">
+                                      data-confirm="@experience.Title · @experience.CompanyName kalıcı olarak silinecek."
+                                      data-confirm-title="Deneyim silinsin mi?">
                                     <button type="submit" class="btn btn-danger-ghost btn-icon" title="Sil" aria-label="Sil">
                                         <i class="bi bi-trash3"></i>
                                     </button>

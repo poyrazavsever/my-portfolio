@@ -1,0 +1,11 @@
+@using Portfolio.Infrastructure
+@* TempData bir sonraki isteğe kadar yaşar: POST -> Redirect -> GET akışında mesajı taşır, okununca silinir.
+   Sunucu düz bir uyarı kutusu basar; admin-ui.js bunu SweetAlert2 toast'una çevirir (JS yoksa kutu görünür kalır). *@
+@if (TempData.TakeSuccess() is string success)
+{
+    <div class="pa-alert is-ok" role="status" data-flash="success"><i class="bi bi-check2-circle"></i>@success</div>
+}
+@if (TempData.TakeError() is string error)
+{
+    <div class="pa-alert is-error" role="alert" data-flash="error"><i class="bi bi-exclamation-octagon"></i>@error</div>
+}

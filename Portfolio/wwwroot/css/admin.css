@@ -138,6 +138,124 @@
 }
 .pa-stats b { color: var(--pa-ink); font-weight: 500; }
 
+.pa-alert {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    margin-bottom: 20px;
+    border-radius: var(--pa-radius-sm);
+    border: 1px solid var(--pa-stroke);
+    font-size: 14px;
+}
+.pa-alert.is-ok { color: var(--pa-ok); border-color: rgba(63, 185, 122, .35); background: var(--pa-ok-soft); }
+.pa-alert.is-error { color: var(--pa-red-ink); border-color: var(--pa-red-line); background: var(--pa-red-soft); }
+
+/* ---------- SweetAlert2 teması ----------
+   Kütüphanenin beyaz kutusunu cam yüzeye, renkli ikonlarını tipografiye çeviriyoruz. */
+.swal2-container.swal2-backdrop-show { background: rgba(5, 6, 8, .66); }
+.swal2-popup.pa-swal {
+    width: min(420px, calc(100vw - 32px));
+    padding: 28px 28px 24px;
+    background: rgba(17, 18, 22, .9);
+    border: 1px solid var(--pa-stroke);
+    border-top-color: var(--pa-stroke-strong);
+    border-radius: var(--pa-radius);
+    backdrop-filter: var(--pa-blur);
+    -webkit-backdrop-filter: var(--pa-blur);
+    box-shadow: var(--pa-shadow);
+    color: var(--pa-ink);
+    font-family: var(--pa-sans);
+    text-align: left;
+}
+.pa-swal-title {
+    padding: 0;
+    font-size: 19px;
+    font-weight: 600;
+    letter-spacing: -.01em;
+    color: var(--pa-ink);
+    text-align: left;
+}
+/* .swal2-popup ön eki: kütüphanenin kendi ".swal2-html-container" kuralından daha spesifik olmak için */
+.swal2-popup .pa-swal-text {
+    margin: 10px 0 0;
+    padding: 0;
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: var(--pa-muted);
+    text-align: left;
+}
+.pa-swal-actions {
+    width: 100%;
+    justify-content: flex-end;
+    gap: 8px;
+    margin: 24px 0 0;
+    padding-top: 20px;
+    border-top: 1px solid var(--pa-stroke);
+}
+.pa-swal-actions .btn { margin: 0; }
+
+.swal2-popup.pa-toast {
+    display: flex !important;
+    align-items: center;
+    width: auto;
+    max-width: min(440px, calc(100vw - 32px));
+    padding: 12px 16px 14px;
+    background: rgba(17, 18, 22, .92);
+    border: 1px solid var(--pa-stroke);
+    border-radius: var(--pa-radius-sm);
+    backdrop-filter: var(--pa-blur);
+    -webkit-backdrop-filter: var(--pa-blur);
+    box-shadow: var(--pa-shadow);
+    font-family: var(--pa-sans);
+    overflow: hidden;
+}
+.pa-toast .swal2-html-container {
+    display: flex !important;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    font-size: 14px;
+    color: var(--pa-ink);
+    text-align: left;
+}
+.pa-toast .swal2-html-container i { font-size: 16px; }
+.pa-toast.is-ok { border-color: rgba(63, 185, 122, .35); }
+.pa-toast.is-ok i { color: var(--pa-ok); }
+.pa-toast.is-error { border-color: var(--pa-red-line); }
+.pa-toast.is-error i { color: var(--pa-red-ink); }
+.pa-toast .pa-toast-bar { height: 2px; background: var(--pa-stroke-strong); }
+.pa-toast.is-error .pa-toast-bar { background: var(--pa-red); }
+
+@keyframes pa-swal-in { from { opacity: 0; transform: translateY(6px) scale(.98); } to { opacity: 1; transform: none; } }
+@keyframes pa-swal-out { from { opacity: 1; } to { opacity: 0; transform: translateY(4px); } }
+.pa-swal-in { animation: pa-swal-in .18s var(--pa-ease) both; }
+.pa-swal-out { animation: pa-swal-out .14s ease-in both; }
+
+/* Görsel yükleme alanındaki mevcut görsel önizlemesi */
+.pa-image-preview {
+    width: 96px;
+    height: 96px;
+    object-fit: cover;
+    border-radius: var(--pa-radius-sm);
+    border: 1px solid var(--pa-stroke);
+    background: var(--pa-bg-raised);
+}
+.pa-thumb {
+    width: 56px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: var(--pa-radius-xs);
+    border: 1px solid var(--pa-stroke);
+    background: var(--pa-bg-raised);
+    flex: none;
+}
+.pa-thumb-empty { display: grid; place-items: center; color: var(--pa-faint); font-size: 15px; }
+
+.pa-section-title { font-size: 17px; margin: 0 0 4px; }
+.pa-section-sub { color: var(--pa-muted); font-size: 14px; margin: 0 0 24px; }
+
 .pa-panel { padding: 6px 6px 4px; }
 .pa-panel-pad { padding: 28px; }
 

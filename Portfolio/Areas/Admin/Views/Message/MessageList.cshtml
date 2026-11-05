@@ -1,4 +1,4 @@
-﻿@model List<Message>
+@model List<Message>
 
 @{
     ViewData["Title"] = "Mesajlar";
@@ -71,7 +71,8 @@ else
                                 </a>
                                 <form class="d-inline" method="post"
                                       asp-action="DeleteMessage" asp-route-id="@message.MessageId"
-                                      onsubmit="return confirm('Bu mesaj kalıcı olarak silinecek. Emin misiniz?');">
+                                      data-confirm="@message.NameSurname tarafından gönderilen mesaj kalıcı olarak silinecek."
+                                      data-confirm-title="Mesaj silinsin mi?">
                                     <button type="submit" class="btn btn-danger-ghost btn-icon" title="Sil" aria-label="Sil">
                                         <i class="bi bi-trash3"></i>
                                     </button>
