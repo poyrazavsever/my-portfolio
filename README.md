@@ -3,7 +3,26 @@
 ASP.NET Core MVC (.NET 10) ve Entity Framework Core ile geliştirilmiş, tüm içeriği bir yönetim panelinden düzenlenebilen kişisel portfolyo sitesi.
 M&Y Yazılım Eğitim Akademi · 12. Dönem Akşam Grubu · **1. Proje: Portfolyo Case** çalışması olarak hazırlandı.
 
-![Ana sayfa](docs/screenshots/home-hero.png)
+![Portfolio CMS demo](docs/demo.webp)
+
+<sub>40 saniyelik tanıtım · İngilizce seslendirmeli sürüm: [docs/demo.mp4](docs/demo.mp4)</sub>
+
+## Ekran görüntüleri
+
+<table>
+  <tr>
+    <td width="72%"><img src="docs/screenshots/home-hero.png" alt="Ana sayfa"><br><sub>Ana sayfa</sub></td>
+    <td width="28%"><img src="docs/screenshots/mobile-home.png" alt="Mobil görünüm"><br><sub>Mobil</sub></td>
+  </tr>
+</table>
+
+| Projeler (kategori filtresi ve arama) | Dashboard |
+|---|---|
+| ![Projeler](docs/screenshots/home-projects.png) | ![Dashboard](docs/screenshots/admin-dashboard.png) |
+
+| Gelen kutusu (modal detay) | Proje formu |
+|---|---|
+| ![Gelen kutusu](docs/screenshots/admin-inbox.png) | ![Proje formu](docs/screenshots/admin-project-form.png) |
 
 ## Öne çıkanlar
 
@@ -105,7 +124,8 @@ Portfolio/
     ├── css/                design-system.css (token'lar) · site.css · admin.css
     └── js/                 site.js · admin-ui.js · glass-icon.js
 design/icons/               İkon üretim hattı (icons.json + generate.py)
-docs/screenshots/           README görselleri
+design/video/               Demo videosu üretim hattı (build.py)
+docs/                       demo.webp · demo.mp4 · screenshots/
 LEARNING_NOTES.md           Her fazda ne yaptık, neden yaptık
 ```
 
@@ -114,20 +134,6 @@ LEARNING_NOTES.md           Her fazda ne yaptık, neden yaptık
 - **Token tabanlı tema:** Bütün renk, cam yüzey, tipografi ve ölçü değerleri `design-system.css` içindeki `:root` değişkenlerinde. Bootstrap'ın `--bs-*` değişkenleri bu token'lara bağlı olduğu için modal, form ve offcanvas gibi bileşenler de aynı dili konuşuyor.
 - **Kurallar:** Tek vurgu rengi (kırmızı `#E5322D`), gradyan yok, emoji yok, başlık üstü etiket yok. Mühendislik dili ızgara zemin, köşe işaretleri, cetvel göstergeleri ve mono tipografiyle kuruldu.
 - **Hareketli cam ikonlar:** `design/icons/generate.py` tek bir prompt şablonuyla görsel üretir (GPT Image 2.5), görseli döngüsel olarak canlandırır (MiniMax H3) ve ffmpeg ile koyu arka planı silip alfa kanallı WebM'e çevirir. `<glass-icon>` Tag Helper'ı önce şeffaf PNG basar; destekleyen tarayıcılarda bunu videoya yükseltir (Safari'de ve "azaltılmış hareket" tercihinde PNG kalır).
-
-## Ekran görüntüleri
-
-| Projeler (filtre ve arama) | Mobil |
-|---|---|
-| ![Projeler](docs/screenshots/home-projects.png) | ![Mobil](docs/screenshots/mobile-home.png) |
-
-| Dashboard | Gelen kutusu (modal detay) |
-|---|---|
-| ![Dashboard](docs/screenshots/admin-dashboard.png) | ![Gelen kutusu](docs/screenshots/admin-inbox.png) |
-
-| Proje listesi | Proje formu |
-|---|---|
-| ![Proje listesi](docs/screenshots/admin-projects.png) | ![Proje formu](docs/screenshots/admin-project-form.png) |
 
 ## Güvenlik notları
 
