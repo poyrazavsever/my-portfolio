@@ -297,3 +297,35 @@ Her fazdan sonra "ne yaptık, neden yaptık" notu. Proje sonunda soru-cevap ve v
 - **Konum:** "Ankara, Türkiye". Sitede açıkça yazmıyor; OSTİM Teknik Üniversitesi'nden çıkarıldı.
 - **Yetenek seviyeleri:** Teknoloji listesi sitede var ama seviye yok. Verilen yüzdeler yer tutucu; admin → Yetenekler'den güncellenmeli.
 - **Ay bilgisi:** Eğitim tarihlerinde sitede yalnızca yıl var. Başlangıç Eylül, bitiş Haziran kabul edildi (sitede zaten yalnızca yıl gösteriliyor).
+
+---
+
+## Faz 9: Dashboard
+
+### Ne yaptık?
+- **`DashboardViewModel`:** Dashboard'un ihtiyaç duyduğu her şey tek bir modelde: 7 sayı, son 5 mesaj, son 3 proje, kategori özeti, CV durumu.
+- **İstatistik kartları:** Toplam proje, aktif proje, yetenek, deneyim, eğitim, toplam mesaj, okunmamış mesaj. Her kart ilgili sayfaya gidiyor; okunmamış mesaj varsa kart kırmızı kenarlı ("yanıt bekliyor").
+- **Son 5 mesaj:** Gönderen, konu, tarih, okundu durumu. Tıklanınca `MessageList?open=id` ile gelen kutusunda o mesajın modalı açılıyor.
+- **Son 3 proje:** Ad, kategori, aktif/pasif. Tıklanınca düzenleme sayfası.
+- **Kategori özeti:** Kategori başına proje sayısı, yatay çubuk grafik olarak. Üzerine gelince aktif sayısını da gösteren bir ipucu çıkıyor; altında "Tablo olarak göster" seçeneği var.
+- **Hızlı işlemler:** Yeni proje, okunmamış mesajlar, portfolyoyu aç, CV yükle/güncelle.
+
+### Neden?
+- **ViewModel neden tek?** View'da sorgu yazmak (ör. `@Model.Count(...)`) iş mantığını görünüme taşır, test etmeyi ve okumayı zorlaştırır. Controller bütün sayıları hesaplayıp tek bir modelde veriyor; view yalnızca çiziyor. Case de bunu açıkça istiyor.
+- **Sayılar neden ayrı `CountAsync`?** Her biri SQL'de tek bir `SELECT COUNT(*)`; satırların kendisi belleğe çekilmiyor. Bütün mesajları `ToList()` ile çekip bellekte saymak, mesaj sayısı büyüdükçe yavaşlardı.
+- **`OrderByDescending` + `Take(5)`:** SQL'de `ORDER BY SendDate DESC` + `TOP(5)`. Sadece 5 satır geliyor.
+- **`GroupBy`:** `Projects.GroupBy(p => p.Category.CategoryName).Select(g => new { g.Key, Count = g.Count(), Active = g.Count(p => p.IsActive) })` EF tarafından tek bir `GROUP BY` sorgusuna çevriliyor. Gruplama DB'de yapılıyor. Not: Hiç projesi olmayan kategori bu listede çıkmaz, çünkü gruplar projelerden oluşuyor. Sıfırları da göstermek istersek sorguyu `Categories` tablosundan başlatıp projeksiyon yapmak gerekir (Kategoriler sayfasında öyle yaptık).
+- **Grafik kararları:**
+  - Tek seri, tek renk (kırmızı); lejant gereksiz, başlık neyin gösterildiğini söylüyor.
+  - Değerler çubuğun yanında yazılı, yani renk tek başına bilgi taşımıyor.
+  - İnce çubuk, sadece uçta 4px yuvarlama; ızgara/eksen yok.
+  - Ekran okuyucu ve kopyalama için aynı veri bir tablo olarak da var.
+  - Grafik kütüphanesi (Chart.js vb.) eklemedik: 3 çubuk için 40 KB'lık bir kütüphane gereksiz; CSS yeterli.
+
+### Tarayıcıda yakaladığımız sorun
+- 7 istatistik kartı `auto-fill` grid'de 5+2 diziliyor ve ikinci satır yarım kalıyordu. Orta genişlikte sabit 4 sütun (4+3), çok geniş ekranda 7 sütun yaptık.
+
+### Test
+- Dashboard'daki 7 sayıyı doğrudan SQL `COUNT` sorgularıyla karşılaştırdık: birebir aynı.
+- Son mesajlardan birine tıklayınca gelen kutusu açıldı ve doğru mesajın modalı kendiliğinden geldi.
+- Mobilde (375 px) taşma yok; kartlar 2 sütuna iniyor.
