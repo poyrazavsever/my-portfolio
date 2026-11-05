@@ -6,11 +6,11 @@
                 <!-- Left Content -->
                 <div class="col-lg-7 reveal-on-scroll">
                     <div class="hero-badge">
-                        <span>👋</span> Merhaba, Portfolyoma Hoş Geldiniz
+                        <span>👋</span> @ViewBag.subtitle
                     </div>
 
                     <h1 class="hero-title">
-                        Merhaba, Ben <span class="hero-name-gradient">Poyraz Alsever</span>.
+                        Merhaba, Ben <span class="hero-name-gradient">@ViewBag.title</span>.
                     </h1>
 
                     <!-- Animated Typing Text Slider -->
@@ -19,7 +19,7 @@
                     </div>
 
                     <p class="hero-desc">
-                        Bilgisayar mühendisliği altyapımı modern yazılım teknolojileriyle birleştirerek kullanıcı dostu, ölçeklenebilir ve yenilikçi dijital çözümler geliştiriyorum.
+                        @ViewBag.description
                     </p>
 
                     <div class="d-flex flex-wrap gap-3 align-items-center mb-4">
@@ -67,7 +67,7 @@
 
                         <!-- Main Portrait -->
                         <div class="hero-image-frame">
-                            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBM90nUmg17t1Rwdmp5syF7ybvObe2JCYXCRhb5SArxTW6Sb07gLuO9S-IukznIPZpOgF_fkiwKlbUQnj_f_Qyk9Cmk_hywN6N9uedVOLDslZjFUZly-H53T2h4pPYZCUpldpE8o6MEl4etmOYmOq5ewjDdvQPXDBaWoOMtjP7nTgIo_fnx7HSMO6foinZwMEJijjWucA0ZsTXsXk3pAMJF1xO7JuEpTrM4SqQNXksN3rtMwEh-HmVJ" alt="Poyraz Alsever - Bilgisayar Mühendisi" loading="lazy">
+                            <img src="@ViewBag.imageUrl" alt="Poyraz Alsever - Bilgisayar Mühendisi" loading="lazy">
                         </div>
 
                         <!-- Floating badge bottom right -->
