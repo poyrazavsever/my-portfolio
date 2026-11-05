@@ -51,3 +51,29 @@ Her fazdan sonra "ne yaptık, neden yaptık" notu. Proje sonunda soru-cevap ve v
 - **Ders 1:** Kolon daraltırken önce mevcut veriye bak (`SELECT MAX(LEN(...))`). EF'in "may result in the loss of data" uyarısı ciddiye alınmalı.
 - **Ders 2:** EF Core migration'ı SQL Server'da transaction içinde çalıştırır. Hata alınca hiçbir değişiklik kalmadı ve DB `mig3`'te kaldı. `migrations remove` ile migration'ı silip limitleri 500'e çıkardık, yeniden oluşturduk ve sorunsuz uyguladık.
 - Uygulanmamış bir migration `migrations remove` ile güvenle silinebilir. Uygulanmış bir migration'ı geri almak içinse önce `database update <öncekiMigration>` gerekir.
+
+---
+
+## Faz 2: Tasarım dili ve cam ikon seti
+
+### Ne yaptık?
+- Tasarım dilini belirledik: koyu zemin ve mühendislik ızgarası, cam (glassmorphism) yüzeyler, tek vurgu rengi kırmızı `#E5322D`, IBM Plex Sans ve IBM Plex Mono. Gradyan, başlık üstü etiket ve emoji kullanmıyoruz.
+- 11 ana ikonu Higgsfield ile ürettik: önce **GPT Image 2.5** ile statik cam görsel, sonra **MiniMax H3** ile 5 saniyelik döngüsel animasyon. Pilotta MiniMax ile Kling 4.0'ı aynı görselle karşılaştırıp MiniMax'i seçtik.
+- `design/icons/icons.json`: tek bir stil şablonu ve her ikon için yalnızca konu, kırmızı detay ve hareket tanımı.
+- `design/icons/generate.py`: `image → video → convert` aşamalarından oluşan, paralel çalışan, tekrar kullanılabilir bir üretim hattı.
+- Web çıktısı `wwwroot/assets/icons/`: her ikon için alfa kanallı `.webm` ve şeffaf `.png` poster. 11 ikon toplam 2.6 MB.
+
+### Neden?
+- **Tek şablon, değişen parçalar:** Promptları tek tek elle yazsaydık ışık, açı ve malzeme ikondan ikona kayardı. Ortak kısım (cam, ışık, açı, arka plan) sabit kaldığı için set bir aile gibi görünüyor. Yeni bir ikon eklemek JSON'a 4 satır yazmak kadar kolay.
+- **Döngü:** Videoların başlangıç ve bitiş karesi aynı görsel (`--start-image` ve `--end-image`). Bu yüzden tekrar ederken atlama olmuyor.
+- **Neden düz renkli arka plan istedik?** Video formatlarının çoğu şeffaflık taşımaz. Bu yüzden modelden düz koyu bir arka plan istedik, sonra ffmpeg'in `colorkey` filtresiyle o rengi silip **VP9 + alfa** (`yuva420p`) WebM ürettik.
+- **İlk deneme neden olmadı?** `mix-blend-mode: screen` ile koyu pikselleri gizlemeye çalıştık, ama cam kartın `backdrop-filter`'ı yeni bir katman grubu (isolation) oluşturuyor. Karıştırma bu grubun dışına çıkamadığı için ikonun etrafında koyu bir kare kaldı. Ders: CSS'te görsel bir hileye güvenmek yerine asset'in kendisini doğru üretmek daha sağlam.
+- **Küçük ikonlar neden video değil?** 16 piksellik hareketli bir ikon okunmaz ve sayfayı gereksiz ağırlaştırır. Hareketli cam ikonlar section ve dashboard gibi büyük yerlerde; butonlar ve menüler ince çizgili, tutarlı bir ikon setiyle kalacak.
+- **Erişilebilirlik ve performans:** `muted autoplay loop playsinline` tarayıcıların otomatik oynatmaya izin vermesi için şart. `prefers-reduced-motion` açıksa video yerine statik PNG gösterilecek (Faz 3).
+
+### Yaşadığımız sorunlar
+- 10 paralel istekten biri `403 Forbidden` aldı. Tek başına yeniden denenince geçti; muhtemelen eşzamanlı istek sınırına takılmıştı.
+- Dashboard kadranının yüzü opak beyaz çıktı ve camsı değildi. Prompta "kadran yüzü de buzlu cam, beyaz değil" diye açıkça yazınca düzeldi. Ders: Model, belirtmediğin ayrıntıyı en olası haliyle doldurur.
+
+### Açık konu (Faz 3)
+- Safari, VP9 alfa WebM'i şeffaf göstermiyor. Safari'de video yerine şeffaf PNG poster gösteren küçük bir yedek (fallback) ekleyeceğiz.
