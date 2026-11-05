@@ -1,0 +1,54 @@
+@model About
+
+@{
+    // Admin'de satır satır yazılan metni paragraflara böl.
+    var paragraphs = (Model.Description ?? string.Empty)
+        .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+}
+
+<section class="site-section" id="about">
+    <div class="site-container">
+        <partial name="_SectionHead" model='new SectionHeadModel("about", "Hakkımda")' />
+
+        <div class="about-grid @(paragraphs.Length == 0 ? "is-compact" : null)">
+            @if (paragraphs.Length > 0)
+            {
+                <div class="about-text">
+                    @foreach (var paragraph in paragraphs)
+                    {
+                        <p>@paragraph</p>
+                    }
+                </div>
+            }
+
+            <dl class="spec glass ticks">
+                <div class="spec-row"><dt>Ad</dt><dd>@Model.NameSurname</dd></div>
+                @if (!string.IsNullOrWhiteSpace(Model.Expert))
+                {
+                    <div class="spec-row"><dt>Uzmanlık</dt><dd>@Model.Expert</dd></div>
+                }
+                @if (!string.IsNullOrWhiteSpace(Model.Location))
+                {
+                    <div class="spec-row"><dt>Konum</dt><dd>@Model.Location</dd></div>
+                }
+                @if (!string.IsNullOrWhiteSpace(Model.Email))
+                {
+                    <div class="spec-row"><dt>E-posta</dt><dd><a href="mailto:@Model.Email">@Model.Email</a></dd></div>
+                }
+                <div class="spec-row">
+                    <dt>Durum</dt>
+                    <dd>
+                        @if (Model.OpenToWork)
+                        {
+                            <span class="pa-badge is-on">Yeni projelere açık</span>
+                        }
+                        else
+                        {
+                            <span class="pa-badge is-off">Şu an meşgul</span>
+                        }
+                    </dd>
+                </div>
+            </dl>
+        </div>
+    </div>
+</section>

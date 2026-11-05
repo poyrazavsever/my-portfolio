@@ -1,0 +1,19 @@
+@model List<Skill>
+
+<section class="site-section" id="skills">
+    <div class="site-container">
+        <partial name="_SectionHead" model='new SectionHeadModel("skills", "Yetenekler", "Günlük olarak kullandığım teknolojiler ve kendi değerlendirmemle seviyeleri.")' />
+
+        <div class="skills-panel glass ticks">
+            @foreach (var skill in Model)
+            {
+                <div class="pa-gauge">
+                    <div class="pa-gauge-row"><span>@skill.Name</span><span>@skill.Level / 100</span></div>
+                    <div class="pa-gauge-scale" role="meter" aria-label="@skill.Name" aria-valuemin="0" aria-valuemax="100" aria-valuenow="@skill.Level">
+                        <i style="width:@(skill.Level)%"></i>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>

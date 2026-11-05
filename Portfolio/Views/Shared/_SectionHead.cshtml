@@ -1,0 +1,13 @@
+@model SectionHeadModel
+
+@* Başlığın ÜSTÜNDE etiket yok: ikon solda, başlık ve kısa açıklama sağda. *@
+<header class="section-head">
+    <glass-icon name="@Model.Icon" size="76" class="section-head-icon" />
+    <div>
+        <h2>@Model.Title</h2>
+        @if (!string.IsNullOrWhiteSpace(Model.Lead))
+        {
+            <p>@Model.Lead</p>
+        }
+    </div>
+</header>

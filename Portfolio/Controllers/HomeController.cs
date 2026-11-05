@@ -4,18 +4,10 @@ using System.Diagnostics;
 
 namespace Portfolio.Controllers
 {
+    // Şablondan kalan Index/Privacy sayfaları kaldırıldı; portfolyo DefaultController'da.
+    // Bu controller yalnızca üretim ortamındaki hata sayfasını (UseExceptionHandler) sunar.
     public class HomeController : Controller
     {
-        public IActionResult Index()
-        {
-            return View();
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

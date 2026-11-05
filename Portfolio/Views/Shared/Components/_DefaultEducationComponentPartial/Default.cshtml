@@ -1,66 +1,39 @@
-﻿<!-- Education Section -->
-    <section id="education" style="background-color: var(--bg-secondary);">
-        <div class="container">
-            <div class="text-center mb-5 reveal-on-scroll">
-                <span class="section-eyebrow">AKADEMİK YOLCULUĞUM</span>
-                <h2 class="section-title">Eğitim Hayatım</h2>
-                <p class="section-subtitle">Yazılım dünyasına uzanan yolculuğumun akademik temelleri.</p>
-            </div>
+﻿@model List<Education>
 
-            <div class="timeline-container">
-                <!-- 1. University -->
-                <div class="timeline-item row align-items-center g-4 reveal-on-scroll">
-                    <div class="col-lg-6 timeline-left order-2 order-lg-1">
-                        <div class="timeline-content-card">
-                            <span class="badge-year bg-icon-purple mb-2">
-                                <i class="bi bi-calendar3"></i> 2020 – 2024
-                            </span>
-                            <h4 class="fs-5 fw-bold mb-1">Marmara Üniversitesi</h4>
-                            <div class="text-primary fw-semibold small mb-2">Bilgisayar Mühendisliği — Lisans</div>
-                            <p class="text-secondary small mb-3">
-                                Algoritmalar, veri yapıları, nesne yönelimli programlama, veritabanı yönetimi, yazılım mühendisliği ve bilgisayar ağları alanlarında kapsamlı bir akademik eğitim aldım.
-                            </p>
-                            <div>
-                                <span class="tech-tag">Yazılım Mühendisliği</span>
-                                <span class="tech-tag">Veri Yapıları</span>
-                                <span class="tech-tag">Algoritmalar</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="timeline-marker">
-                        <i class="bi bi-mortarboard"></i>
-                    </div>
-                    <div class="col-lg-6 timeline-right order-1 order-lg-2 d-none d-lg-block">
-                        <div class="text-secondary fst-italic small">İstanbul, Türkiye</div>
-                    </div>
-                </div>
+<section class="site-section" id="education">
+    <div class="site-container">
+        <partial name="_SectionHead" model='new SectionHeadModel("education", "Eğitim")' />
 
-                <!-- 2. High School -->
-                <div class="timeline-item row align-items-center g-4 reveal-on-scroll">
-                    <div class="col-lg-6 timeline-left d-none d-lg-block">
-                        <div class="text-secondary fst-italic small">İstanbul, Türkiye</div>
+        <ol class="timeline">
+            @foreach (var education in Model)
+            {
+                <li class="timeline-item @(education.EndDate is null ? "is-current" : null)">
+                    <div class="timeline-date">
+                        <time datetime="@education.StartDate.ToString("yyyy-MM")">@education.StartDate.ToString("yyyy")</time>
+                        <span>—</span>
+                        @if (education.EndDate is DateOnly end)
+                        {
+                            <time datetime="@end.ToString("yyyy-MM")">@end.ToString("yyyy")</time>
+                        }
+                        else
+                        {
+                            <span class="timeline-now">Devam ediyor</span>
+                        }
                     </div>
-                    <div class="timeline-marker">
-                        <i class="bi bi-book"></i>
-                    </div>
-                    <div class="col-lg-6 timeline-right">
-                        <div class="timeline-content-card">
-                            <span class="badge-year bg-icon-mint mb-2">
-                                <i class="bi bi-calendar3"></i> 2016 – 2020
-                            </span>
-                            <h4 class="fs-5 fw-bold mb-1">İstanbul Atatürk Fen Lisesi</h4>
-                            <div class="text-primary fw-semibold small mb-2">Sayısal Bölüm</div>
-                            <p class="text-secondary small mb-3">
-                                Matematik ve fen bilimleri alanında güçlü bir temel edinirken programlama ve teknoloji dünyasına olan ilgimi geliştirdim. Algoritmik düşünme ve problem çözme becerilerimin temellerini bu dönemde oluşturdum.
-                            </p>
-                            <div>
-                                <span class="tech-tag">Matematik</span>
-                                <span class="tech-tag">Fen Bilimleri</span>
-                                <span class="tech-tag">Programlamaya Giriş</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+
+                    <article class="timeline-card glass">
+                        <h3>@education.EducationTitle</h3>
+                        @if (!string.IsNullOrWhiteSpace(education.SubTitle))
+                        {
+                            <p class="timeline-org">@education.SubTitle</p>
+                        }
+                        @if (!string.IsNullOrWhiteSpace(education.Description))
+                        {
+                            <p class="timeline-desc">@education.Description</p>
+                        }
+                    </article>
+                </li>
+            }
+        </ol>
+    </div>
+</section>

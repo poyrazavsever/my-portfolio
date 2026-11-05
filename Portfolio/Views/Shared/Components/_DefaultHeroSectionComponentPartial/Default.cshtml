@@ -1,87 +1,73 @@
-﻿
-    <!-- Hero Section -->
-    <section id="home">
-        <div class="container">
-            <div class="row align-items-center g-5">
-                <!-- Left Content -->
-                <div class="col-lg-7 reveal-on-scroll">
-                    <div class="hero-badge">
-                        <span>👋</span> @ViewBag.subtitle
-                    </div>
+﻿@model HeroViewModel
 
-                    <h1 class="hero-title">
-                        Merhaba, Ben <span class="hero-name-gradient">@ViewBag.title</span>.
-                    </h1>
+<section class="hero" aria-labelledby="hero-title">
+    <svg class="hero-drawing" viewBox="0 0 400 400" fill="none" aria-hidden="true">
+        <circle cx="200" cy="200" r="168" stroke="var(--pa-red)" opacity=".28" />
+        <circle cx="200" cy="200" r="112" stroke="var(--pa-red)" opacity=".18" />
+        <circle cx="200" cy="200" r="46" stroke="var(--pa-red)" opacity=".45" />
+        <path d="M8 200H392M200 8V392" stroke="#fff" opacity=".1" />
+        <path d="M81 81 319 319" stroke="#fff" opacity=".06" />
+        <rect x="150" y="150" width="100" height="100" stroke="var(--pa-red)" opacity=".24" />
+    </svg>
 
-                    <!-- Animated Typing Text Slider -->
-                    <div class="typing-container" aria-live="polite">
-                        <span id="typedText"></span><span class="typing-cursor"></span>
-                    </div>
+    <div class="site-container hero-grid">
+        <div class="hero-copy">
+            <h1 id="hero-title">@Model.Name</h1>
+            @if (!string.IsNullOrWhiteSpace(Model.Role))
+            {
+                <p class="hero-role">@Model.Role</p>
+            }
+            @if (!string.IsNullOrWhiteSpace(Model.Intro))
+            {
+                <p class="hero-intro">@Model.Intro</p>
+            }
 
-                    <p class="hero-desc">
-                        @ViewBag.description
-                    </p>
+            <div class="hero-meta">
+                @if (Model.OpenToWork)
+                {
+                    <span class="hero-status"><i></i>Yeni projelere açık</span>
+                }
+                @if (!string.IsNullOrWhiteSpace(Model.Location))
+                {
+                    <span>@Model.Location</span>
+                }
+                <span>UTC+03:00</span>
+            </div>
 
-                    <div class="d-flex flex-wrap gap-3 align-items-center mb-4">
-                        <a href="#projects" class="btn-custom-primary">
-                            <i class="bi bi-grid-fill"></i>
-                            Projelerimi İncele
-                        </a>
-                        <a href="#contact" class="btn-custom-outline">
-                            <i class="bi bi-chat-dots"></i>
-                            Benimle İletişime Geç
-                        </a>
-                    </div>
+            <div class="hero-actions">
+                @if (Model.HasCv)
+                {
+                    <a class="btn btn-primary" asp-controller="Default" asp-action="DownloadCv"><i class="bi bi-download"></i>CV indir</a>
+                }
+                <a class="btn @(Model.HasCv ? "btn-ghost" : "btn-primary")" href="#contact">İletişime geç</a>
+                <a class="btn btn-ghost" href="#projects">Projeler</a>
 
-                    <!-- Social Links -->
-                    <div class="d-flex align-items-center gap-2 pt-2">
-                        <span class="text-secondary small fw-medium me-2">Bağlantılar:</span>
-                        <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="GitHub Profilim">
-                            <i class="bi bi-github"></i>
-                        </a>
-                        <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="LinkedIn Profilim">
-                            <i class="bi bi-linkedin"></i>
-                        </a>
-                        <a href="https://medium.com" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="Medium Yazılarım">
-                            <i class="bi bi-medium"></i>
-                        </a>
-                        <a href="mailto:poyraz.alsever@example.com" class="social-btn" aria-label="E-posta Gönder">
-                            <i class="bi bi-envelope"></i>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Right Visual with Portrait & Floating Badges -->
-                <div class="col-lg-5 reveal-on-scroll">
-                    <div class="hero-image-wrapper">
-                        <!-- Floating badge top left -->
-                        <div class="floating-card float-top-left">
-                            <div class="float-icon-box bg-icon-purple">
-                                <i class="bi bi-code-slash"></i>
-                            </div>
-                            <div>
-                                <div class="fw-bold small text-dark">Clean Code</div>
-                                <div class="text-secondary" style="font-size: 0.72rem;">C# & ASP.NET Core</div>
-                            </div>
-                        </div>
-
-                        <!-- Main Portrait -->
-                        <div class="hero-image-frame">
-                            <img src="@ViewBag.imageUrl" alt="Poyraz Alsever - Bilgisayar Mühendisi" loading="lazy">
-                        </div>
-
-                        <!-- Floating badge bottom right -->
-                        <div class="floating-card float-bottom-right">
-                            <div class="float-icon-box bg-icon-mint">
-                                <i class="bi bi-laptop"></i>
-                            </div>
-                            <div>
-                                <div class="fw-bold small text-dark">Software Engineer</div>
-                                <div class="text-secondary" style="font-size: 0.72rem;">Full Stack Developer</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <span class="hero-social">
+                    @if (!string.IsNullOrWhiteSpace(Model.Github))
+                    {
+                        <a class="btn btn-ghost btn-icon" href="@Model.Github" target="_blank" rel="noopener" aria-label="GitHub"><i class="bi bi-github"></i></a>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(Model.Linkedin))
+                    {
+                        <a class="btn btn-ghost btn-icon" href="@Model.Linkedin" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(Model.Email))
+                    {
+                        <a class="btn btn-ghost btn-icon" href="mailto:@Model.Email" aria-label="E-posta"><i class="bi bi-envelope"></i></a>
+                    }
+                </span>
             </div>
         </div>
-    </section>
+
+        <figure class="hero-portrait glass ticks">
+            @if (!string.IsNullOrWhiteSpace(Model.ImageUrl))
+            {
+                <img src="@Model.ImageUrl" alt="@Model.Name" width="440" height="520" fetchpriority="high" />
+            }
+            else
+            {
+                <glass-icon name="about" size="200" />
+            }
+        </figure>
+    </div>
+</section>

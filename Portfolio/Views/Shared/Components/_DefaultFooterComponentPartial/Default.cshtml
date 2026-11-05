@@ -1,0 +1,27 @@
+@model SiteChromeViewModel
+
+<footer class="site-footer">
+    <div class="site-container site-footer-inner">
+        <div class="site-brand">
+            <span class="brand-mark"></span>@Model.Name
+        </div>
+
+        <div class="site-footer-links">
+            @if (!string.IsNullOrWhiteSpace(Model.Github))
+            {
+                <a href="@Model.Github" target="_blank" rel="noopener" aria-label="GitHub"><i class="bi bi-github"></i></a>
+            }
+            @if (!string.IsNullOrWhiteSpace(Model.Linkedin))
+            {
+                <a href="@Model.Linkedin" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+            }
+            @if (!string.IsNullOrWhiteSpace(Model.Email))
+            {
+                <a href="mailto:@Model.Email" aria-label="E-posta"><i class="bi bi-envelope"></i></a>
+            }
+            <a href="#top" class="site-footer-top" aria-label="Sayfanın başına dön"><i class="bi bi-arrow-up"></i></a>
+        </div>
+
+        <p class="site-footer-meta">© @DateTime.Now.Year @Model.Name · ASP.NET Core MVC ile geliştirildi</p>
+    </div>
+</footer>

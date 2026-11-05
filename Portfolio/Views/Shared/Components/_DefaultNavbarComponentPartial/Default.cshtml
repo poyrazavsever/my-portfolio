@@ -1,51 +1,36 @@
-﻿    <!-- Ambient Blobs -->
-    <div class="blob-bg blob-1"></div>
-    <div class="blob-bg blob-2"></div>
-    <div class="blob-bg blob-3"></div>
+﻿@model SiteChromeViewModel
 
-<!-- Sticky Navbar -->
-    <nav id="mainNavbar" class="navbar navbar-expand-lg fixed-top custom-navbar">
-        <div class="container">
-            <a class="navbar-brand d-flex align-items-center" href="#home">
-                <span class="brand-mark">P</span>
-                <span class="brand-name">Poyraz<span>.</span></span>
-            </a>
+<header class="site-nav" data-site-nav>
+    <nav class="site-nav-bar glass" aria-label="Ana menü">
+        <a class="site-brand" asp-controller="Default" asp-action="Index" fragment="top">
+            <span class="brand-mark"></span>@Model.Name
+        </a>
 
-            <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Menüyü Aç/Kapat">
-                <i class="bi bi-list fs-2 text-dark"></i>
-            </button>
+        <button class="btn btn-ghost btn-icon site-nav-toggle" type="button"
+                data-bs-toggle="collapse" data-bs-target="#siteNavLinks"
+                aria-controls="siteNavLinks" aria-expanded="false" aria-label="Menüyü aç">
+            <i class="bi bi-list"></i>
+        </button>
 
-            <div class="collapse navbar-collapse" id="navbarContent">
-                <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-1">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#home">Ana Sayfa</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#about">Hakkımda</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#education">Eğitim Hayatım</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#experience">Deneyimlerim</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#skills">Yeteneklerim</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#projects">Projelerim</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#contact">İletişim</a>
-                    </li>
-                </ul>
+        <div class="collapse site-nav-collapse" id="siteNavLinks">
+            <ul class="site-nav-links">
+                <li><a href="/#about" data-nav-link>Hakkımda</a></li>
+                <li><a href="/#experience" data-nav-link>Deneyim</a></li>
+                <li><a href="/#skills" data-nav-link>Yetenekler</a></li>
+                <li><a href="/#projects" data-nav-link>Projeler</a></li>
+                <li><a href="/#contact" data-nav-link>İletişim</a></li>
+            </ul>
 
-                <div class="d-flex align-items-center gap-2 mt-3 mt-lg-0">
-                    <a href="#contact" class="btn-custom-primary" id="btnDownloadCv">
-                        <i class="bi bi-file-earmark-arrow-down"></i>
-                        CV İndir
-                    </a>
-                </div>
-            </div>
+            @if (Model.HasCv)
+            {
+                <a class="btn btn-primary site-nav-cta" asp-controller="Default" asp-action="DownloadCv">
+                    <i class="bi bi-download"></i>CV indir
+                </a>
+            }
+            else
+            {
+                <a class="btn btn-primary site-nav-cta" href="/#contact">İletişime geç</a>
+            }
         </div>
     </nav>
+</header>

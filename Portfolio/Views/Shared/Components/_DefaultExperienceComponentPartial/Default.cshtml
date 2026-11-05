@@ -1,0 +1,46 @@
+@model List<Experience>
+
+<section class="site-section" id="experience">
+    <div class="site-container">
+        <partial name="_SectionHead" model='new SectionHeadModel("experience", "Deneyim", "Çalıştığım ekipler ve üstlendiğim sorumluluklar.")' />
+
+        <ol class="timeline">
+            @foreach (var experience in Model)
+            {
+                <li class="timeline-item @(experience.EndDate is null ? "is-current" : null)">
+                    <div class="timeline-date">
+                        <time datetime="@experience.StartDate.ToString("yyyy-MM")">@experience.StartDate.ToString("MM.yyyy")</time>
+                        <span>—</span>
+                        @if (experience.EndDate is DateOnly end)
+                        {
+                            <time datetime="@end.ToString("yyyy-MM")">@end.ToString("MM.yyyy")</time>
+                        }
+                        else
+                        {
+                            <span class="timeline-now">Devam ediyor</span>
+                        }
+                    </div>
+
+                    <article class="timeline-card glass">
+                        <div class="timeline-card-head">
+                            <div>
+                                <h3>@experience.Title</h3>
+                                <p class="timeline-org">
+                                    @experience.CompanyName@(string.IsNullOrWhiteSpace(experience.SideTitle) ? "" : $" · {experience.SideTitle}")
+                                </p>
+                            </div>
+                            @if (!string.IsNullOrWhiteSpace(experience.WorkType))
+                            {
+                                <span class="pa-badge is-off">@experience.WorkType</span>
+                            }
+                        </div>
+                        @if (!string.IsNullOrWhiteSpace(experience.Description))
+                        {
+                            <p class="timeline-desc">@experience.Description</p>
+                        }
+                    </article>
+                </li>
+            }
+        </ol>
+    </div>
+</section>

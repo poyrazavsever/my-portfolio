@@ -1,0 +1,27 @@
+@* Çalışma yaklaşımı nadiren değişen bir metin olduğu için DB'ye bağlanmadı (bilinçli karar). *@
+@{
+    var steps = new[]
+    {
+        ("Analiz", "Problemi, kullanıcıyı ve kısıtları netleştiririm. Neyin ölçüleceğini en baştan belirlerim."),
+        ("Tasarım", "Veri modelini, uç noktaları ve ekran akışını kod yazmadan önce çizerim."),
+        ("Geliştirme", "Küçük, gözden geçirilebilir adımlarla ilerlerim. Her adım çalışır durumda kalır."),
+        ("Doğrulama", "Gerçek senaryolarla test eder, ölçer ve geri bildirime göre iyileştiririm."),
+    };
+}
+
+<section class="site-section" id="workflow">
+    <div class="site-container">
+        <partial name="_SectionHead" model='new SectionHeadModel("workflow", "Çalışma yaklaşımı", "Bir fikri çalışan bir ürüne dönüştürürken izlediğim adımlar.")' />
+
+        <ol class="workflow">
+            @for (var i = 0; i < steps.Length; i++)
+            {
+                <li class="workflow-step glass">
+                    <span class="workflow-index">@((i + 1).ToString("00"))</span>
+                    <h3>@steps[i].Item1</h3>
+                    <p>@steps[i].Item2</p>
+                </li>
+            }
+        </ol>
+    </div>
+</section>

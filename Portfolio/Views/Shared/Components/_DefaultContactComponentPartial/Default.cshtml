@@ -1,0 +1,94 @@
+@model ContactSectionViewModel
+
+@{
+    var lead = string.IsNullOrWhiteSpace(Model.Info.Description)
+        ? "Bir proje, iş birliği ya da sadece bir soru için yazabilirsiniz."
+        : Model.Info.Description;
+    var sent = TempData.TakeSuccess();
+}
+
+<section class="site-section" id="contact">
+    <div class="site-container">
+        <partial name="_SectionHead" model='new SectionHeadModel("contact", "İletişim", lead)' />
+
+        <div class="contact-grid">
+            <div class="contact-info">
+                @if (!string.IsNullOrWhiteSpace(Model.Info.SubDescription))
+                {
+                    <p class="contact-note">@Model.Info.SubDescription</p>
+                }
+
+                <ul class="contact-channels">
+                    @if (!string.IsNullOrWhiteSpace(Model.Info.Email))
+                    {
+                        <li><span>E-posta</span><a href="mailto:@Model.Info.Email">@Model.Info.Email</a></li>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(Model.Info.Linkedin))
+                    {
+                        <li><span>LinkedIn</span><a href="@Model.Info.Linkedin" target="_blank" rel="noopener">@Model.Info.Linkedin.Replace("https://", "").Replace("www.", "")</a></li>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(Model.Info.Github))
+                    {
+                        <li><span>GitHub</span><a href="@Model.Info.Github" target="_blank" rel="noopener">@Model.Info.Github.Replace("https://", "").Replace("www.", "")</a></li>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(Model.Info.Location))
+                    {
+                        <li><span>Konum</span><b>@Model.Info.Location</b></li>
+                    }
+                </ul>
+            </div>
+
+            <div class="contact-form glass ticks">
+                @if (sent is not null)
+                {
+                    <div class="contact-sent" role="status">
+                        <glass-icon name="messages" size="96" />
+                        <h3>Mesajınız iletildi</h3>
+                        <p>@sent</p>
+                        <a class="btn btn-ghost" href="/#contact">Yeni mesaj yaz</a>
+                    </div>
+                }
+                else
+                {
+                    @* asp-fragment: form "/Default/SendMessage#contact" adresine gider; hata dönerse tarayıcı bölüme kendisi atlar. *@
+                    <form asp-controller="Default" asp-action="SendMessage" asp-fragment="contact" method="post" novalidate data-contact-form>
+                        <div asp-validation-summary="ModelOnly"></div>
+
+                        <div class="row g-3">
+                            <div class="col-sm-6">
+                                <label asp-for="Form.NameSurname" class="form-label"></label>
+                                <input asp-for="Form.NameSurname" class="form-control" autocomplete="name" />
+                                <span asp-validation-for="Form.NameSurname"></span>
+                            </div>
+                            <div class="col-sm-6">
+                                <label asp-for="Form.Email" class="form-label"></label>
+                                <input asp-for="Form.Email" type="email" class="form-control" autocomplete="email" />
+                                <span asp-validation-for="Form.Email"></span>
+                            </div>
+                            <div class="col-12">
+                                <label asp-for="Form.Subject" class="form-label"></label>
+                                <input asp-for="Form.Subject" class="form-control" />
+                                <span asp-validation-for="Form.Subject"></span>
+                            </div>
+                            <div class="col-12">
+                                <label asp-for="Form.MessageDetail" class="form-label"></label>
+                                <textarea asp-for="Form.MessageDetail" class="form-control" rows="6"></textarea>
+                                <span asp-validation-for="Form.MessageDetail"></span>
+                            </div>
+
+                            @* Bal küpü (honeypot): insanlar bu alanı görmez, botlar doldurur. *@
+                            <div class="contact-hp" aria-hidden="true">
+                                <label for="website">Web siteniz</label>
+                                <input id="website" name="website" type="text" tabindex="-1" autocomplete="off" />
+                            </div>
+                        </div>
+
+                        <div class="contact-actions">
+                            <button type="submit" class="btn btn-primary"><i class="bi bi-send"></i>Gönder</button>
+                        </div>
+                    </form>
+                }
+            </div>
+        </div>
+    </div>
+</section>

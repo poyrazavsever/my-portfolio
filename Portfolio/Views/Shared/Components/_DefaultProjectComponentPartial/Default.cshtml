@@ -1,77 +1,66 @@
-@model List<Portfolio.Entities.Category>
+@model ProjectSectionViewModel
 
-<section id="projects">
-    <div class="container">
-        <div class="text-center mb-4 reveal-on-scroll">
-            <span class="section-eyebrow">SEÇİLMİŞ ÇALIŞMALAR</span>
-            <h2 class="section-title">Projelerim</h2>
-            <p class="section-subtitle">Öğrendiklerimi gerçek ürünlere dönüştürdüğüm çalışmalar.</p>
-        </div>
+<section class="site-section" id="projects">
+    <div class="site-container">
+        <partial name="_SectionHead" model='new SectionHeadModel("projects", "Projeler", "Kategoriye göre filtreleyin veya proje adı ve teknolojiye göre arayın.")' />
 
-        @if (Model.Count > 1)
-        {
-            <div class="d-flex justify-content-center flex-wrap gap-2 mb-5 reveal-on-scroll" id="projectFilterGroup">
-                <button type="button" class="filter-btn active" data-filter="all">Tümü</button>
-                @foreach (var category in Model)
+        <div class="project-toolbar" data-project-toolbar>
+            <div class="project-filters" role="group" aria-label="Kategori filtresi">
+                <button type="button" class="chip is-active" data-filter="all" aria-pressed="true">
+                    Tümü <span>@Model.Projects.Count</span>
+                </button>
+                @foreach (var category in Model.Categories)
                 {
-                    <button type="button" class="filter-btn" data-filter="category-@category.CategoryId">
-                        @category.CategoryName
+                    var count = Model.Projects.Count(project => project.CategoryId == category.CategoryId);
+                    <button type="button" class="chip" data-filter="@category.CategoryId" aria-pressed="false">
+                        @category.CategoryName <span>@count</span>
                     </button>
                 }
             </div>
-        }
 
-        @if (Model.Count == 0)
-        {
-            <p class="text-center text-secondary mb-0">Projeler yakında burada yer alacak.</p>
-        }
-        else
-        {
-            <div class="row g-4" id="projectGrid">
-                @foreach (var category in Model)
-                {
-                    @foreach (var project in category.Projects)
-                    {
-                        <div class="col-lg-4 col-md-6 project-item" data-category="category-@category.CategoryId">
-                            <article class="project-card reveal-on-scroll">
-                                <div class="project-thumb">
-                                    @if (!string.IsNullOrWhiteSpace(project.CoverImageUrl))
-                                    {
-                                        <img class="project-cover-image"
-                                             src="@project.CoverImageUrl"
-                                             alt="@project.Title proje kapak görseli"
-                                             loading="lazy" />
-                                    }
-                                    else
-                                    {
-                                        <div class="project-image-placeholder" aria-hidden="true">
-                                            <i class="bi bi-code-slash"></i>
-                                        </div>
-                                    }
-                                </div>
+            <label class="project-search">
+                <i class="bi bi-search" aria-hidden="true"></i>
+                <span class="visually-hidden">Projelerde ara</span>
+                <input type="search" class="form-control" placeholder="Projelerde ara" autocomplete="off" data-project-search />
+            </label>
+        </div>
 
-                                <div class="project-body">
-                                    <span class="project-category-badge">@category.CategoryName</span>
-                                    <h3 class="project-title">@project.Title</h3>
-                                    <p class="project-desc">@project.Description</p>
+        <div class="project-grid" data-project-grid>
+            @foreach (var project in Model.Projects)
+            {
+                var searchText = $"{project.Title} {project.Description} {project.Category?.CategoryName}";
+                <article class="project-card glass" data-category="@project.CategoryId" data-search="@searchText">
+                    <div class="project-cover">
+                        @if (!string.IsNullOrWhiteSpace(project.CoverImageUrl))
+                        {
+                            <img src="@project.CoverImageUrl" alt="@project.Title kapak görseli" loading="lazy" />
+                        }
+                        else
+                        {
+                            <glass-icon name="projects" size="96" static="true" />
+                        }
+                    </div>
+                    <div class="project-body">
+                        <span class="project-category">@project.Category?.CategoryName</span>
+                        <h3>@project.Title</h3>
+                        @if (!string.IsNullOrWhiteSpace(project.Description))
+                        {
+                            <p>@project.Description</p>
+                        }
+                        @if (!string.IsNullOrWhiteSpace(project.GithubUrl))
+                        {
+                            <a class="project-link" href="@project.GithubUrl" target="_blank" rel="noopener">
+                                <i class="bi bi-github"></i>Kaynak kod<i class="bi bi-arrow-up-right"></i>
+                            </a>
+                        }
+                    </div>
+                </article>
+            }
+        </div>
 
-                                    @if (!string.IsNullOrWhiteSpace(project.GithubUrl))
-                                    {
-                                        <div class="project-footer">
-                                            <a href="@project.GithubUrl"
-                                               target="_blank"
-                                               rel="noopener noreferrer"
-                                               class="project-link-btn">
-                                                <i class="bi bi-github"></i> GitHub
-                                            </a>
-                                        </div>
-                                    }
-                                </div>
-                            </article>
-                        </div>
-                    }
-                }
-            </div>
-        }
+        <div class="project-empty glass" data-project-empty hidden>
+            <p>Bu ölçütlere uyan proje bulunamadı.</p>
+            <button type="button" class="btn btn-ghost" data-project-reset>Filtreleri temizle</button>
+        </div>
     </div>
 </section>

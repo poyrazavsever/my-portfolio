@@ -1,0 +1,26 @@
+@model List<Certificate>
+
+<section class="site-section" id="certificates">
+    <div class="site-container">
+        <partial name="_SectionHead" model='new SectionHeadModel("certificates", "Sertifikalar")' />
+
+        <ul class="cert-list glass ticks">
+            @foreach (var certificate in Model)
+            {
+                <li class="cert-row">
+                    <div>
+                        <h3>@certificate.Title</h3>
+                        <p>@certificate.Issuer</p>
+                    </div>
+                    <time class="cert-date" datetime="@certificate.IssueDate.ToString("yyyy-MM")">@certificate.IssueDate.ToString("MM.yyyy")</time>
+                    @if (!string.IsNullOrWhiteSpace(certificate.CredentialUrl))
+                    {
+                        <a class="btn btn-ghost cert-link" href="@certificate.CredentialUrl" target="_blank" rel="noopener">
+                            Doğrula<i class="bi bi-arrow-up-right"></i>
+                        </a>
+                    }
+                </li>
+            }
+        </ul>
+    </div>
+</section>
