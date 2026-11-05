@@ -168,3 +168,40 @@ Her fazdan sonra "ne yaptık, neden yaptık" notu. Proje sonunda soru-cevap ve v
 - İçinde proje olan kategoriyi silme: kırmızı hata toast'ı çıktı.
 - SweetAlert2'nin kendi `.swal2-html-container` kuralı metni ortalıyordu. Seçicimizi daha spesifik yaparak (`.swal2-popup .pa-swal-text`) düzelttik. Ders: Bir kütüphaneyi temalarken CSS spesifikliği önemli.
 - *Denenmedi:* CDN'in yüklenemediği durumdaki `confirm()` yedeği; kodu okunarak doğrulandı.
+
+---
+
+## Faz 6: Public UI'ın yeniden tasarımı, DB'ye bağlanması ve iletişim formu
+
+### Ne yaptık?
+- **Temizlik:** 1000 satırlık inline stil component'i, sayfa içindeki 150 satırlık inline script, şablondan kalan Home sayfaları ve boş `Views/Index.cshtml` silindi. Site kökü `/` artık portfolyoya gidiyor (`{controller=Default}`); `HomeController` yalnızca hata sayfası için kaldı.
+- **Layout:** `_Layout.cshtml` artık portfolyonun kabuğu: head, navbar ve footer View Component'leri, `design-system.css` + `site.css`, `glass-icon.js` + `site.js`. Hata sayfası da aynı tasarımı kullanıyor.
+- **Bölümler:** Hero, Hakkımda, Deneyim, Eğitim, Yetenekler, Projeler, Çalışma Yaklaşımı (statik partial), Sertifikalar ve İletişim. Her biri kendi View Component'inde kendi verisini çekiyor. `Default/Index.cshtml` sadece sıralamayı belirliyor.
+- **Sertifika modülü:** `Certificate` entity'si, `mig5_Certificates` migration'ı ve admin CRUD'u eklendi. Çalışma Yaklaşımı bilinçli olarak statik bırakıldı.
+- **Projeler:** Kategori filtresi (yalnızca aktif projesi olan kategoriler, sayılarıyla) ve Türkçe harf duyarlı arama. Sonuç yoksa "Filtreleri temizle" butonlu boş durum mesajı.
+- **İletişim formu:** Doğrulama, DB'ye kayıt, `[Bind]` ile overposting koruması, honeypot ile bot koruması, PRG ile teşekkür kartı.
+- **Tasarım kuralları:** Başlık üstü etiket yok. Her bölüm başlığının solunda hareketli cam ikon var (`_SectionHead` partial'ı). Gradyan ve emoji yok. Deneyim ve eğitim, ölçü çizgisi ve çentikli bir zaman çizelgesiyle gösteriliyor; yetenekler cetvel göstergesiyle.
+
+### Neden?
+- **Her bölüm bir View Component:** Hero; Hero, Hakkımda, İletişim ve Ayarlar tablolarından besleniyor. Bu sorguları `DefaultController.Index`'e yığsaydık controller şişerdi. View Component'ler kendi verisini çekiyor, controller "sayfa" seviyesinde kalıyor. Navbar ve footer'ın ortak sorgusu ise `SiteQueries.LoadChromeAsync`'te tek yerde.
+- **ViewBag'den strongly-typed modele:** Eski hero `ViewBag.title`, `ViewBag.subTitle` kullanıyordu. `HeroViewModel` ile alan adını yanlış yazmak artık derleme hatası.
+- **Boş veride bölüm hiç çizilmez:** `return values.Count == 0 ? Content(string.Empty) : View(values);`. Boş bir "Sertifikalar" başlığı göstermek yerine bölüm sayfadan tamamen çıkıyor.
+- **Overposting ve `[Bind]`:** `Message` entity'sinde `IsRead`, `SendDate` gibi alanlar da var. Model binder formda ne gelirse bağlar. `[Bind("NameSurname", "Email", "Subject", "MessageDetail", Prefix = "Form")]` yalnızca bu dört alana izin veriyor. curl ile `Form.IsRead=true` gönderdik; kayıt yine okunmamış olarak oluştu.
+- **Honeypot:** Görünmeyen bir "website" alanı. İnsan doldurmaz, bot doldurur. Doluysa kaydetmiyoruz ama başarılı gibi yanıt veriyoruz ki bot yakalandığını anlamasın.
+- **Hata olursa sayfayı yeniden çizmek:** Form bir View Component içinde, sayfa ise `Default/Index`. Geçersiz POST'ta `View("Index")` döndürüp formu `ViewData["ContactForm"]` ile component'e veriyoruz. View Component sayfanın `ModelState`'ini paylaştığı için `asp-validation-for` hataları kendiliğinden görünüyor.
+- **`asp-fragment="contact"`:** Form `/Default/SendMessage#contact` adresine gidiyor. Hata dönerse tarayıcı cevap sayfasında doğrudan iletişim bölümüne açılıyor; JS gerekmiyor.
+- **`overflow-x: clip` ve `hidden` farkı:** Hero'daki teknik çizim bilerek sağa taşıyor. `clip` taşan kısmı keser ama `hidden` gibi bir kaydırma kabı oluşturmaz (sticky/fixed davranışını bozmaz).
+- **Türkçe arama:** `"İLETİŞİM".toLowerCase()` "i̇letişim" gibi bozuk sonuç verebilir. `toLocaleLowerCase("tr-TR")` doğru çalışıyor.
+- **Scrollspy:** `IntersectionObserver` ekranın üst-orta bandına giren bölümü bulup navbar'da işaretliyor. Scroll olayında sürekli hesap yapmaktan çok daha verimli.
+
+### Tarayıcıda yakaladığımız sorunlar
+- **Yatay taşma (1252/1132 px):** Teknik çizim sayfayı genişletiyordu → `overflow-x: clip`.
+- **Hakkımda metni boşken sol sütun boş kalıyordu** → metin yoksa `is-compact` ile tek sütun.
+- **`.cshtml` değişikliği yansımadı:** Razor view'ları build sırasında derleniyor; CSS ve JS anında yansır ama view değişikliği için yeniden build gerekir.
+- **`#contact`'a atlama:** Yumuşak kaydırmayı sadece sayfa yüklendikten sonra açtık (`html.is-ready`), böylece ilk açılışta atlama anında oluyor. Fragment'e atlama klavye odağını sıfırladığı için ilk hatalı alana `load` olayından sonra odaklanıyoruz.
+  - *Not:* Arka planda çalışan otomasyon sekmesi ilk yüklemede fragment'e hiç kaydırmıyor (normal `/#projects` linkinde bile). Kodu `hash` değişimiyle doğruladık; gerçek tarayıcıda gözle kontrol edilmeli.
+
+### Nasıl test ettik?
+- Masaüstü ve mobil (375 px): taşma yok, mobil menü açılıyor ve link tıklanınca kapanıyor, zaman çizelgesi tek sütuna iniyor.
+- Proje arama ("xyz" → boş durum, "CMS" ve "WEB" → sonuç), filtre temizleme.
+- İletişim: boş/geçersiz form → 4 hata ve yazılanlar korunuyor; geçerli form → teşekkür kartı ve DB'de okunmamış kayıt; curl ile overposting ve honeypot.
