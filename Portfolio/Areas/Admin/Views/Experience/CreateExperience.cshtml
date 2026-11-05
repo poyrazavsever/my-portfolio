@@ -1,55 +1,20 @@
-﻿@model Portfolio.Entities.Experience
+﻿@model Experience
 
 @{
-    ViewData["Title"] = "CreateExperience";
-    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+    ViewData["Title"] = "Yeni deneyim";
+    ViewData["Description"] = "Portfolyonun deneyim bölümüne yeni bir kayıt ekleyin.";
 }
 
-<div id="main-content-wrapper">
-    <main class="main-body-container flex-grow-1 p-4 p-md-4 p-lg-5">
-        <div class="container-sm">
-            <form method="post">
-                <div asp-validation-summary="All" class="text-danger small mb-3"></div>
+<form asp-action="CreateExperience" method="post" class="glass ticks pa-panel-pad">
+    <partial name="_ExperienceForm" model="Model" />
 
-                <div class="mb-3">
-                    <label asp-for="Title" class="form-label">Başlık</label>
-                    <input type="text" asp-for="Title" class="form-control" />
-                </div>
+    <div class="pa-form-actions">
+        <a class="btn btn-ghost" asp-action="ExperienceList">Vazgeç</a>
+        <button type="submit" class="btn btn-primary"><i class="bi bi-check2"></i>Kaydet</button>
+    </div>
+</form>
 
-                <div class="mb-3">
-                    <label asp-for="CompanyName" class="form-label">Şirket Adı</label>
-                    <input type="text" asp-for="CompanyName" class="form-control" />
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="Description" class="form-label">Açıklama</label>
-                    <input type="text" asp-for="Description" class="form-control" />
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="SideTitle" class="form-label">Alt Başlık</label>
-                    <input type="text" asp-for="SideTitle" class="form-control" />
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="WorkType" class="form-label">Çalışma Türü</label>
-                    <input type="text" asp-for="WorkType" class="form-control" />
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="StartDate" class="form-label">Başlangıç Tarihi</label>
-                    <input asp-for="StartDate" class="form-control" />
-                    <span asp-validation-for="StartDate" class="text-danger small"></span>
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="EndDate" class="form-label">Bitiş Tarihi (devam ediyorsa boş bırakın)</label>
-                    <input asp-for="EndDate" class="form-control" />
-                    <span asp-validation-for="EndDate" class="text-danger small"></span>
-                </div>
-
-                <button type="submit" class="btn btn-info">Kaydet</button>
-            </form>
-        </div>
-    </main>
-</div>
+@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <partial name="_ValidationScriptsPartial" />
+}

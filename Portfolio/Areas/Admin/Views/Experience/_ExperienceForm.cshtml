@@ -1,0 +1,57 @@
+@model Experience
+
+<div asp-validation-summary="ModelOnly"></div>
+
+<div class="row g-4">
+    <div class="col-md-6">
+        <label asp-for="Title" class="form-label"></label>
+        <input asp-for="Title" class="form-control" placeholder="Backend Developer" />
+        <span asp-validation-for="Title"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="CompanyName" class="form-label"></label>
+        <input asp-for="CompanyName" class="form-control" placeholder="Şirket veya kurum" />
+        <span asp-validation-for="CompanyName"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="SideTitle" class="form-label"></label>
+        <input asp-for="SideTitle" class="form-control" placeholder="Platform ekibi" />
+        <span asp-validation-for="SideTitle"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="WorkType" class="form-label"></label>
+        <input asp-for="WorkType" class="form-control" placeholder="Tam zamanlı, uzaktan" />
+        <span asp-validation-for="WorkType"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="StartDate" class="form-label"></label>
+        <input asp-for="StartDate" class="form-control" />
+        <span asp-validation-for="StartDate"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="EndDate" class="form-label"></label>
+        <input asp-for="EndDate" class="form-control" />
+        <div class="form-text">Hâlâ devam ediyorsa boş bırakın.</div>
+        <span asp-validation-for="EndDate"></span>
+    </div>
+
+    <div class="col-12">
+        <label asp-for="Description" class="form-label"></label>
+        <textarea asp-for="Description" class="form-control" rows="5"
+                  placeholder="Sorumluluklar, kullanılan teknolojiler, ölçülebilir sonuçlar"></textarea>
+        <span asp-validation-for="Description"></span>
+    </div>
+
+    <div class="col-12">
+        <div class="form-check form-switch">
+            <input asp-for="IsActive" class="form-check-input" role="switch" />
+            <label asp-for="IsActive" class="form-check-label">Portfolyoda göster</label>
+        </div>
+        <div class="form-text">Kapalıysa kayıt saklanır ama sitede görünmez.</div>
+    </div>
+</div>

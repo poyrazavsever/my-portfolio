@@ -1,278 +1,113 @@
-﻿@model List<Portfolio.Entities.Message>
+﻿@model List<Message>
 
 @{
     ViewData["Title"] = "Mesajlar";
-    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+    ViewData["Description"] = "İletişim formundan gelen mesajlar.";
 
     var messages = Model.OrderByDescending(message => message.SendDate).ToList();
-    var totalCount = messages.Count;
     var unreadCount = messages.Count(message => !message.IsRead);
-    var readCount = totalCount - unreadCount;
-    var todayCount = messages.Count(message => message.SendDate.Date == DateTime.Today);
 }
 
-<div id="main-content-wrapper">
-    <header class="admin-navbar">
-        <div class="d-flex align-items-center justify-content-between w-100 gap-3">
-            <div class="d-flex align-items-center gap-3">
-                <button class="btn btn-sm d-lg-none p-1 border-0 text-dark"
-                        type="button"
-                        data-bs-toggle="offcanvas"
-                        data-bs-target="#mobileSidebar"
-                        aria-controls="mobileSidebar"
-                        aria-label="Menüyü aç">
-                    <i class="bi bi-list fs-4"></i>
-                </button>
+@section Actions {
+    <a class="btn btn-ghost" asp-action="CreateMessage"><i class="bi bi-plus-lg"></i>Test mesajı</a>
+}
 
-                <nav aria-label="Sayfa yolu" class="d-none d-sm-block">
-                    <ol class="breadcrumb mb-0 align-items-center small">
-                        <li class="breadcrumb-item"><span class="text-secondary">Yönetim Paneli</span></li>
-                        <li class="breadcrumb-item active fw-semibold" aria-current="page">Mesajlar</li>
-                    </ol>
-                </nav>
-            </div>
+@if (messages.Count == 0)
+{
+    <section class="glass ticks pa-empty">
+        <glass-icon name="messages" size="140" />
+        <h3>Gelen kutusu boş</h3>
+        <p>Sitedeki iletişim formundan gönderilen mesajlar burada listelenir.</p>
+    </section>
+}
+else
+{
+    <div class="pa-stats">
+        <span><b>@messages.Count</b> mesaj</span>
+        <span><b>@unreadCount</b> okunmamış</span>
+    </div>
 
-            <a asp-area="Admin"
-               asp-controller="Message"
-               asp-action="CreateMessage"
-               class="btn-pastel-primary text-decoration-none flex-shrink-0">
-                <i class="bi bi-plus-lg"></i>
-                <span class="d-none d-sm-inline">Yeni Mesaj</span>
-                <span class="d-sm-none">Ekle</span>
-            </a>
-        </div>
-    </header>
-
-    <main class="main-body-container flex-grow-1 p-4 p-md-4 p-lg-5">
-        <section class="mb-4">
-            <span class="text-uppercase fw-bold"
-                  style="font-size: 0.72rem; letter-spacing: 0.08em; color: var(--primary-accent);">
-                İletişim Yönetimi
-            </span>
-            <h1 class="h3 fw-bold mb-2 mt-1">Gelen Mesajlar</h1>
-            <p class="text-secondary mb-0">Portfolyo ziyaretçilerinden gelen mesajları buradan görüntüleyebilirsin.</p>
-        </section>
-
-        <section class="row g-3 mb-4" aria-label="Mesaj özeti">
-            <div class="col-12 col-sm-6 col-xl-3">
-                <div class="stat-card">
-                    <div>
-                        <div class="text-secondary fw-medium small">Toplam Mesaj</div>
-                        <div class="h3 fw-bold my-1">@totalCount</div>
-                        <small class="text-muted">Tüm mesajlar</small>
-                    </div>
-                    <div class="stat-icon-wrap" style="background-color: var(--pastel-purple); color: var(--pastel-purple-text);">
-                        <i class="bi bi-chat-left-text-fill"></i>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-12 col-sm-6 col-xl-3">
-                <div class="stat-card">
-                    <div>
-                        <div class="text-secondary fw-medium small">Okunmamış</div>
-                        <div class="h3 fw-bold my-1" style="color: var(--primary-accent);">@unreadCount</div>
-                        <small class="text-muted">İncelenmeyi bekliyor</small>
-                    </div>
-                    <div class="stat-icon-wrap" style="background-color: var(--pastel-blue); color: var(--pastel-blue-text);">
-                        <i class="bi bi-envelope-fill"></i>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-12 col-sm-6 col-xl-3">
-                <div class="stat-card">
-                    <div>
-                        <div class="text-secondary fw-medium small">Okunmuş</div>
-                        <div class="h3 fw-bold my-1 text-success">@readCount</div>
-                        <small class="text-muted">Görüntülenen mesaj</small>
-                    </div>
-                    <div class="stat-icon-wrap" style="background-color: var(--mint-green); color: var(--mint-green-text);">
-                        <i class="bi bi-envelope-open-fill"></i>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-12 col-sm-6 col-xl-3">
-                <div class="stat-card">
-                    <div>
-                        <div class="text-secondary fw-medium small">Bugün</div>
-                        <div class="h3 fw-bold my-1">@todayCount</div>
-                        <small class="text-muted">Bugün gelen mesaj</small>
-                    </div>
-                    <div class="stat-icon-wrap" style="background-color: var(--peach); color: var(--peach-text);">
-                        <i class="bi bi-calendar2-day-fill"></i>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="content-card overflow-hidden" aria-labelledby="message-list-title">
-            <div class="p-3 p-md-4 border-bottom d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-2">
-                <div>
-                    <h2 id="message-list-title" class="h5 fw-bold mb-1">Mesaj Kutusu</h2>
-                    <p class="text-secondary small mb-0">En yeni mesajlar listenin üstünde gösterilir.</p>
-                </div>
-                <span class="badge badge-pastel badge-pastel-purple px-3 py-2 align-self-start align-self-sm-center">
-                    @unreadCount okunmamış
-                </span>
-            </div>
-
-            @if (totalCount == 0)
-            {
-                <div class="p-5 text-center">
-                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3"
-                         style="width: 68px; height: 68px; background-color: var(--pastel-purple); color: var(--primary-accent);">
-                        <i class="bi bi-inbox fs-2"></i>
-                    </div>
-                    <h3 class="h5 fw-bold mb-2">Mesaj kutusu boş</h3>
-                    <p class="text-secondary mb-4">Henüz görüntülenecek bir mesaj bulunmuyor.</p>
-                    <a asp-area="Admin" asp-controller="Message" asp-action="CreateMessage" class="btn-pastel-primary text-decoration-none">
-                        <i class="bi bi-plus-lg"></i>
-                        İlk mesajı ekle
-                    </a>
-                </div>
-            }
-            else
-            {
-                <div class="list-group list-group-flush">
-                    @foreach (var item in messages)
+    <section class="glass ticks pa-panel">
+        <div class="pa-table-wrap">
+            <table class="pa-table">
+                <thead>
+                    <tr>
+                        <th>Gönderen</th>
+                        <th>Konu</th>
+                        <th>Tarih</th>
+                        <th>Durum</th>
+                        <th class="cell-actions"><span class="visually-hidden">İşlemler</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var message in messages)
                     {
-                        var senderInitial = string.IsNullOrWhiteSpace(item.NameSurname)
-                            ? "?"
-                            : item.NameSurname.Trim()[0].ToString().ToUpperInvariant();
-                        var modalId = $"messageModal-{item.MessageId}";
-
-                        <div class="list-group-item p-3 p-md-4 @(item.IsRead ? string.Empty : "bg-light")">
-                            <div class="d-flex flex-column flex-lg-row align-items-lg-center gap-3">
-                                <div class="d-flex align-items-start gap-3 flex-grow-1">
-                                    <div class="company-avatar" aria-hidden="true">@senderInitial</div>
-
-                                    <div class="flex-grow-1 overflow-hidden">
-                                        <div class="d-flex flex-column flex-sm-row align-items-sm-center gap-2 mb-1">
-                                            <h3 class="h6 fw-bold mb-0 text-truncate">@(item.Subject ?? "Konu belirtilmemiş")</h3>
-                                            @if (!item.IsRead)
-                                            {
-                                                <span class="badge badge-pastel badge-pastel-purple align-self-start">Yeni</span>
-                                            }
-                                            else
-                                            {
-                                                <span class="badge badge-pastel badge-pastel-completed align-self-start">Okundu</span>
-                                            }
-                                        </div>
-
-                                        <div class="d-flex flex-wrap align-items-center gap-2 small text-secondary mb-2">
-                                            <span class="me-2"><i class="bi bi-person me-1"></i>@(item.NameSurname ?? "İsimsiz gönderici")</span>
-                                            <a href="mailto:@item.Email" class="text-secondary text-decoration-none">
-                                                <i class="bi bi-envelope me-1"></i>@(item.Email ?? "E-posta belirtilmedi")
-                                            </a>
-                                        </div>
-
-                                        <p class="text-secondary text-truncate mb-0" style="max-width: 720px;">
-                                            @(item.MessageDetail ?? "Mesaj içeriği bulunmuyor.")
-                                        </p>
-                                    </div>
-                                </div>
-
-                                <div class="d-flex flex-column align-items-start align-items-lg-end gap-2 flex-shrink-0">
-                                    <time class="small text-secondary" datetime="@item.SendDate.ToString("O")">
-                                        <i class="bi bi-clock me-1"></i>@item.SendDate.ToString("dd.MM.yyyy HH:mm")
-                                    </time>
-
-                                    <div class="d-flex flex-wrap align-items-center gap-2">
-                                        <button type="button"
-                                                class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-2"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#@modalId">
-                                            <i class="bi bi-eye"></i>
-                                            Aç
-                                        </button>
-
-                                        <a asp-area="Admin"
-                                           asp-controller="Message"
-                                           asp-action="UpdateMessage"
-                                           asp-route-id="@item.MessageId"
-                                           class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-2"
-                                           aria-label="@item.Subject mesajını düzenle">
-                                            <i class="bi bi-pencil-square"></i>
-                                            Düzenle
-                                        </a>
-
-                                        <form asp-area="Admin"
-                                              asp-controller="Message"
-                                              asp-action="DeleteMessage"
-                                              asp-route-id="@item.MessageId"
-                                              method="post"
-                                              class="m-0"
-                                              onsubmit="return confirm('Bu mesajı kalıcı olarak silmek istediğine emin misin?');">
-                                            <button type="submit"
-                                                    class="btn btn-sm btn-outline-danger d-inline-flex align-items-center gap-2"
-                                                    aria-label="@item.Subject mesajını sil">
-                                                <i class="bi bi-trash3"></i>
-                                                Sil
-                                            </button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="modal fade" id="@modalId" tabindex="-1" aria-labelledby="@($"{modalId}-title")" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                                <div class="modal-content border-0 shadow-lg">
-                                    <div class="modal-header border-bottom">
-                                        <div>
-                                            <div class="d-flex align-items-center gap-2 mb-1">
-                                                <h2 class="modal-title fs-5 fw-bold mb-0" id="@($"{modalId}-title")">
-                                                    @(item.Subject ?? "Konu belirtilmemiş")
-                                                </h2>
-                                                @if (!item.IsRead)
-                                                {
-                                                    <span class="badge badge-pastel badge-pastel-purple">Yeni</span>
-                                                }
-                                            </div>
-                                            <div class="small text-secondary">Mesaj #@item.MessageId</div>
-                                        </div>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
-                                    </div>
-
-                                    <div class="modal-body p-4">
-                                        <div class="d-flex align-items-center gap-3 mb-4">
-                                            <div class="company-avatar" aria-hidden="true">@senderInitial</div>
-                                            <div>
-                                                <div class="fw-semibold">@(item.NameSurname ?? "İsimsiz gönderici")</div>
-                                                <a href="mailto:@item.Email" class="small text-secondary text-decoration-none">@item.Email</a>
-                                            </div>
-                                        </div>
-
-                                        <div class="rounded-3 bg-light border p-3 mb-3">
-                                            <div class="small text-secondary mb-1">Gönderim tarihi</div>
-                                            <div class="fw-medium">@item.SendDate.ToString("dd MMMM yyyy, HH:mm")</div>
-                                        </div>
-
-                                        <div class="text-secondary" style="white-space: pre-wrap;">@(item.MessageDetail ?? "Mesaj içeriği bulunmuyor.")</div>
-                                    </div>
-
-                                    <div class="modal-footer border-top">
-                                        <button type="button" class="btn-pastel-outline" data-bs-dismiss="modal">Kapat</button>
-                                        @if (!string.IsNullOrWhiteSpace(item.Email))
-                                        {
-                                            <a href="mailto:@item.Email?subject=Re: @item.Subject" class="btn-pastel-primary text-decoration-none">
-                                                <i class="bi bi-reply-fill"></i>
-                                                Yanıtla
-                                            </a>
-                                        }
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        var modalId = $"message-{message.MessageId}";
+                        <tr>
+                            <td>
+                                <span class="cell-title">@message.NameSurname</span>
+                                <span class="cell-sub">@message.Email</span>
+                            </td>
+                            <td>@message.Subject</td>
+                            <td class="cell-mono">@message.SendDate.ToString("yyyy-MM-dd HH:mm")</td>
+                            <td>
+                                @if (message.IsRead)
+                                {
+                                    <span class="pa-badge is-off">Okundu</span>
+                                }
+                                else
+                                {
+                                    <span class="pa-badge is-new">Yeni</span>
+                                }
+                            </td>
+                            <td class="cell-actions">
+                                <button type="button" class="btn btn-ghost btn-icon" title="Görüntüle" aria-label="Görüntüle"
+                                        data-bs-toggle="modal" data-bs-target="#@modalId">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                                <a class="btn btn-ghost btn-icon" title="Düzenle" aria-label="Düzenle"
+                                   asp-action="UpdateMessage" asp-route-id="@message.MessageId">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <form class="d-inline" method="post"
+                                      asp-action="DeleteMessage" asp-route-id="@message.MessageId"
+                                      onsubmit="return confirm('Bu mesaj kalıcı olarak silinecek. Emin misiniz?');">
+                                    <button type="submit" class="btn btn-danger-ghost btn-icon" title="Sil" aria-label="Sil">
+                                        <i class="bi bi-trash3"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
                     }
-                </div>
+                </tbody>
+            </table>
+        </div>
+    </section>
 
-                <div class="px-3 px-md-4 py-3 border-top text-secondary small">
-                    Toplam <strong class="text-dark">@totalCount</strong> mesaj gösteriliyor.
+    @foreach (var message in messages)
+    {
+        var modalId = $"message-{message.MessageId}";
+        <div class="modal fade" id="@modalId" tabindex="-1" aria-labelledby="@modalId-title" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div>
+                            <h2 class="modal-title fs-5" id="@modalId-title">@message.Subject</h2>
+                            <div class="text-mono text-muted-pa" style="font-size:12.5px">
+                                @message.NameSurname · @message.Email · @message.SendDate.ToString("yyyy-MM-dd HH:mm")
+                            </div>
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+                    </div>
+                    <div class="modal-body" style="white-space:pre-line">@message.MessageDetail</div>
+                    <div class="modal-footer">
+                        <a class="btn btn-ghost" href="mailto:@message.Email?subject=Re: @Uri.EscapeDataString(message.Subject)">
+                            <i class="bi bi-reply"></i>Yanıtla
+                        </a>
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Kapat</button>
+                    </div>
                 </div>
-            }
-        </section>
-    </main>
-</div>
+            </div>
+        </div>
+    }
+}

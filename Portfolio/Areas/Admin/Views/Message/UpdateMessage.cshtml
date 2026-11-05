@@ -1,144 +1,21 @@
-@model Portfolio.Entities.Message
+@model Message
 
 @{
-    ViewData["Title"] = "Mesaj Düzenle";
-    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+    ViewData["Title"] = "Mesajı düzenle";
+    ViewData["Description"] = "Faz 7'de kaldırılacak: gelen mesajın orijinal içeriği düzenlenmemeli.";
 }
 
-<div id="main-content-wrapper">
-    <header class="admin-navbar">
-        <div class="d-flex align-items-center justify-content-between w-100 gap-3">
-            <div class="d-flex align-items-center gap-3">
-                <button class="btn btn-sm d-lg-none p-1 border-0 text-dark"
-                        type="button"
-                        data-bs-toggle="offcanvas"
-                        data-bs-target="#mobileSidebar"
-                        aria-controls="mobileSidebar"
-                        aria-label="Menüyü aç">
-                    <i class="bi bi-list fs-4"></i>
-                </button>
+<form asp-action="UpdateMessage" method="post" class="glass ticks pa-panel-pad">
+    <input type="hidden" asp-for="MessageId" />
+    <partial name="_MessageForm" model="Model" />
 
-                <nav aria-label="Sayfa yolu" class="d-none d-sm-block">
-                    <ol class="breadcrumb mb-0 align-items-center small">
-                        <li class="breadcrumb-item">
-                            <a asp-area="Admin"
-                               asp-controller="Message"
-                               asp-action="MessageList"
-                               class="text-secondary text-decoration-none">
-                                Mesajlar
-                            </a>
-                        </li>
-                        <li class="breadcrumb-item active fw-semibold" aria-current="page">Düzenle</li>
-                    </ol>
-                </nav>
-            </div>
+    <div class="pa-form-actions">
+        <a class="btn btn-ghost" asp-action="MessageList">Vazgeç</a>
+        <button type="submit" class="btn btn-primary"><i class="bi bi-check2"></i>Kaydet</button>
+    </div>
+</form>
 
-            <a asp-area="Admin"
-               asp-controller="Message"
-               asp-action="MessageList"
-               class="btn-pastel-outline text-decoration-none">
-                <i class="bi bi-arrow-left"></i>
-                <span class="d-none d-sm-inline">Mesajlara Dön</span>
-            </a>
-        </div>
-    </header>
-
-    <main class="main-body-container flex-grow-1 p-4 p-md-4 p-lg-5">
-        <div class="mx-auto" style="max-width: 920px;">
-            <section class="d-flex flex-column flex-sm-row align-items-sm-end justify-content-between gap-3 mb-4">
-                <div>
-                    <span class="text-uppercase fw-bold"
-                          style="font-size: 0.72rem; letter-spacing: 0.08em; color: var(--primary-accent);">
-                        Mesaj Detayı
-                    </span>
-                    <h1 class="h3 fw-bold mb-2 mt-1">Mesajı Düzenle</h1>
-                    <p class="text-secondary mb-0">Mesaj bilgilerini ve okunma durumunu güncelleyebilirsin.</p>
-                </div>
-
-                <span class="badge badge-pastel badge-pastel-purple px-3 py-2 align-self-start align-self-sm-center">
-                    #@Model.MessageId
-                </span>
-            </section>
-
-            <section class="content-card overflow-hidden">
-                <div class="p-3 p-md-4 border-bottom d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="stat-icon-wrap"
-                             style="background-color: var(--pastel-purple); color: var(--pastel-purple-text);">
-                            <i class="bi bi-envelope-paper-fill"></i>
-                        </div>
-                        <div>
-                            <h2 class="h5 fw-bold mb-1">@(Model.Subject ?? "Mesaj bilgileri")</h2>
-                            <p class="text-secondary small mb-0">@(Model.NameSurname ?? "İsimsiz gönderici")</p>
-                        </div>
-                    </div>
-
-                    <time class="small text-secondary" datetime="@Model.SendDate.ToString("O")">
-                        <i class="bi bi-calendar3 me-1"></i>@Model.SendDate.ToString("dd.MM.yyyy HH:mm")
-                    </time>
-                </div>
-
-                <form asp-area="Admin"
-                      asp-controller="Message"
-                      asp-action="UpdateMessage"
-                      method="post">
-                    <input type="hidden" asp-for="MessageId" />
-
-                    <div class="p-3 p-md-4">
-                        @if (!ViewData.ModelState.IsValid)
-                        {
-                            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
-                        }
-
-                        <div class="row g-3">
-                            <div class="col-12 col-md-6">
-                                <label asp-for="NameSurname" class="form-label fw-semibold">Ad Soyad</label>
-                                <input asp-for="NameSurname" class="form-control" />
-                                <span asp-validation-for="NameSurname" class="text-danger small"></span>
-                            </div>
-
-                            <div class="col-12 col-md-6">
-                                <label asp-for="Email" class="form-label fw-semibold">E-posta</label>
-                                <input asp-for="Email" type="email" class="form-control" />
-                                <span asp-validation-for="Email" class="text-danger small"></span>
-                            </div>
-
-                            <div class="col-12">
-                                <label asp-for="Subject" class="form-label fw-semibold">Konu</label>
-                                <input asp-for="Subject" class="form-control" />
-                                <span asp-validation-for="Subject" class="text-danger small"></span>
-                            </div>
-
-                            <div class="col-12">
-                                <label asp-for="MessageDetail" class="form-label fw-semibold">Mesaj</label>
-                                <textarea asp-for="MessageDetail" class="form-control" rows="7"></textarea>
-                                <span asp-validation-for="MessageDetail" class="text-danger small"></span>
-                            </div>
-
-                            <div class="col-12">
-                                <div class="form-check form-switch p-3 ps-5 rounded-3 border bg-light">
-                                    <input asp-for="IsRead" class="form-check-input" role="switch" />
-                                    <label asp-for="IsRead" class="form-check-label fw-semibold">Okundu olarak işaretle</label>
-                                    <div class="small text-secondary mt-1">Bu ayar mesaj kutusundaki okunma rozetini günceller.</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="p-3 p-md-4 border-top bg-light d-flex flex-column-reverse flex-sm-row justify-content-end gap-2">
-                        <a asp-area="Admin"
-                           asp-controller="Message"
-                           asp-action="MessageList"
-                           class="btn-pastel-outline text-decoration-none justify-content-center">
-                            Vazgeç
-                        </a>
-                        <button type="submit" class="btn-pastel-primary justify-content-center">
-                            <i class="bi bi-check2-circle"></i>
-                            Değişiklikleri Kaydet
-                        </button>
-                    </div>
-                </form>
-            </section>
-        </div>
-    </main>
-</div>
+@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <partial name="_ValidationScriptsPartial" />
+}
