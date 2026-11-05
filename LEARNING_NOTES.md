@@ -77,3 +77,34 @@ Her fazdan sonra "ne yaptık, neden yaptık" notu. Proje sonunda soru-cevap ve v
 
 ### Açık konu (Faz 3)
 - Safari, VP9 alfa WebM'i şeffaf göstermiyor. Safari'de video yerine şeffaf PNG poster gösteren küçük bir yedek (fallback) ekleyeceğiz.
+
+---
+
+## Faz 3: Tasarım sistemi ve admin kabuğu
+
+### Ne yaptık?
+- `wwwroot/css/design-system.css`: Bütün renk, cam, tipografi ve ölçü kararları `:root` token'larında. Buton, form, tablo, rozet, cetvel göstergesi, boş durum ve modal bileşenleri de burada. Public site ile admin ortak kullanacak.
+- `wwwroot/css/admin.css`: Admin kabuğu (sidebar, içerik alanı, mobil üst bar ve offcanvas).
+- `GlassIconTagHelper` ve `glass-icon.js`: `<glass-icon name="projects" size="64" />` yazınca hareketli cam ikon çıkıyor.
+- Admin layout'u `Areas/Admin/Views/Shared/_AdminLayout.cshtml`'e taşıdık ve area'ya `_ViewStart.cshtml` ekledik. Eski `AdminLayoutController`, 630 satırlık stil component'i ve sahte veriyle çalışan 720 satırlık JS silindi.
+- Sidebar View Component'i menüyü bir model listesinden üretiyor ve okunmamış mesaj sayısını DB'den çekiyor. Mobilde aynı component bir offcanvas içinde tekrar kullanılıyor.
+- `/Admin` adresi için `DashboardController` eklendi (içeriği Faz 9'da gelecek).
+- Deneyim ve Mesaj sayfaları yeni dile taşındı. Ekle ve Düzenle formları ortak partial'ları (`_ExperienceForm`, `_MessageForm`) kullanıyor. İstemci taraflı validasyon (jQuery Validate Unobtrusive) açık.
+
+### Neden?
+- **Design token'lar:** Kırmızıyı değiştirmek istersek tek satır değişecek. Renk kodları dosyalara dağılmış olsaydı her bileşeni tek tek bulmamız gerekirdi.
+- **Bootstrap'ı neden atmadık?** Modal, offcanvas ve grid zaten çalışıyor; case de Bootstrap Modal istiyor. Bootstrap 5.3 renklerini `--bs-*` CSS değişkenlerinden okuyor. `[data-bs-theme="dark"]` altında bu değişkenleri kendi token'larımıza yönlendirince bütün Bootstrap bileşenleri kendiliğinden bizim dilimizle görünüyor.
+- **`_ViewStart`:** Bir klasördeki bütün view'lar için varsayılan layout'u belirler. Önceden 6 view `Layout = "~/Areas/.../Index.cshtml"` diye aynı satırı tekrar ediyordu.
+- **`@RenderSection("Actions")`:** Sayfa başlığı tek yerde (layout'ta) çiziliyor. Her sayfa sadece kendi butonlarını bu bölüme koyuyor. `ViewData["Title"]` ve `ViewData["Description"]` hem `<title>`'ı hem de sayfa başlığını besliyor.
+- **Partial View mı, View Component mi?**
+  - *Partial* sadece kendisine verilen modeli çizer (form alanları gibi).
+  - *View Component* kendi verisini kendisi çeker (sidebar'daki okunmamış mesaj sayısı gibi). Sayfayı açan controller'ın bundan haberi olmasına gerek kalmaz.
+- **Tag Helper:** HTML gibi görünen ama sunucuda C# ile işlenen etiket. `asp-for` ve `asp-action` da birer Tag Helper. `<glass-icon>` için kendimizinkini yazıp `_ViewImports`'ta `@addTagHelper *, Portfolio` ile tanıttık.
+- **Kademeli iyileştirme (progressive enhancement):** Sunucu her zaman şeffaf PNG basıyor, bu her yerde çalışır. JS yalnızca destekleyen tarayıcılarda bunu videoya yükseltiyor. Safari'de veya "azaltılmış hareket" açıkken PNG kalıyor. Ekran dışına çıkan video `IntersectionObserver` ile duraklatılıyor.
+- **Silme neden form ve POST?** GET isteği "bir şey oku" demektir. Tarayıcılar ve arama botları GET linklerini önceden açabilir. Veri değiştiren her işlem POST olmalı ve `[ValidateAntiForgeryToken]` ile korunmalı. `<form method="post">` Tag Helper'ı token'ı forma kendisi ekliyor.
+
+### Tarayıcıda yakaladığımız hatalar
+- **Aktif menü çizgisi görünmüyordu:** Kırmızı çizgi linkin 12px soluna konumlanmıştı ama menü listesinin `overflow-y: auto` olması onu kesiyordu. Çizgiyi linkin içine aldık.
+- **Mobilde sayfa yana taşıyordu:** Tablo başlığındaki ekran okuyucu metni (`.visually-hidden`) `position: absolute`. Kaydırma kabında `position` olmadığı için kabın dışına kaçıp sayfayı 689px'e genişletiyordu. Kaba `position: relative` verince düzeldi.
+  - Ders: `overflow` kırpması yalnızca kabı "konumlandırılmış ata" kabul eden absolute öğeler için çalışır.
+- **Modal ekran görüntüsünde görünmedi** ama DOM'da açıktı. Animasyon bitmeden çekilen bir ekran görüntüsüydü. Ders: Görsel testte önce DOM durumunu doğrula.
