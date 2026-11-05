@@ -205,3 +205,41 @@ Her fazdan sonra "ne yaptık, neden yaptık" notu. Proje sonunda soru-cevap ve v
 - Masaüstü ve mobil (375 px): taşma yok, mobil menü açılıyor ve link tıklanınca kapanıyor, zaman çizelgesi tek sütuna iniyor.
 - Proje arama ("xyz" → boş durum, "CMS" ve "WEB" → sonuç), filtre temizleme.
 - İletişim: boş/geçersiz form → 4 hata ve yazılanlar korunuyor; geçerli form → teşekkür kartı ve DB'de okunmamış kayıt; curl ile overposting ve honeypot.
+
+---
+
+## Ara adım: Portre, logo ve favicon
+
+### Ne yaptık?
+- **Hero portresi:** Gönderilen 1254×1254 fotoğrafı hero çerçevesine uysun diye 4:5 oranında kırpıp 880×1100 WebP yaptık (`/assets/profile/portrait.webp`, 69 KB). DB'deki `HeroSections.ImageUrl` artık bu dosyayı gösteriyor.
+- **Logo:** Daha önce link olarak verilen görselin 1254 px'lik orijinalini yüze odaklı kırptık. 96 px (1x) ve 192 px (2x) WebP olarak kaydettik. `_BrandLogo` partial'ı public navbar/footer'da ve admin sidebar/üst bar'da kullanılıyor; admin'deki "PA" kutusu da artık bu fotoğraf.
+- **Favicon seti:** Pillow ile 16/32/48 boyutlarını içeren gerçek bir `favicon.ico`, 16/32 PNG, 180 px `apple-touch-icon`, 192/512 PWA ikonları ve `site.webmanifest`. Hepsi `_Favicons` partial'ıyla iki layout'a da eklendi.
+
+### Neden?
+- Link verilen görsel aslında 128×128 boyutuna küçültülmüş bir Next.js görseliydi. 96 px'lik logo retina ekranlarda 192 px kaynak ister; bu yüzden URL'in içindeki orijinal adrese gidip tam çözünürlüklü sürümü kullandık.
+- Logo ekranda 34 px görünüyor; dosya 96/192 px. `srcset` ile tarayıcı ekran yoğunluğuna göre uygun dosyayı seçiyor.
+- Tasarım varlıkları `wwwroot/assets/` altında ve repoya giriyor. Admin'den yüklenenler `wwwroot/uploads/` altında ve git'e girmiyor. `ImageStorage.Delete` yalnızca `/uploads/` altını sildiği için portreyi admin'den değiştirmek bu dosyayı silmez.
+
+---
+
+## Faz 7: Gelen kutusu
+
+### Ne yaptık?
+- **Liste:** Arama (gönderen adı, e-posta, konu), durum filtresi (tümü/okunmamış/okunmuş) ve sıralama (en yeni/en eski). Filtreler bir `GET` formuyla URL'de taşınıyor (`?q=&status=&sort=`).
+- **Okunmamış sayısı:** Sayfadaki özet şeridinde ve sidebar rozetinde gösteriliyor. Okunmamış satırlar kalın ve kırmızı noktalı.
+- **Detay:** Bootstrap Modal. Modal açılınca mesaj `fetch` ile arka planda okundu işaretleniyor; sayaçlar sayfa yenilenmeden güncelleniyor.
+- **Okundu/okunmadı işaretleme:** Listeden ve modaldan iki yönlü (`ToggleRead`). İşlemden sonra aynı filtreli görünüme dönülüyor.
+- **`?open=12`:** Bu adresle gelindiğinde ilgili mesajın modalı kendiliğinden açılıyor; Dashboard'daki "son mesajlar" listesi bunu kullanacak.
+- **Orijinal içerik düzenlenemez:** `UpdateMessage` ve `CreateMessage` action'ları ve view'ları kaldırıldı. Eski düzenleme adresi artık 404.
+- `DeleteMessage` artık yalnızca POST ve antiforgery korumalı (önceden GET ile de silinebiliyordu).
+
+### Neden?
+- **Filtreler neden `GET`?** Filtreleme veri değiştirmez, sadece okur. `GET` ile adres paylaşılabilir, yer imine eklenebilir, F5 ve geri tuşu doğal çalışır. Veri değiştiren işlemler ise (`ToggleRead`, `DeleteMessage`) POST.
+- **`IQueryable` ile koşullu sorgu:** `Where` ve `OrderBy` sırayla ekleniyor, SQL ancak `ToListAsync()` anında oluşuyor. `Contains` SQL'de `LIKE '%...%'` oluyor; SQL Server'ın varsayılan collation'ı büyük/küçük harfe duyarsız olduğu için "EXAMPLE.COM" araması da sonuç buluyor.
+- **AJAX ve antiforgery:** `[ValidateAntiForgeryToken]` token'ı form alanında *veya* `RequestVerificationToken` header'ında arar. Sayfaya `@Html.AntiForgeryToken()` ile gizli bir token basıp `fetch` ile header'da gönderdik. Token'sız istek `400` aldı.
+- **Event delegation, yine:** Her modala ayrı dinleyici yerine `document`'ta tek bir `show.bs.modal` dinleyicisi var. Bootstrap her modal açılışında bu olayı yayınlıyor.
+- **Open redirect:** `returnUrl` kullanıcıdan gelen bir değer. Kontrolsüz `Redirect(returnUrl)` saldırganın `?returnUrl=https://kotu-site.com` ile kullanıcıyı sahte bir giriş sayfasına yollamasına izin verir. `Url.IsLocalUrl` yalnızca site içi adreslere izin veriyor: `https://...`, `//...` (protokolsüz) ve `/\...` denemeleri listeye yönlendirildi.
+
+### Test sırasında öğrendiklerimiz
+- **Git Bash yol dönüşümü:** `//kotu-site.example` argümanı MSYS tarafından dosya yolu sanılıp `/kotu-site.example`'a çevrildi; test ilk bakışta açık varmış gibi gösterdi. `MSYS_NO_PATHCONV=1` ile tekrarlayınca korumanın çalıştığı görüldü. Ders: Test aracının girdini değiştirip değiştirmediğini doğrula.
+- Aynı nedenle (Windows kodlaması) curl ile gönderilen Türkçe karakterler bozuk kaydedilmişti; tarayıcıdan gönderilenler sorunsuz.
