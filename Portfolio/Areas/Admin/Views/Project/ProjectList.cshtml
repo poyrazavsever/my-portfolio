@@ -85,7 +85,7 @@ else
                                         @if (!string.IsNullOrWhiteSpace(project.GithubUrl))
                                         {
                                             <a class="cell-sub" href="@project.GithubUrl" target="_blank" rel="noopener">
-                                                <i class="bi bi-github"></i> GitHub
+                                                <i class="bi @(project.GithubUrl.Contains("github.com", StringComparison.OrdinalIgnoreCase) ? "bi-github" : "bi-link-45deg")"></i> Bağlantı
                                             </a>
                                         }
                                     </div>

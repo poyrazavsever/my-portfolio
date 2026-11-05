@@ -49,8 +49,17 @@
                         }
                         @if (!string.IsNullOrWhiteSpace(project.GithubUrl))
                         {
+                            var isGithub = project.GithubUrl.Contains("github.com", StringComparison.OrdinalIgnoreCase);
                             <a class="project-link" href="@project.GithubUrl" target="_blank" rel="noopener">
-                                <i class="bi bi-github"></i>Kaynak kod<i class="bi bi-arrow-up-right"></i>
+                                @if (isGithub)
+                                {
+                                    <i class="bi bi-github"></i><text>Kaynak kod</text>
+                                }
+                                else
+                                {
+                                    <text>Projeyi incele</text>
+                                }
+                                <i class="bi bi-arrow-up-right"></i>
                             </a>
                         }
                     </div>

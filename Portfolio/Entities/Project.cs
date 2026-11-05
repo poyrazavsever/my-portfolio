@@ -15,7 +15,7 @@ namespace Portfolio.Entities
         [StringLength(500, ErrorMessage = "Açıklama en fazla {1} karakter olabilir.")]
         public string? Description { get; set; }
 
-        [Display(Name = "GitHub Bağlantısı")]
+        [Display(Name = "Proje bağlantısı")]
         [Url(ErrorMessage = "Geçerli bir URL giriniz.")]
         [StringLength(500)]
         public string? GithubUrl { get; set; }
