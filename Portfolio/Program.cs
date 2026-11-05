@@ -16,6 +16,18 @@ builder.Services.AddScoped<ICvStorage, CvStorage>();
 
 var app = builder.Build();
 
+// "dotnet run -- --seed": portfolyo içeriğini (Data/PortfolioSeeder) DB'ye yükleyip çık.
+// Web sunucusu başlatılmaz; komut satırından bir kerelik bakım işi gibi çalışır.
+if (args.Contains("--seed"))
+{
+    using var scope = app.Services.CreateScope();
+    var context = scope.ServiceProvider.GetRequiredService<PortfolioContext>();
+    await context.Database.MigrateAsync();          // önce şema güncel olsun
+    await Portfolio.Data.PortfolioSeeder.SeedAsync(context);
+    Console.WriteLine("Seed tamamlandı: portfolyo içeriği yüklendi.");
+    return;
+}
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
