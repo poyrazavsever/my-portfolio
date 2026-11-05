@@ -26,5 +26,21 @@ namespace Portfolio.Context
 
         public DbSet<Project> Projects { get; set; }
 
+        public DbSet<Skill> Skills { get; set; }
+
+        public DbSet<SiteSetting> SiteSettings { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            // İçinde proje olan bir kategori silinemesin: projeler sessizce kaybolmasın.
+            // Data Annotation ile ifade edilemeyen kurallar Fluent API ile yazılır.
+            modelBuilder.Entity<Project>()
+                .HasOne(project => project.Category)
+                .WithMany(category => category.Projects)
+                .HasForeignKey(project => project.CategoryId)
+                .OnDelete(DeleteBehavior.Restrict);
+        }
     }
 }
