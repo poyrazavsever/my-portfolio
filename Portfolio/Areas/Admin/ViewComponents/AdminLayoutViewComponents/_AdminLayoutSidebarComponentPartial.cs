@@ -34,6 +34,7 @@ namespace Portfolio.Areas.Admin.ViewComponents.AdminLayoutViewComponents
                     new("Eğitim", "bi-mortarboard", "Education", "EducationList"),
                     new("Deneyim", "bi-briefcase", "Experience", "ExperienceList"),
                     new("Yetenekler", "bi-cpu", "Skill", "SkillList"),
+                    new("Sertifikalar", "bi-patch-check", "Certificate", "CertificateList"),
                     new("Projeler", "bi-layers", "Project", "ProjectList"),
                     new("Kategoriler", "bi-tags", "Category", "CategoryList"),
                     AdminNavItem.Separator(),

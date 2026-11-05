@@ -1,0 +1,86 @@
+@model List<Certificate>
+
+@{
+    ViewData["Title"] = "Sertifikalar";
+    ViewData["Description"] = "Tamamlanan eğitimler ve sertifikalar, en yeniden eskiye.";
+
+    var activeCount = Model.Count(certificate => certificate.IsActive);
+}
+
+@section Actions {
+    <a class="btn btn-primary" asp-action="CreateCertificate"><i class="bi bi-plus-lg"></i>Yeni sertifika</a>
+}
+
+@if (Model.Count == 0)
+{
+    <section class="glass ticks pa-empty">
+        <glass-icon name="certificates" size="140" />
+        <h3>Henüz sertifika eklenmedi</h3>
+        <p>Sertifikalarınızı doğrulama bağlantılarıyla birlikte ekleyin.</p>
+        <a class="btn btn-primary" asp-action="CreateCertificate"><i class="bi bi-plus-lg"></i>İlk sertifikayı ekle</a>
+    </section>
+}
+else
+{
+    <div class="pa-stats">
+        <span><b>@Model.Count</b> sertifika</span>
+        <span><b>@activeCount</b> aktif</span>
+    </div>
+
+    <section class="glass ticks pa-panel">
+        <div class="pa-table-wrap">
+            <table class="pa-table">
+                <thead>
+                    <tr>
+                        <th>Sertifika</th>
+                        <th>Tarih</th>
+                        <th>Durum</th>
+                        <th class="cell-actions"><span class="visually-hidden">İşlemler</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var certificate in Model)
+                    {
+                        <tr>
+                            <td>
+                                <span class="cell-title">@certificate.Title</span>
+                                <span class="cell-sub">
+                                    @certificate.Issuer
+                                    @if (!string.IsNullOrWhiteSpace(certificate.CredentialUrl))
+                                    {
+                                        <text> · </text><a href="@certificate.CredentialUrl" target="_blank" rel="noopener">Doğrula <i class="bi bi-arrow-up-right"></i></a>
+                                    }
+                                </span>
+                            </td>
+                            <td class="cell-mono">@certificate.IssueDate.ToString("yyyy-MM")</td>
+                            <td>
+                                @if (certificate.IsActive)
+                                {
+                                    <span class="pa-badge is-on">Aktif</span>
+                                }
+                                else
+                                {
+                                    <span class="pa-badge is-off">Pasif</span>
+                                }
+                            </td>
+                            <td class="cell-actions">
+                                <a class="btn btn-ghost btn-icon" title="Düzenle" aria-label="Düzenle"
+                                   asp-action="UpdateCertificate" asp-route-id="@certificate.CertificateId">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <form class="d-inline" method="post"
+                                      asp-action="DeleteCertificate" asp-route-id="@certificate.CertificateId"
+                                      data-confirm="@certificate.Title kalıcı olarak silinecek."
+                                      data-confirm-title="Sertifika silinsin mi?">
+                                    <button type="submit" class="btn btn-danger-ghost btn-icon" title="Sil" aria-label="Sil">
+                                        <i class="bi bi-trash3"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </section>
+}

@@ -1,0 +1,20 @@
+@model Certificate
+
+@{
+    ViewData["Title"] = "Yeni sertifika";
+    ViewData["Description"] = "Sertifika adı, veren kurum ve doğrulama bağlantısı.";
+}
+
+<form asp-action="CreateCertificate" method="post" class="glass ticks pa-panel-pad">
+    <partial name="_CertificateForm" model="Model" />
+
+    <div class="pa-form-actions">
+        <a class="btn btn-ghost" asp-action="CertificateList">Vazgeç</a>
+        <button type="submit" class="btn btn-primary"><i class="bi bi-check2"></i>Kaydet</button>
+    </div>
+</form>
+
+@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -30,6 +30,8 @@ namespace Portfolio.Context
 
         public DbSet<SiteSetting> SiteSettings { get; set; }
 
+        public DbSet<Certificate> Certificates { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

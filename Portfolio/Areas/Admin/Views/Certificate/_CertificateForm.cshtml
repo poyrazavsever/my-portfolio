@@ -1,0 +1,37 @@
+@model Certificate
+
+<div asp-validation-summary="ModelOnly"></div>
+
+<div class="row g-4">
+    <div class="col-md-7">
+        <label asp-for="Title" class="form-label"></label>
+        <input asp-for="Title" class="form-control" placeholder="Microsoft Certified: Azure Developer Associate" />
+        <span asp-validation-for="Title"></span>
+    </div>
+
+    <div class="col-md-5">
+        <label asp-for="Issuer" class="form-label"></label>
+        <input asp-for="Issuer" class="form-control" placeholder="Microsoft" />
+        <span asp-validation-for="Issuer"></span>
+    </div>
+
+    <div class="col-md-5">
+        <label asp-for="IssueDate" class="form-label"></label>
+        <input asp-for="IssueDate" class="form-control" />
+        <span asp-validation-for="IssueDate"></span>
+    </div>
+
+    <div class="col-md-7">
+        <label asp-for="CredentialUrl" class="form-label"></label>
+        <input asp-for="CredentialUrl" class="form-control" placeholder="https://..." />
+        <div class="form-text">Ziyaretçi sertifikayı bu bağlantıdan doğrulayabilir.</div>
+        <span asp-validation-for="CredentialUrl"></span>
+    </div>
+
+    <div class="col-12">
+        <div class="form-check form-switch">
+            <input asp-for="IsActive" class="form-check-input" role="switch" />
+            <label asp-for="IsActive" class="form-check-label">Portfolyoda göster</label>
+        </div>
+    </div>
+</div>

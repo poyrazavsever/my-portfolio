@@ -1,0 +1,21 @@
+@model Certificate
+
+@{
+    ViewData["Title"] = "Sertifikayı düzenle";
+    ViewData["Description"] = Model.Title;
+}
+
+<form asp-action="UpdateCertificate" method="post" class="glass ticks pa-panel-pad">
+    <input type="hidden" asp-for="CertificateId" />
+    <partial name="_CertificateForm" model="Model" />
+
+    <div class="pa-form-actions">
+        <a class="btn btn-ghost" asp-action="CertificateList">Vazgeç</a>
+        <button type="submit" class="btn btn-primary"><i class="bi bi-check2"></i>Değişiklikleri kaydet</button>
+    </div>
+</form>
+
+@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <partial name="_ValidationScriptsPartial" />
+}
