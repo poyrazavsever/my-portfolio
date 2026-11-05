@@ -2,6 +2,12 @@
   "version": "0.0.1",
   "configurations": [
     {
+      "name": "portfolio",
+      "runtimeExecutable": "dotnet",
+      "runtimeArgs": ["run", "--project", "Portfolio/Portfolio.csproj", "--launch-profile", "http"],
+      "port": 5000
+    },
+    {
       "name": "design-preview",
       "runtimeExecutable": "python",
       "runtimeArgs": ["-m", "http.server", "5511", "--bind", "127.0.0.1"],
