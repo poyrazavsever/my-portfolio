@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="tr" data-bs-theme="dark">
+@await Component.InvokeAsync("_AdminLayoutHeadComponentPartial")
+<body class="pa-grid-bg admin-shell">
+
+    <aside class="admin-sidebar glass" aria-label="Yönetim menüsü">
+        @await Component.InvokeAsync("_AdminLayoutSidebarComponentPartial")
+    </aside>
+
+    @await Component.InvokeAsync("_AdminLayoutMobileSidebarComponentPartial")
+
+    <main class="admin-main">
+        <header class="pa-page-head">
+            <div>
+                <h1>@ViewData["Title"]</h1>
+                @if (ViewData["Description"] is string description)
+                {
+                    <p>@description</p>
+                }
+            </div>
+            @if (IsSectionDefined("Actions"))
+            {
+                <div class="pa-page-actions">@RenderSection("Actions")</div>
+            }
+        </header>
+
+        @RenderBody()
+    </main>
+
+    @await Component.InvokeAsync("_AdminLayoutScriptComponentPartial")
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

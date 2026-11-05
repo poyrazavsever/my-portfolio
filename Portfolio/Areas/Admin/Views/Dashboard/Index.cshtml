@@ -1,0 +1,18 @@
+@{
+    ViewData["Title"] = "Dashboard";
+    ViewData["Description"] = "Portfolyonun genel durumu.";
+}
+
+<section class="glass ticks pa-empty">
+    <glass-icon name="dashboard" size="140" />
+    <h3>Özet ekranı hazırlanıyor</h3>
+    <p>İstatistik kartları, son mesajlar ve kategori özeti modüller tamamlandıkça burada toplanacak.</p>
+    <div class="d-flex gap-2 flex-wrap justify-content-center">
+        <a class="btn btn-ghost" asp-controller="Experience" asp-action="ExperienceList">
+            <i class="bi bi-briefcase"></i>Deneyimler
+        </a>
+        <a class="btn btn-ghost" asp-controller="Message" asp-action="MessageList">
+            <i class="bi bi-chat-square-text"></i>Mesajlar
+        </a>
+    </div>
+</section>
