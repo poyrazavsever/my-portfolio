@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "design-preview",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "5511", "--bind", "127.0.0.1"],
+      "port": 5511
+    }
+  ]
+}
