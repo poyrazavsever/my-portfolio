@@ -243,3 +243,36 @@ Her fazdan sonra "ne yaptık, neden yaptık" notu. Proje sonunda soru-cevap ve v
 ### Test sırasında öğrendiklerimiz
 - **Git Bash yol dönüşümü:** `//kotu-site.example` argümanı MSYS tarafından dosya yolu sanılıp `/kotu-site.example`'a çevrildi; test ilk bakışta açık varmış gibi gösterdi. `MSYS_NO_PATHCONV=1` ile tekrarlayınca korumanın çalıştığı görüldü. Ders: Test aracının girdini değiştirip değiştirmediğini doğrula.
 - Aynı nedenle (Windows kodlaması) curl ile gönderilen Türkçe karakterler bozuk kaydedilmişti; tarayıcıdan gönderilenler sorunsuz.
+
+---
+
+## Faz 8: CV indir
+
+### Ne yaptık?
+- **`ICvStorage` / `CvStorage`:** CV, `wwwroot` dışında `App_Data/cv/<guid>.pdf` olarak saklanıyor. DB'de (`SiteSetting.CvFilePath`) yalnızca göreli yol tutuluyor. Klasör `.gitignore`'da.
+- **Doğrulama (üç katman):** `.pdf` uzantısı, `application/pdf` içerik türü ve dosyanın ilk baytlarında `%PDF-` imzası. En fazla 5 MB.
+- **Admin → Ayarlar:** Yükle/değiştir, yeni sekmede önizle, kaldır (SweetAlert onaylı). İndirilecek dosya adı ayarlanabiliyor; boş bırakılırsa ad soyaddan `Poyraz-Avsever-CV.pdf` üretiliyor. Yeni CV yüklenince eski dosya diskten siliniyor.
+- **Public:** `GET /Default/DownloadCv` → `PhysicalFile(yol, "application/pdf", "Poyraz-Avsever-CV.pdf")`. Navbar ve hero'daki "CV indir" butonları yalnızca DB'de kayıt **ve** diskte dosya varsa görünüyor.
+- **`[RequestSizeLimit(6 MB)]`** ile çok büyük istekler action'a ulaşmadan kesiliyor. Tarayıcıda da `data-max-bytes` ile seçim anında boyut kontrolü yapılıyor (görsel yükleme alanlarına da eklendi).
+
+### Neden?
+- **Neden `wwwroot` dışında?** `wwwroot` içindeki her dosya, adresini bilen herkese statik dosya olarak açıktır; erişimi, adı ve içerik türünü kontrol edemeyiz. `App_Data`'daki dosyaya ise yalnızca bizim action'ımız üzerinden ulaşılabiliyor. Test: `/App_Data/cv/...` adresi `404` verdi. İleride "CV'yi kaç kişi indirdi?" sayacı ya da "yalnızca giriş yapanlar indirebilir" kuralı eklemek tek bir action'a kod yazmak kadar kolay.
+- **`ContentRootPath` ile `WebRootPath` farkı:** İlki projenin kök klasörü, ikincisi onun altındaki `wwwroot`. Görseller (herkese açık olmalı) `WebRootPath` altında, CV `ContentRootPath/App_Data` altında.
+- **`PhysicalFile` ve `Content-Disposition`:** Üçüncü parametre (`fileDownloadName`) verildiğinde ASP.NET `Content-Disposition: attachment; filename=...` header'ı ekler. Tarayıcı dosyayı açmak yerine indirir ve diskteki Guid'li ad yerine bizim verdiğimiz anlamlı adı kullanır. Admin önizlemesinde bu parametreyi vermedik; PDF tarayıcıda açılıyor.
+- **Neden üç ayrı kontrol?** Uzantı ve içerik türü istemciden gelir, kolayca sahtelenebilir. Asıl güvence dosyanın içeriği (`%PDF-`). İlk ikisi yine de faydalı: Kullanıcıya erken ve anlaşılır bir hata mesajı veriyorlar.
+- **Sıralama önemli:** Yeni dosya önce diske yazılıyor, sonra DB güncelleniyor, en son eski dosya siliniyor. Arada bir hata olursa en kötü ihtimalle diskte yetim bir dosya kalır; site hiçbir zaman olmayan bir dosyayı göstermez.
+- **Buton görünürlüğü neden dosyanın varlığına bağlı?** Repo yeni bir makinede kurulduğunda DB'de CV kaydı olup `App_Data` boş olabilir. O durumda tıklanınca 404 veren ölü bir buton göstermek yerine butonu hiç göstermiyoruz.
+- **Path traversal koruması:** `GetFullPath` DB'den gelen yolu bile `App_Data` kökünün dışına çıkıyor mu diye kontrol ediyor (`../../appsettings.json` gibi bir değer işe yaramaz).
+
+### Nasıl test ettik?
+- Python ile geçerli bir PDF ve dört geçersiz dosya ürettik; `curl` ile yükledik:
+
+| Deneme | Sonuç |
+|---|---|
+| İçi metin olan `.pdf` | ❌ İmza kontrolü |
+| Geçerli PDF, tür `text/plain` | ❌ İçerik türü kontrolü |
+| 5.5 MB | ❌ Servisin 5 MB sınırı |
+| 7 MB | ❌ `RequestSizeLimit`, `400` (tarayıcıda artık JS ile önceden engelleniyor) |
+| Geçerli PDF, sonra ikinci bir PDF | ✅ Butonlar çıktı, eski dosya silindi |
+| İndirme | ✅ `attachment; filename=Poyraz-Avsever-CV.pdf`, içerik doğru sürüm |
+| CV'yi kaldırma | ✅ Butonlar kayboldu, indirme `404` |
