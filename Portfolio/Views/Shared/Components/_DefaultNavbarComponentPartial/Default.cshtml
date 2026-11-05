@@ -3,7 +3,7 @@
 <header class="site-nav" data-site-nav>
     <nav class="site-nav-bar glass" aria-label="Ana menü">
         <a class="site-brand" asp-controller="Default" asp-action="Index" fragment="top">
-            <span class="brand-mark"></span>@Model.Name
+            <partial name="_BrandLogo" />@Model.Name
         </a>
 
         <button class="btn btn-ghost btn-icon site-nav-toggle" type="button"

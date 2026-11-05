@@ -3,7 +3,7 @@
 @if (!Model.IsMobile)
 {
     <a class="admin-brand" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">
-        <span class="brand-mark"></span>Poyraz Avsever
+        <partial name="_BrandLogo" />Poyraz Avsever
     </a>
 }
 
@@ -49,7 +49,7 @@
 </ul>
 
 <div class="admin-user">
-    <span class="admin-avatar">PA</span>
+    <img class="admin-avatar" src="/assets/brand/avatar-96.webp" width="34" height="34" alt="" />
     <div>
         <b>Poyraz Avsever</b>
         <small>Yönetici</small>

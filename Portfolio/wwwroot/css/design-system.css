@@ -373,6 +373,19 @@ a:hover { color: var(--pa-red-ink); }
     display: block;
 }
 
+/* ---------- 10a. Marka logosu ---------- */
+.brand-logo {
+    width: 34px;
+    height: 34px;
+    flex: none;
+    object-fit: cover;
+    border-radius: 9px;
+    border: 1px solid var(--pa-stroke-strong);
+    /* Altta ince kırmızı çizgi: eski kırmızı kare işaretin yerine marka rengini taşır. */
+    box-shadow: 0 2px 0 -1px var(--pa-red);
+    background: var(--pa-bg-raised);
+}
+
 /* ---------- 10. Hareketli cam ikon ---------- */
 .glass-icon {
     display: block;
