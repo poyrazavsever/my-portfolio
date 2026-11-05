@@ -329,3 +329,33 @@ Her fazdan sonra "ne yaptık, neden yaptık" notu. Proje sonunda soru-cevap ve v
 - Dashboard'daki 7 sayıyı doğrudan SQL `COUNT` sorgularıyla karşılaştırdık: birebir aynı.
 - Son mesajlardan birine tıklayınca gelen kutusu açıldı ve doğru mesajın modalı kendiliğinden geldi.
 - Mobilde (375 px) taşma yok; kartlar 2 sütuna iniyor.
+
+---
+
+## Faz 10: Cila ve teslim
+
+### Ne yaptık?
+- **Kod temizliği:** `.csproj`'tan şablondan kalan 4 boş `<Folder Include>` tanımı ve boş klasörler silindi. TODO kalmadı, kullanılmayan component yok. `ViewBag` yalnızca proje dropdown'unda kaldı; case `SelectList`/`asp-items` istediği için bilinçli bir tercih.
+- **Sıfırdan kurulum testi:** Connection string'i ortam değişkeniyle (`ConnectionStrings__PortfolioConnection`) geçici olarak boş bir `PortfolioDb_FreshTest` veritabanına yönlendirdik.
+  - `dotnet ef database update`: 6 migration sırayla uygulandı.
+  - `dotnet run -- --seed`: İçerik yüklendi; ikinci çalıştırmada kayıtlar çoğalmadı (idempotent).
+  - 17 sayfalık smoke test: Hepsi `200`; beklenen iki `404` (CV yokken indirme, olmayan proje). Logda exception yok.
+  - Test veritabanı silindi.
+- **Ekran görüntüleri:** Headless Chrome ile sabit çözünürlükte alındı (`docs/screenshots`).
+- **README:** Kurulum, teknoloji tablosu, case gereksinimlerinin nerede karşılandığını gösteren tablo, proje yapısı, tasarım kararları, güvenlik notları.
+
+### Neden?
+- **Neden ayrı bir veritabanında test?** "Benim makinemde çalışıyor" sorununu yakalamak için. Geliştirme DB'mizde migration geçmişi ve elle girilmiş veriler var; yeni klonlayan birinin karşılaşacağı durum boş bir DB. Ortam değişkeni `appsettings.json`'ı ezer (ASP.NET Core yapılandırma sıralaması), böylece dosyaya dokunmadan başka bir DB'yi deneyebildik.
+- **Smoke test:** Her sayfayı tek tek açıp `200` döndüğünü görmek, "derleniyor ama bir sayfa patlıyor" türü hataları teslimden önce yakalar.
+
+### Yaşadığımız sorun
+- Headless Chrome, Türkçe karakter ("Yazılım") içeren bir çıktı yoluna ekran görüntüsünü yazamadı ve hata da vermedi. Görüntüleri önce yalnızca ASCII karakter içeren bir klasöre yazıp sonra kopyaladık.
+
+### Teslim için ekran kaydı akışı (yaklaşık 2–3 dk)
+1. **Site:** Hero → navbar ile bölümlere geçiş → deneyim ve eğitim zaman çizelgesi → projelerde kategori filtresi ve arama → sertifikalar.
+2. **İletişim formu:** Boş gönder (doğrulama hataları) → doldurup gönder (teşekkür kartı).
+3. **Admin Dashboard:** Kartlar, okunmamış mesaj sayısı, son mesajlardan yeni gelene tıkla → gelen kutusunda modal açılır ve okundu olur.
+4. **Gelen kutusu:** Arama, "okunmamış" filtresi, sıralama; bir mesajı SweetAlert onayıyla sil.
+5. **Proje:** Yeni proje ekle (kategori dropdown'u, kapak görseli) → sitede kartın ve filtrenin güncellendiğini göster → projeyi pasif yap, sitede kaybolduğunu göster.
+6. **Kategori:** İçinde proje olan kategoriyi silmeyi dene (Restrict mesajı).
+7. **CV:** Ayarlar'dan PDF yükle → sitede "CV indir" butonunun çıktığını ve dosyanın anlamlı adla indiğini göster.
