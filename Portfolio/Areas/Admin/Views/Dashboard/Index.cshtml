@@ -1,18 +1,196 @@
+@model DashboardViewModel
+
 @{
     ViewData["Title"] = "Dashboard";
     ViewData["Description"] = "Portfolyonun genel durumu.";
+
+    var maxCategory = Model.CategorySummary.Count == 0 ? 1 : Model.CategorySummary.Max(item => item.ProjectCount);
+
+    // İstatistik kartları: (ikon, etiket, değer, alt satır, bağlantı)
+    var stats = new (string Icon, string Label, int Value, string? Note, string Url)[]
+    {
+        ("projects", "Toplam proje", Model.ProjectCount, null, Url.Action("ProjectList", "Project")!),
+        ("projects", "Aktif proje", Model.ActiveProjectCount, $"{Model.ProjectCount - Model.ActiveProjectCount} pasif", Url.Action("ProjectList", "Project")!),
+        ("skills", "Yetenek", Model.SkillCount, null, Url.Action("SkillList", "Skill")!),
+        ("experience", "Deneyim", Model.ExperienceCount, null, Url.Action("ExperienceList", "Experience")!),
+        ("education", "Eğitim", Model.EducationCount, null, Url.Action("EducationList", "Education")!),
+        ("contact", "Toplam mesaj", Model.MessageCount, null, Url.Action("MessageList", "Message")!),
+        ("messages", "Okunmamış mesaj", Model.UnreadMessageCount, Model.UnreadMessageCount > 0 ? "yanıt bekliyor" : "hepsi okundu",
+            Url.Action("MessageList", "Message", new { status = "unread" })!),
+    };
 }
 
-<section class="glass ticks pa-empty">
-    <glass-icon name="dashboard" size="140" />
-    <h3>Özet ekranı hazırlanıyor</h3>
-    <p>İstatistik kartları, son mesajlar ve kategori özeti modüller tamamlandıkça burada toplanacak.</p>
-    <div class="d-flex gap-2 flex-wrap justify-content-center">
-        <a class="btn btn-ghost" asp-controller="Experience" asp-action="ExperienceList">
-            <i class="bi bi-briefcase"></i>Deneyimler
+@section Actions {
+    <a class="btn btn-primary" asp-controller="Project" asp-action="CreateProject"><i class="bi bi-plus-lg"></i>Yeni proje</a>
+}
+
+@* ---------- İstatistik kartları ---------- *@
+<section class="dash-stats" aria-label="Özet sayılar">
+    @foreach (var stat in stats)
+    {
+        <a class="dash-stat glass @(stat.Label == "Okunmamış mesaj" && stat.Value > 0 ? "is-alert" : null)" href="@stat.Url">
+            <glass-icon name="@stat.Icon" size="52" class="dash-stat-icon" />
+            <span class="dash-stat-label">@stat.Label</span>
+            <span class="dash-stat-value">@stat.Value</span>
+            @if (stat.Note is not null)
+            {
+                <span class="dash-stat-note">@stat.Note</span>
+            }
         </a>
-        <a class="btn btn-ghost" asp-controller="Message" asp-action="MessageList">
-            <i class="bi bi-chat-square-text"></i>Mesajlar
-        </a>
-    </div>
+    }
 </section>
+
+<div class="dash-grid">
+    @* ---------- Son 5 mesaj ---------- *@
+    <section class="glass ticks dash-card dash-span-7" aria-labelledby="latest-messages">
+        <header class="dash-card-head">
+            <h2 id="latest-messages">Son mesajlar</h2>
+            <a asp-controller="Message" asp-action="MessageList">Tümünü gör <i class="bi bi-arrow-right"></i></a>
+        </header>
+
+        @if (Model.LatestMessages.Count == 0)
+        {
+            <p class="dash-empty">Henüz mesaj yok.</p>
+        }
+        else
+        {
+            <ul class="dash-list">
+                @foreach (var message in Model.LatestMessages)
+                {
+                    <li>
+                        @* ?open=id: gelen kutusu açılınca bu mesajın modalı otomatik açılır (Faz 7) *@
+                        <a class="dash-row @(message.IsRead ? null : "is-unread")"
+                           asp-controller="Message" asp-action="MessageList" asp-route-open="@message.MessageId">
+                            <span class="pa-unread-dot" title="@(message.IsRead ? "Okundu" : "Okunmadı")"></span>
+                            <span class="dash-row-main">
+                                <b>@message.Subject</b>
+                                <small>@message.NameSurname</small>
+                            </span>
+                            <time class="dash-row-meta" datetime="@message.SendDate.ToString("s")">@message.SendDate.ToString("dd.MM HH:mm")</time>
+                            @if (message.IsRead)
+                            {
+                                <span class="pa-badge is-off">Okundu</span>
+                            }
+                            else
+                            {
+                                <span class="pa-badge is-new">Yeni</span>
+                            }
+                        </a>
+                    </li>
+                }
+            </ul>
+        }
+    </section>
+
+    @* ---------- Kategori özeti (yatay çubuk grafik) ---------- *@
+    <section class="glass ticks dash-card dash-span-5" aria-labelledby="category-summary">
+        <header class="dash-card-head">
+            <h2 id="category-summary">Kategoriye göre projeler</h2>
+            <a asp-controller="Category" asp-action="CategoryList">Kategoriler <i class="bi bi-arrow-right"></i></a>
+        </header>
+
+        @if (Model.CategorySummary.Count == 0)
+        {
+            <p class="dash-empty">Henüz proje yok.</p>
+        }
+        else
+        {
+            @* Tek seri: lejant yok, başlık ne gösterildiğini söylüyor. Değerler çubuğun yanında yazılı. *@
+            <ul class="bar-chart">
+                @foreach (var item in Model.CategorySummary)
+                {
+                    var width = Math.Max(4, (int)Math.Round(item.ProjectCount * 100.0 / maxCategory));
+                    var tip = $"{item.CategoryName}: {item.ProjectCount} proje, {item.ActiveCount} aktif";
+                    <li class="bar-row" tabindex="0" data-tip="@tip" aria-label="@tip">
+                        <span class="bar-label">@item.CategoryName</span>
+                        <span class="bar-track"><i style="width:@(width)%"></i></span>
+                        <span class="bar-value">@item.ProjectCount</span>
+                    </li>
+                }
+            </ul>
+
+            @* Ekran okuyucular ve kopyalamak isteyenler için aynı verinin tablo hali *@
+            <details class="dash-table-toggle">
+                <summary>Tablo olarak göster</summary>
+                <table class="pa-table">
+                    <thead><tr><th>Kategori</th><th>Proje</th><th>Aktif</th></tr></thead>
+                    <tbody>
+                        @foreach (var item in Model.CategorySummary)
+                        {
+                            <tr><td>@item.CategoryName</td><td class="cell-mono">@item.ProjectCount</td><td class="cell-mono">@item.ActiveCount</td></tr>
+                        }
+                    </tbody>
+                </table>
+            </details>
+        }
+    </section>
+
+    @* ---------- Son 3 proje ---------- *@
+    <section class="glass ticks dash-card dash-span-7" aria-labelledby="latest-projects">
+        <header class="dash-card-head">
+            <h2 id="latest-projects">Son eklenen projeler</h2>
+            <a asp-controller="Project" asp-action="ProjectList">Tümünü gör <i class="bi bi-arrow-right"></i></a>
+        </header>
+
+        @if (Model.LatestProjects.Count == 0)
+        {
+            <p class="dash-empty">Henüz proje yok.</p>
+        }
+        else
+        {
+            <ul class="dash-list">
+                @foreach (var project in Model.LatestProjects)
+                {
+                    <li>
+                        <a class="dash-row" asp-controller="Project" asp-action="UpdateProject" asp-route-id="@project.ProjectId">
+                            @if (!string.IsNullOrWhiteSpace(project.CoverImageUrl))
+                            {
+                                <img class="pa-thumb" src="@project.CoverImageUrl" alt="" loading="lazy" />
+                            }
+                            else
+                            {
+                                <span class="pa-thumb pa-thumb-empty"><i class="bi bi-image"></i></span>
+                            }
+                            <span class="dash-row-main">
+                                <b>@project.Title</b>
+                                <small>@project.Category?.CategoryName</small>
+                            </span>
+                            @if (project.IsActive)
+                            {
+                                <span class="pa-badge is-on">Aktif</span>
+                            }
+                            else
+                            {
+                                <span class="pa-badge is-off">Pasif</span>
+                            }
+                            <i class="bi bi-pencil dash-row-edit" aria-label="Düzenle"></i>
+                        </a>
+                    </li>
+                }
+            </ul>
+        }
+    </section>
+
+    @* ---------- Hızlı işlemler ---------- *@
+    <section class="glass ticks dash-card dash-span-5" aria-labelledby="quick-actions">
+        <header class="dash-card-head">
+            <h2 id="quick-actions">Hızlı işlemler</h2>
+        </header>
+
+        <div class="dash-actions">
+            <a class="dash-action" asp-controller="Project" asp-action="CreateProject">
+                <i class="bi bi-plus-square"></i><span><b>Yeni proje ekle</b><small>Kategori, açıklama ve kapak görseli</small></span>
+            </a>
+            <a class="dash-action" asp-controller="Message" asp-action="MessageList" asp-route-status="unread">
+                <i class="bi bi-inbox"></i><span><b>Mesajları görüntüle</b><small>@Model.UnreadMessageCount okunmamış</small></span>
+            </a>
+            <a class="dash-action" href="/" target="_blank" rel="noopener">
+                <i class="bi bi-display"></i><span><b>Portfolyoyu aç</b><small>Yeni sekmede</small></span>
+            </a>
+            <a class="dash-action" asp-controller="Setting" asp-action="Index">
+                <i class="bi bi-file-earmark-pdf"></i>
+                <span><b>@(Model.HasCv ? "CV'yi güncelle" : "CV yükle")</b><small>@(Model.HasCv ? "Sitede indirilebilir" : "Sitede CV butonu gizli")</small></span>
+            </a>
+        </div>
+    </section>
+</div>

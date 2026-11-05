@@ -254,6 +254,139 @@
 .pa-section-title { font-size: 17px; margin: 0 0 4px; }
 .pa-section-sub { color: var(--pa-muted); font-size: 14px; margin: 0 0 24px; }
 
+/* ---------- Dashboard ---------- */
+/* 7 kart: geniş ekranda tek satır, orta genişlikte 4+3 (5+2 gibi yarım bir satır kalmasın) */
+.dash-stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+}
+@media (min-width: 1500px) {
+    .dash-stats { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+}
+.dash-stat {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 16px 18px 18px;
+    min-height: 128px;
+    color: var(--pa-ink);
+    transition: border-color .15s var(--pa-ease), transform .15s var(--pa-ease);
+}
+.dash-stat:hover { color: var(--pa-ink); border-color: var(--pa-stroke-strong); transform: translateY(-1px); }
+.dash-stat-icon { position: absolute; top: 8px; right: 8px; width: 52px; height: 52px; }
+.dash-stat-label { font-size: 13px; color: var(--pa-muted); padding-right: 48px; }
+.dash-stat-value {
+    margin-top: auto;
+    font: 600 34px/1 var(--pa-sans);
+    letter-spacing: -.03em;
+    font-variant-numeric: tabular-nums;
+}
+.dash-stat-note { margin-top: 6px; font: 12px var(--pa-mono); color: var(--pa-faint); }
+.dash-stat.is-alert { border-color: var(--pa-red-line); }
+.dash-stat.is-alert .dash-stat-note { color: var(--pa-red-ink); }
+
+.dash-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 20px; }
+.dash-span-7 { grid-column: span 7; }
+.dash-span-5 { grid-column: span 5; }
+.dash-card { padding: 20px 22px 22px; }
+.dash-card-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 14px; }
+.dash-card-head h2 { font-size: 16px; margin: 0; }
+.dash-card-head a { font-size: 13px; color: var(--pa-muted); white-space: nowrap; }
+.dash-card-head a:hover { color: var(--pa-ink); }
+.dash-empty { color: var(--pa-muted); font-size: 14px; margin: 8px 0 0; }
+
+.dash-list { list-style: none; margin: 0; padding: 0; }
+.dash-list li + li { border-top: 1px solid var(--pa-stroke); }
+.dash-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 11px 8px;
+    margin: 0 -8px;
+    border-radius: var(--pa-radius-sm);
+    color: var(--pa-ink);
+}
+.dash-row:hover { color: var(--pa-ink); background: rgba(255, 255, 255, .035); }
+.dash-row-main { flex: 1; min-width: 0; }
+.dash-row-main b { display: block; font-weight: 500; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dash-row-main small { display: block; font-size: 12.5px; color: var(--pa-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dash-row.is-unread .dash-row-main b { font-weight: 600; }
+.dash-row.is-unread .pa-unread-dot { background: var(--pa-red); border-color: var(--pa-red); }
+.dash-row-meta { font: 12.5px var(--pa-mono); color: var(--pa-muted); white-space: nowrap; }
+.dash-row-edit { color: var(--pa-faint); }
+.dash-row:hover .dash-row-edit { color: var(--pa-ink); }
+
+/* Yatay çubuk grafik: tek seri, tek renk, 4px yuvarlatılmış uç, değer çubuğun yanında */
+.bar-chart { list-style: none; margin: 4px 0 0; padding: 0; }
+.bar-row {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(84px, 120px) minmax(0, 1fr) 28px;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 0;
+    border-radius: var(--pa-radius-xs);
+    outline-offset: 4px;
+}
+.bar-label { font-size: 13.5px; color: var(--pa-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bar-track { height: 10px; background: rgba(255, 255, 255, .05); border-radius: 0 4px 4px 0; }
+.bar-track i { display: block; height: 100%; background: var(--pa-red); border-radius: 0 4px 4px 0; transition: filter .15s var(--pa-ease); }
+.bar-value { font: 500 13px var(--pa-mono); color: var(--pa-ink); text-align: right; font-variant-numeric: tabular-nums; }
+.bar-row:hover .bar-track i, .bar-row:focus-visible .bar-track i { filter: brightness(1.18); }
+.bar-row:hover .bar-label, .bar-row:focus-visible .bar-label { color: var(--pa-ink); }
+/* Üzerine gelince ipucu: kategori, toplam ve aktif proje sayısı */
+.bar-row[data-tip]:hover::after,
+.bar-row[data-tip]:focus-visible::after {
+    content: attr(data-tip);
+    position: absolute;
+    right: 0;
+    bottom: calc(100% - 2px);
+    z-index: 5;
+    padding: 6px 10px;
+    border-radius: var(--pa-radius-xs);
+    background: #1B1C21;
+    border: 1px solid var(--pa-stroke-strong);
+    color: var(--pa-ink);
+    font: 12px var(--pa-mono);
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+.dash-table-toggle { margin-top: 14px; font-size: 13px; }
+.dash-table-toggle summary { cursor: pointer; color: var(--pa-muted); }
+.dash-table-toggle summary:hover { color: var(--pa-ink); }
+.dash-table-toggle .pa-table { margin-top: 8px; }
+
+.dash-actions { display: grid; gap: 8px; }
+.dash-action {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 14px;
+    border: 1px solid var(--pa-stroke);
+    border-radius: var(--pa-radius-sm);
+    background: rgba(255, 255, 255, .02);
+    color: var(--pa-ink);
+    transition: border-color .15s var(--pa-ease), background-color .15s var(--pa-ease);
+}
+.dash-action:hover { color: var(--pa-ink); border-color: var(--pa-stroke-strong); background: rgba(255, 255, 255, .045); }
+.dash-action > i { font-size: 18px; color: var(--pa-red-ink); }
+.dash-action b { display: block; font-weight: 500; font-size: 14px; }
+.dash-action small { display: block; font-size: 12.5px; color: var(--pa-muted); }
+
+@media (max-width: 1199.98px) {
+    .dash-span-7, .dash-span-5 { grid-column: span 12; }
+}
+@media (max-width: 575.98px) {
+    .dash-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .dash-stat { min-height: 112px; padding: 14px; }
+    .dash-stat-icon { width: 40px; height: 40px; }
+    .dash-stat-value { font-size: 28px; }
+    .dash-row-meta { display: none; }
+}
+
 /* ---------- Yüklü dosya satırı (CV) ---------- */
 .pa-file {
     display: flex;
