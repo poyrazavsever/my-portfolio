@@ -1,0 +1,417 @@
+/* =====================================================================
+   Poyraz Avsever · Tasarım Sistemi
+   Hem public site hem admin paneli bu dosyayı kullanır.
+   Kurallar: tek vurgu rengi (kırmızı), gradyan yok, emoji yok,
+   başlık üstü etiket yok. Mühendislik dili: ızgara, cetvel, köşe işaretleri.
+   ===================================================================== */
+
+/* ---------- 1. Token'lar ---------- */
+:root {
+    /* Zemin */
+    --pa-bg: #0A0B0D;
+    --pa-bg-raised: #111216;
+    --pa-grid: rgba(255, 255, 255, .03);
+    --pa-grid-major: rgba(255, 255, 255, .055);
+
+    /* Cam */
+    --pa-glass: rgba(255, 255, 255, .035);
+    --pa-glass-strong: rgba(255, 255, 255, .06);
+    --pa-glass-hover: rgba(255, 255, 255, .075);
+    --pa-stroke: rgba(255, 255, 255, .09);
+    --pa-stroke-strong: rgba(255, 255, 255, .16);
+    --pa-blur: blur(18px) saturate(140%);
+
+    /* Metin */
+    --pa-ink: #EDEDEF;
+    --pa-muted: #8B8D94;
+    --pa-faint: #5A5C63;
+
+    /* Vurgu ve durumlar */
+    --pa-red: #E5322D;
+    --pa-red-hover: #CC2B26;
+    --pa-red-ink: #FF5A54;
+    --pa-red-soft: rgba(229, 50, 45, .12);
+    --pa-red-line: rgba(229, 50, 45, .40);
+    --pa-ok: #3FB97A;
+    --pa-ok-soft: rgba(63, 185, 122, .12);
+
+    /* Tipografi */
+    --pa-sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --pa-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+
+    /* Ölçüler */
+    --pa-radius: 14px;
+    --pa-radius-sm: 10px;
+    --pa-radius-xs: 6px;
+    --pa-shadow: inset 0 1px 0 rgba(255, 255, 255, .05), 0 24px 48px -28px rgba(0, 0, 0, .9);
+    --pa-ease: cubic-bezier(.2, .7, .2, 1);
+}
+
+/* ---------- 2. Bootstrap'ı token'lara bağlama ----------
+   Bootstrap 5.3 renklerini CSS değişkenlerinden okur. Burada onları
+   kendi token'larımıza yönlendiriyoruz; Bootstrap bileşenleri (modal,
+   form, dropdown) böylece kendiliğinden bizim dilimizle görünür. */
+[data-bs-theme="dark"] {
+    --bs-body-bg: var(--pa-bg);
+    --bs-body-color: var(--pa-ink);
+    --bs-body-font-family: var(--pa-sans);
+    --bs-font-sans-serif: var(--pa-sans);
+    --bs-font-monospace: var(--pa-mono);
+    --bs-emphasis-color: #FFFFFF;
+    --bs-secondary-color: var(--pa-muted);
+    --bs-tertiary-color: var(--pa-faint);
+    --bs-secondary-bg: var(--pa-bg-raised);
+    --bs-tertiary-bg: var(--pa-bg-raised);
+    --bs-border-color: var(--pa-stroke);
+    --bs-border-color-translucent: var(--pa-stroke);
+    --bs-border-radius: var(--pa-radius-sm);
+    --bs-border-radius-lg: var(--pa-radius);
+    --bs-primary: var(--pa-red);
+    --bs-primary-rgb: 229, 50, 45;
+    --bs-danger: var(--pa-red);
+    --bs-danger-rgb: 229, 50, 45;
+    --bs-success: var(--pa-ok);
+    --bs-success-rgb: 63, 185, 122;
+    --bs-link-color: var(--pa-ink);
+    --bs-link-color-rgb: 237, 237, 239;
+    --bs-link-hover-color: var(--pa-red-ink);
+    --bs-link-hover-color-rgb: 255, 90, 84;
+    --bs-focus-ring-color: rgba(229, 50, 45, .35);
+    --bs-form-invalid-color: var(--pa-red-ink);
+    --bs-form-invalid-border-color: var(--pa-red);
+    --bs-form-valid-border-color: var(--pa-stroke-strong);
+}
+
+/* ---------- 3. Temel ---------- */
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+    background-color: var(--pa-bg);
+    color: var(--pa-ink);
+    font-family: var(--pa-sans);
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Mühendislik kâğıdı: 24px ince ve 120px kalın ızgara. Renk geçişi değil,
+   yalnızca 1px'lik çizgi deseni. */
+.pa-grid-bg {
+    background-image:
+        linear-gradient(var(--pa-grid-major) 1px, transparent 1px),
+        linear-gradient(90deg, var(--pa-grid-major) 1px, transparent 1px),
+        linear-gradient(var(--pa-grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--pa-grid) 1px, transparent 1px);
+    background-size: 120px 120px, 120px 120px, 24px 24px, 24px 24px;
+    background-attachment: fixed;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--pa-ink);
+    font-weight: 600;
+    letter-spacing: -.02em;
+    line-height: 1.15;
+}
+
+a { color: var(--pa-ink); text-decoration: none; transition: color .15s var(--pa-ease); }
+a:hover { color: var(--pa-red-ink); }
+
+::selection { background: var(--pa-red); color: #fff; }
+
+:focus-visible {
+    outline: 2px solid var(--pa-red);
+    outline-offset: 2px;
+}
+
+.text-mono { font-family: var(--pa-mono); }
+.text-muted-pa { color: var(--pa-muted) !important; }
+.text-faint { color: var(--pa-faint) !important; }
+
+/* ---------- 4. Cam yüzey ---------- */
+.glass {
+    position: relative;
+    background: var(--pa-glass);
+    border: 1px solid var(--pa-stroke);
+    border-top-color: var(--pa-stroke-strong);
+    border-radius: var(--pa-radius);
+    backdrop-filter: var(--pa-blur);
+    -webkit-backdrop-filter: var(--pa-blur);
+    box-shadow: var(--pa-shadow);
+}
+
+.glass-strong { background: var(--pa-glass-strong); }
+
+/* Teknik çizim köşe işaretleri: sol üst ve sağ alt */
+.ticks::before,
+.ticks::after {
+    content: "";
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-color: var(--pa-faint);
+    border-style: solid;
+    pointer-events: none;
+}
+.ticks::before { top: -6px; left: -6px; border-width: 1px 0 0 1px; }
+.ticks::after { bottom: -6px; right: -6px; border-width: 0 1px 1px 0; }
+
+/* ---------- 5. Butonlar ---------- */
+.btn {
+    --bs-btn-font-family: var(--pa-sans);
+    --bs-btn-font-weight: 500;
+    --bs-btn-font-size: 14px;
+    --bs-btn-padding-x: 16px;
+    --bs-btn-padding-y: 9px;
+    --bs-btn-border-radius: var(--pa-radius-sm);
+    --bs-btn-focus-box-shadow: 0 0 0 3px rgba(229, 50, 45, .30);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background-color .15s var(--pa-ease), border-color .15s var(--pa-ease), color .15s var(--pa-ease);
+}
+
+.btn-primary {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: var(--pa-red);
+    --bs-btn-border-color: var(--pa-red);
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: var(--pa-red-hover);
+    --bs-btn-hover-border-color: var(--pa-red-hover);
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: var(--pa-red-hover);
+    --bs-btn-active-border-color: var(--pa-red-hover);
+    --bs-btn-disabled-bg: var(--pa-red);
+    --bs-btn-disabled-border-color: var(--pa-red);
+}
+
+.btn-ghost {
+    --bs-btn-color: var(--pa-ink);
+    --bs-btn-bg: var(--pa-glass-strong);
+    --bs-btn-border-color: var(--pa-stroke);
+    --bs-btn-hover-color: var(--pa-ink);
+    --bs-btn-hover-bg: var(--pa-glass-hover);
+    --bs-btn-hover-border-color: var(--pa-stroke-strong);
+    --bs-btn-active-color: var(--pa-ink);
+    --bs-btn-active-bg: var(--pa-glass-hover);
+    --bs-btn-active-border-color: var(--pa-stroke-strong);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.btn-danger-ghost {
+    --bs-btn-color: var(--pa-red-ink);
+    --bs-btn-bg: transparent;
+    --bs-btn-border-color: var(--pa-red-line);
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: var(--pa-red);
+    --bs-btn-hover-border-color: var(--pa-red);
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: var(--pa-red-hover);
+    --bs-btn-active-border-color: var(--pa-red-hover);
+}
+
+/* Tablo satırlarındaki kare işlem butonları */
+.btn-icon {
+    --bs-btn-padding-x: 0;
+    --bs-btn-padding-y: 0;
+    width: 34px;
+    height: 34px;
+    font-size: 15px;
+}
+
+/* ---------- 6. Formlar ---------- */
+.form-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--pa-muted);
+    margin-bottom: 6px;
+}
+
+.form-control,
+.form-select {
+    background-color: rgba(0, 0, 0, .25);
+    border: 1px solid var(--pa-stroke);
+    border-radius: var(--pa-radius-sm);
+    color: var(--pa-ink);
+    font-size: 14.5px;
+    padding: 10px 12px;
+    transition: border-color .15s var(--pa-ease), box-shadow .15s var(--pa-ease);
+}
+
+.form-control::placeholder { color: var(--pa-faint); }
+
+.form-control:focus,
+.form-select:focus {
+    background-color: rgba(0, 0, 0, .35);
+    border-color: var(--pa-red);
+    box-shadow: 0 0 0 3px rgba(229, 50, 45, .18);
+    color: var(--pa-ink);
+}
+
+/* Tarih seçicinin takvim ikonunu koyu temada görünür yap */
+.form-control[type="date"]::-webkit-calendar-picker-indicator { filter: invert(.75); cursor: pointer; }
+
+.form-text { color: var(--pa-faint); font-size: 12.5px; margin-top: 6px; }
+
+/* ASP.NET'in validasyon sınıfları */
+.input-validation-error,
+.form-control.is-invalid { border-color: var(--pa-red) !important; }
+.field-validation-error,
+.validation-message {
+    display: block;
+    color: var(--pa-red-ink);
+    font-size: 12.5px;
+    margin-top: 6px;
+}
+.validation-summary-errors ul {
+    list-style: none;
+    margin: 0 0 20px;
+    padding: 12px 14px;
+    border: 1px solid var(--pa-red-line);
+    border-radius: var(--pa-radius-sm);
+    background: var(--pa-red-soft);
+    color: var(--pa-red-ink);
+    font-size: 13.5px;
+}
+.validation-summary-valid { display: none; }
+
+/* Anahtar (switch) */
+.form-switch { padding-left: 3.2em; }
+.form-switch .form-check-input {
+    margin-left: -3.2em;
+    width: 2.4em;
+    height: 1.3em;
+    background-color: rgba(255, 255, 255, .08);
+    border-color: var(--pa-stroke-strong);
+    cursor: pointer;
+}
+.form-check-input:checked { background-color: var(--pa-red); border-color: var(--pa-red); }
+.form-check-input:focus { box-shadow: 0 0 0 3px rgba(229, 50, 45, .18); border-color: var(--pa-red); }
+.form-check-label { cursor: pointer; }
+
+/* ---------- 7. Tablo ---------- */
+.pa-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+.pa-table th {
+    font: 500 11.5px var(--pa-mono);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--pa-faint);
+    text-align: left;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--pa-stroke);
+    white-space: nowrap;
+}
+.pa-table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--pa-stroke);
+    vertical-align: middle;
+}
+.pa-table tbody tr:last-child td { border-bottom: 0; }
+.pa-table tbody tr { transition: background-color .15s var(--pa-ease); }
+.pa-table tbody tr:hover { background: rgba(255, 255, 255, .025); }
+.pa-table .cell-title { font-weight: 500; color: var(--pa-ink); }
+.pa-table .cell-sub { display: block; font-size: 13px; color: var(--pa-muted); margin-top: 2px; }
+.pa-table .cell-mono { font-family: var(--pa-mono); font-size: 13px; color: var(--pa-muted); white-space: nowrap; }
+.pa-table .cell-actions { text-align: right; white-space: nowrap; }
+.pa-table .cell-actions > * + * { margin-left: 6px; }
+
+/* ---------- 8. Durum rozetleri ---------- */
+.pa-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font: 500 12px var(--pa-mono);
+    padding: 3px 9px;
+    border-radius: var(--pa-radius-xs);
+    border: 1px solid var(--pa-stroke);
+    color: var(--pa-muted);
+    white-space: nowrap;
+}
+.pa-badge::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+}
+.pa-badge.is-on { color: var(--pa-ok); border-color: rgba(63, 185, 122, .35); background: var(--pa-ok-soft); }
+.pa-badge.is-off { color: var(--pa-muted); }
+.pa-badge.is-new { color: var(--pa-red-ink); border-color: var(--pa-red-line); background: var(--pa-red-soft); }
+
+/* Sayı rozeti (ör. okunmamış mesaj) */
+.pa-count {
+    min-width: 22px;
+    height: 20px;
+    padding: 0 6px;
+    border-radius: 999px;
+    background: var(--pa-red);
+    color: #fff;
+    font: 600 11.5px/20px var(--pa-mono);
+    text-align: center;
+}
+
+/* ---------- 9. Cetvel göstergesi (yetenek seviyesi) ---------- */
+.pa-gauge + .pa-gauge { margin-top: 18px; }
+.pa-gauge-row { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; margin-bottom: 8px; }
+.pa-gauge-row span:last-child { font-family: var(--pa-mono); font-size: 12.5px; color: var(--pa-muted); }
+.pa-gauge-scale {
+    position: relative;
+    height: 14px;
+    background-image: repeating-linear-gradient(90deg, var(--pa-stroke-strong) 0 1px, transparent 1px 10%);
+}
+.pa-gauge-scale > i {
+    position: absolute;
+    left: 0;
+    top: 5px;
+    height: 4px;
+    background: var(--pa-red);
+    display: block;
+}
+
+/* ---------- 10. Hareketli cam ikon ---------- */
+.glass-icon {
+    display: block;
+    flex: none;
+    object-fit: cover;
+    user-select: none;
+    pointer-events: none;
+}
+
+/* ---------- 11. Boş durum ---------- */
+.pa-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 56px 24px;
+    color: var(--pa-muted);
+}
+.pa-empty h3 { font-size: 17px; margin: 14px 0 6px; }
+.pa-empty p { max-width: 380px; font-size: 14px; margin: 0 0 20px; }
+
+/* ---------- 12. Modal ---------- */
+.modal-content {
+    background: rgba(17, 18, 22, .88);
+    border: 1px solid var(--pa-stroke);
+    border-top-color: var(--pa-stroke-strong);
+    border-radius: var(--pa-radius);
+    backdrop-filter: var(--pa-blur);
+    -webkit-backdrop-filter: var(--pa-blur);
+    box-shadow: var(--pa-shadow);
+}
+.modal-header, .modal-footer { border-color: var(--pa-stroke); }
+.modal-backdrop.show { opacity: .7; }
+.btn-close { filter: invert(1) grayscale(1) brightness(1.6); opacity: .5; }
+
+/* ---------- 13. Hareket tercihi ---------- */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
+    }
+}
