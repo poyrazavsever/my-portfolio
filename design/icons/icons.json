@@ -1,0 +1,83 @@
+{
+  "style": "Single 3D app icon of {subject}, made of clear frosted borosilicate glass with precise bevelled edges and subtle refraction. {accent} Isometric three-quarter view, centered, occupying about 60% of the frame. Perfectly flat solid matte background of exact color #0D0E11, no vignette, no gradient, no floor, no reflection surface, no text, no letters, no numbers, no emoji. Soft studio key light from top left, crisp specular highlights on glass edges, photorealistic product render, sharp focus.",
+  "motion": "Locked-off static camera, no camera movement. {motion} A soft band of light sweeps once across the glass surfaces. Background stays perfectly solid flat #0D0E11 with no changes. Calm, precise, minimal motion, seamless loop that ends exactly as it starts.",
+  "icons": [
+    {
+      "key": "projects",
+      "section": "Projeler",
+      "subject": "three stacked thin rectangular plates (a layered project stack)",
+      "accent": "The middle plate has a thin glowing signal-red (#E5322D) edge line and a tiny engraved millimetre ruler tick pattern along one side, like a precision engineering instrument.",
+      "motion": "The three plates slowly drift apart vertically by a small amount and then settle back into the exact original stacked position. The thin red edge line gently pulses brighter and back."
+    },
+    {
+      "key": "about",
+      "section": "Hakkımda",
+      "subject": "a thick rounded rectangular identity card standing slightly tilted, with a circular lens window in its upper half",
+      "accent": "The lens has a thin signal-red (#E5322D) ring and fine engraved crosshair lines, and a row of tiny engraved measurement ticks runs along the bottom edge of the card.",
+      "motion": "The card rotates very slightly left and back to its exact original angle. The red lens ring gently pulses brighter and back."
+    },
+    {
+      "key": "education",
+      "section": "Eğitim",
+      "subject": "a graduation mortarboard cap with a flat square top",
+      "accent": "A thin signal-red (#E5322D) tassel cord hangs from the center button, and the square top has a fine engraved grid pattern like drafting paper.",
+      "motion": "The cap hovers up slightly and returns to its exact position. The red tassel sways gently and comes to rest."
+    },
+    {
+      "key": "experience",
+      "section": "Deneyim",
+      "subject": "a compact rectangular briefcase with a short handle",
+      "accent": "A thin signal-red (#E5322D) seam line runs horizontally around the case, and the side panel has tiny engraved millimetre ruler ticks.",
+      "motion": "The briefcase lifts slightly and settles back to its exact position. The red seam line gently pulses brighter and back."
+    },
+    {
+      "key": "skills",
+      "section": "Yetenekler",
+      "subject": "a square microchip processor with short pins on all four sides",
+      "accent": "Fine engraved circuit traces run across its surface toward a small square core that glows signal-red (#E5322D).",
+      "motion": "Tiny points of red light travel along the engraved circuit traces toward the core, and the red core gently pulses brighter and back."
+    },
+    {
+      "key": "workflow",
+      "section": "Çalışma Yaklaşımı",
+      "subject": "three small glass cubes arranged in a diagonal row and connected by thin straight rods",
+      "accent": "The connecting rods are thin glowing signal-red (#E5322D) lines, and each cube has a tiny engraved corner tick mark.",
+      "motion": "A small pulse of red light travels from the first cube through the rods to the last cube, then the light fades back to the starting state."
+    },
+    {
+      "key": "certificates",
+      "section": "Sertifikalar",
+      "subject": "a round medal seal disc with two short ribbon tails below it",
+      "accent": "The disc rim has fine engraved radial tick marks like a precision dial, and a thin signal-red (#E5322D) ring runs inside the rim.",
+      "motion": "The medal turns slightly on its vertical axis and returns to its exact original angle. The red ring gently pulses brighter and back."
+    },
+    {
+      "key": "contact",
+      "section": "İletişim",
+      "subject": "a closed rectangular envelope",
+      "accent": "The flap edge is outlined with a thin glowing signal-red (#E5322D) line and a small round seal sits where the flap meets the body.",
+      "motion": "The envelope floats up slightly and settles back to its exact position. The red flap line gently pulses brighter and back."
+    },
+    {
+      "key": "cv",
+      "section": "CV",
+      "subject": "a single thick document sheet with a folded top-right corner, standing upright and slightly tilted",
+      "accent": "Fine engraved horizontal text-like lines fill the sheet, and a thin signal-red (#E5322D) downward arrow is engraved near the bottom.",
+      "motion": "The red downward arrow gently glows brighter and moves a tiny distance down then back up. The sheet stays still."
+    },
+    {
+      "key": "messages",
+      "section": "Mesajlar",
+      "subject": "a rounded rectangular speech bubble with a short tail",
+      "accent": "Three small engraved dots sit in its center and a small solid signal-red (#E5322D) notification dot sits on its top-right corner.",
+      "motion": "The red notification dot gently pulses brighter and back, and the speech bubble bobs very slightly and returns to its exact position."
+    },
+    {
+      "key": "dashboard",
+      "section": "Dashboard",
+      "subject": "a round analog gauge dial in a thick bezel",
+      "accent": "The dial face itself is also translucent frosted glass (not white, not opaque) with fine engraved tick marks around its edge, and a thin signal-red (#E5322D) needle.",
+      "motion": "The red needle sweeps smoothly from its position up toward the high end and back to its exact starting position."
+    }
+  ]
+}

@@ -2,3 +2,6 @@
 **/bin/
 **/obj/
 *.user
+
+# Higgsfield ham çıktıları (web sürümleri wwwroot/assets/icons altında)
+design/icons/raw/
