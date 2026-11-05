@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Portfolio.Context;
+using Portfolio.Infrastructure;
 using Portfolio.Entities;
 
 namespace Portfolio.Areas.Admin.Controllers
 {
-
     [Area("Admin")]
     public class ExperienceController : Controller
     {
@@ -15,13 +16,13 @@ namespace Portfolio.Areas.Admin.Controllers
             _context = context;
         }
 
-        public IActionResult ExperienceList()
+        public async Task<IActionResult> ExperienceList()
         {
-
-            // En güncel deneyim en üstte; devam edenler (EndDate = null) kendi başlangıç tarihine göre sıralanır.
-            var values = _context.Experiences
+            // En güncel deneyim en üstte.
+            var values = await _context.Experiences
+                .AsNoTracking()
                 .OrderByDescending(experience => experience.StartDate)
-                .ToList();
+                .ToListAsync();
 
             return View(values);
         }
@@ -29,79 +30,84 @@ namespace Portfolio.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult CreateExperience()
         {
-            return View();
+            return View(new Experience { IsActive = true });
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult CreateExperience(Experience experience)
+        public async Task<IActionResult> CreateExperience(Experience experience)
         {
+            ValidateDates(experience);
             if (!ModelState.IsValid)
             {
                 return View(experience);
             }
 
             _context.Experiences.Add(experience);
-            _context.SaveChanges();
-            return RedirectToAction("ExperienceList");
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult DeleteExperience(int id)
-        {
-            var values = _context.Experiences.Find(id);
-
-            if (values is null)
-            {
-                return NotFound();
-            }
-
-            _context.Experiences.Remove(values);
-            _context.SaveChanges();
-            return RedirectToAction("ExperienceList");
+            await _context.SaveChangesAsync();
+            TempData.Success("Deneyim eklendi.");
+            return RedirectToAction(nameof(ExperienceList));
         }
 
         [HttpGet]
-        public IActionResult UpdateExperience(int id)
+        public async Task<IActionResult> UpdateExperience(int id)
         {
-            var values = _context.Experiences.Find(id);
-
-            if (values is null)
-            {
-                return NotFound();
-            }
-
-            return View(values);
+            var experience = await _context.Experiences.FindAsync(id);
+            return experience is null ? NotFound() : View(experience);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult UpdateExperience(Experience experience)
+        public async Task<IActionResult> UpdateExperience(Experience experience)
         {
+            ValidateDates(experience);
             if (!ModelState.IsValid)
             {
                 return View(experience);
             }
 
-            var values = _context.Experiences.Find(experience.ExperienceId);
-
-            if (values is null)
+            var existing = await _context.Experiences.FindAsync(experience.ExperienceId);
+            if (existing is null)
             {
                 return NotFound();
             }
 
-            values.Title = experience.Title;
-            values.CompanyName = experience.CompanyName;
-            values.Description = experience.Description;
-            values.SideTitle = experience.SideTitle;
-            values.WorkType = experience.WorkType;
-            values.StartDate = experience.StartDate;
-            values.EndDate = experience.EndDate;
-            values.IsActive = experience.IsActive;
+            existing.Title = experience.Title;
+            existing.CompanyName = experience.CompanyName;
+            existing.Description = experience.Description;
+            existing.SideTitle = experience.SideTitle;
+            existing.WorkType = experience.WorkType;
+            existing.StartDate = experience.StartDate;
+            existing.EndDate = experience.EndDate;
+            existing.IsActive = experience.IsActive;
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
+            TempData.Success("Deneyim güncellendi.");
             return RedirectToAction(nameof(ExperienceList));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteExperience(int id)
+        {
+            var experience = await _context.Experiences.FindAsync(id);
+            if (experience is null)
+            {
+                return NotFound();
+            }
+
+            _context.Experiences.Remove(experience);
+            await _context.SaveChangesAsync();
+            TempData.Success("Deneyim silindi.");
+            return RedirectToAction(nameof(ExperienceList));
+        }
+
+        private void ValidateDates(Experience experience)
+        {
+            if (experience.EndDate is not null && experience.EndDate < experience.StartDate)
+            {
+                ModelState.AddModelError(nameof(Experience.EndDate), "Bitiş tarihi başlangıçtan önce olamaz.");
+            }
         }
     }
 }

@@ -1,0 +1,51 @@
+@model Skill
+
+<div asp-validation-summary="ModelOnly"></div>
+
+<div class="row g-4">
+    <div class="col-md-6">
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" class="form-control" placeholder="ASP.NET Core" />
+        <span asp-validation-for="Name"></span>
+    </div>
+
+    <div class="col-md-3 col-6">
+        <label asp-for="Level" class="form-label"></label>
+        <input asp-for="Level" type="number" min="0" max="100" step="5" class="form-control" />
+        <span asp-validation-for="Level"></span>
+    </div>
+
+    <div class="col-md-3 col-6">
+        <label asp-for="DisplayOrder" class="form-label"></label>
+        <input asp-for="DisplayOrder" type="number" min="0" max="999" class="form-control" />
+        <span asp-validation-for="DisplayOrder"></span>
+    </div>
+
+    <div class="col-12">
+        <div class="pa-gauge" aria-hidden="true">
+            <div class="pa-gauge-row"><span class="text-muted-pa">Önizleme</span><span data-level-label>@Model.Level / 100</span></div>
+            <div class="pa-gauge-scale"><i data-level-bar style="width:@(Model.Level)%"></i></div>
+        </div>
+    </div>
+
+    <div class="col-12">
+        <div class="form-check form-switch">
+            <input asp-for="IsActive" class="form-check-input" role="switch" />
+            <label asp-for="IsActive" class="form-check-label">Portfolyoda göster</label>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Seviye alanı değiştikçe cetvel önizlemesini güncelle.
+    (function () {
+        const input = document.getElementById("Level");
+        const bar = document.querySelector("[data-level-bar]");
+        const label = document.querySelector("[data-level-label]");
+        input.addEventListener("input", function () {
+            const value = Math.max(0, Math.min(100, Number(input.value) || 0));
+            bar.style.width = value + "%";
+            label.textContent = value + " / 100";
+        });
+    })();
+</script>

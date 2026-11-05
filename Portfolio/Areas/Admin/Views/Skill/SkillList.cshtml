@@ -1,0 +1,85 @@
+@model List<Skill>
+
+@{
+    ViewData["Title"] = "Yetenekler";
+    ViewData["Description"] = "Sitede seviye çizelgesi olarak gösterilir. Sıra alanı küçük olan önce gelir.";
+
+    var activeCount = Model.Count(skill => skill.IsActive);
+}
+
+@section Actions {
+    <a class="btn btn-primary" asp-action="CreateSkill"><i class="bi bi-plus-lg"></i>Yeni yetenek</a>
+}
+
+@if (Model.Count == 0)
+{
+    <section class="glass ticks pa-empty">
+        <glass-icon name="skills" size="140" />
+        <h3>Henüz yetenek eklenmedi</h3>
+        <p>Kullandığınız teknolojileri seviyeleriyle ekleyin.</p>
+        <a class="btn btn-primary" asp-action="CreateSkill"><i class="bi bi-plus-lg"></i>İlk yeteneği ekle</a>
+    </section>
+}
+else
+{
+    <div class="pa-stats">
+        <span><b>@Model.Count</b> yetenek</span>
+        <span><b>@activeCount</b> aktif</span>
+        <span>ortalama <b>@Math.Round(Model.Average(skill => skill.Level))</b> / 100</span>
+    </div>
+
+    <section class="glass ticks pa-panel">
+        <div class="pa-table-wrap">
+            <table class="pa-table">
+                <thead>
+                    <tr>
+                        <th style="width:64px">Sıra</th>
+                        <th>Yetenek</th>
+                        <th style="width:38%">Seviye</th>
+                        <th>Durum</th>
+                        <th class="cell-actions"><span class="visually-hidden">İşlemler</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var skill in Model)
+                    {
+                        <tr>
+                            <td class="cell-mono">@skill.DisplayOrder.ToString("00")</td>
+                            <td><span class="cell-title">@skill.Name</span></td>
+                            <td>
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="pa-gauge-scale flex-grow-1"><i style="width:@(skill.Level)%"></i></div>
+                                    <span class="cell-mono">@skill.Level</span>
+                                </div>
+                            </td>
+                            <td>
+                                @if (skill.IsActive)
+                                {
+                                    <span class="pa-badge is-on">Aktif</span>
+                                }
+                                else
+                                {
+                                    <span class="pa-badge is-off">Pasif</span>
+                                }
+                            </td>
+                            <td class="cell-actions">
+                                <a class="btn btn-ghost btn-icon" title="Düzenle" aria-label="Düzenle"
+                                   asp-action="UpdateSkill" asp-route-id="@skill.SkillId">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <form class="d-inline" method="post"
+                                      asp-action="DeleteSkill" asp-route-id="@skill.SkillId"
+                                      data-confirm="@skill.Name kalıcı olarak silinecek."
+                                      data-confirm-title="Yetenek silinsin mi?">
+                                    <button type="submit" class="btn btn-danger-ghost btn-icon" title="Sil" aria-label="Sil">
+                                        <i class="bi bi-trash3"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </section>
+}
