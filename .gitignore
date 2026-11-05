@@ -5,3 +5,6 @@
 
 # Higgsfield ham çıktıları (web sürümleri wwwroot/assets/icons altında)
 design/icons/raw/
+
+# Admin panelinden yüklenen dosyalar (kullanıcı içeriği, repoya girmez)
+Portfolio/wwwroot/uploads/
