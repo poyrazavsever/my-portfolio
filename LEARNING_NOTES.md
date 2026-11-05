@@ -108,3 +108,63 @@ Her fazdan sonra "ne yaptık, neden yaptık" notu. Proje sonunda soru-cevap ve v
 - **Mobilde sayfa yana taşıyordu:** Tablo başlığındaki ekran okuyucu metni (`.visually-hidden`) `position: absolute`. Kaydırma kabında `position` olmadığı için kabın dışına kaçıp sayfayı 689px'e genişletiyordu. Kaba `position: relative` verince düzeldi.
   - Ders: `overflow` kırpması yalnızca kabı "konumlandırılmış ata" kabul eden absolute öğeler için çalışır.
 - **Modal ekran görüntüsünde görünmedi** ama DOM'da açıktı. Animasyon bitmeden çekilen bir ekran görüntüsüydü. Ders: Görsel testte önce DOM durumunu doğrula.
+
+---
+
+## Faz 4: Admin CRUD modülleri
+
+### Ne yaptık?
+- **Tek kayıtlı sayfalar (upsert):** Profil (Hero ve İletişim tek sayfada, iki ayrı form), Hakkımda, Ayarlar.
+- **Liste ve tam CRUD:** Eğitim, Yetenekler, Kategoriler, Projeler. Deneyim controller'ı da aynı standarda çekildi (async, TempData, tarih kontrolü).
+- **`IImageStorage` servisi:** Uzantı beyaz listesi, 2 MB sınırı, dosya imzası (magic bytes) kontrolü, `Guid` ile benzersiz ad ve `wwwroot/uploads/<klasör>/` altında saklama. Eski görsel değişince veya kayıt silinince dosya da siliniyor.
+- **Geçici bildirim:** `TempData["Success"]` / `TempData["Error"]` ve `_Alerts` partial'ı (Faz 5'te SweetAlert2'ye yükselecek).
+- `Program.cs`'e `AddScoped<IImageStorage, ImageStorage>()` ve `UseStaticFiles()` eklendi.
+
+### Neden?
+- **Upsert:** Hero, Hakkımda ve Ayarlar tablolarında tek satır olur. `FirstOrDefault()` ile kayıt yoksa `Add`, varsa alanları kopyalayıp `SaveChanges`. Böylece "Ekle" butonuna gerek kalmıyor.
+- **ViewModel ve `[Bind(Prefix = "Hero")]`:** Bir view tek model alır; Profil iki tabloyu birlikte gösterdiği için `ProfileViewModel { Hero, Contact }` yazdık. `asp-for="Hero.Title"` alanı `name="Hero.Title"` olarak üretir. POST'ta `[Bind(Prefix = "Hero")] HeroSection hero` model binder'a "bu parametreyi `Hero.` ile başlayan alanlardan doldur" der. Hata mesajları da doğru alana (`Contact.Linkedin`) düşer.
+- **Neden arayüz (`IImageStorage`)?** Controller somut sınıfa değil sözleşmeye bağlı. Yarın dosyaları bulut depolamaya taşımak istersek sadece `Program.cs`'teki kayıt değişir. *Scoped* = istek başına bir örnek.
+- **Dosya yükleme güvenliği:**
+  - Kullanıcının dosya adı asla kullanılmıyor: `../../web.config` gibi isimlerle başka yerlere yazma (path traversal) ve çakışma riski var.
+  - Uzantı tek başına güvenilmez; dosyanın ilk baytlarına bakıyoruz (JPEG `FF D8 FF`, PNG `89 50 4E 47`, WEBP `RIFF....WEBP`).
+  - Silme işlemi yalnızca `/uploads/` altındaki dosyalara izin veriyor.
+- **`MapStaticAssets` ile `UseStaticFiles` farkı:** .NET 9+ `MapStaticAssets` build anında wwwroot'taki dosyaların listesini (manifest) çıkarır ve sadece onları servis eder. Çalışma zamanında yüklenen dosyalar o listede yok, `UseStaticFiles` olmadan 404 alırlardı.
+- **`SelectList` ve `asp-items`:** `new SelectList(kategoriler, "CategoryId", "CategoryName", seçiliId)` dropdown seçeneklerini üretir. "Kategori seçin" seçeneğinin değeri `0`; `[Range(1, ...)]` kuralı bunu "bir kategori seç" hatasına çevirir.
+- **`Include`:** EF ilişkili veriyi kendiliğinden yüklemez. `project.Category` dolu gelsin diye `Include(p => p.Category)` ile SQL'de JOIN yaptırıyoruz.
+- **Projeksiyon (`Select`):** Kategori listesinde proje *sayısı* gerekiyor, projelerin kendisi değil. `Select(c => new { ..., ProjectCount = c.Projects.Count })` EF tarafından tek bir SQL'e (alt sorguda `COUNT`) çevrilir. `Include` ile bütün projeleri çekmekten çok daha hafif.
+- **`IQueryable` ile koşullu filtre:** `query = query.Where(...)` sorguyu çalıştırmaz, sadece tarif eder. SQL ancak `ToListAsync()` çağrıldığında oluşur; böylece filtreyi koşullu ekleyebiliyoruz.
+- **Restrict ve iki katmanlı koruma:** Kategori silinmeden önce `CountAsync` ile proje sayısına bakıp anlaşılır bir mesaj veriyoruz. Arada başka biri proje eklerse DB'deki Restrict kuralı silmeyi reddeder ve biz `DbUpdateException`'ı yakalarız.
+- **İki alanı karşılaştıran kural:** Data Annotations tek bir alana bakar. "Bitiş, başlangıçtan önce olamaz" kuralını controller'da `ModelState.AddModelError` ile ekledik.
+- **PRG (Post-Redirect-Get):** Başarılı POST'tan sonra `RedirectToAction`. Kullanıcı F5'e basınca form tekrar gönderilmez. TempData mesajı bu yönlendirmeyi tam bir kez atlatacak kadar yaşar.
+
+### Nasıl test ettik?
+- Tarayıcıda: kategori ekleme, aynı adla tekrar ekleme (benzersizlik hatası), içinde proje olan kategoriyi silme (Restrict mesajı), bitişi başlangıçtan önce olan eğitim, 150 seviyeli yetenek (`Range` hatası), geçersiz LinkedIn URL'si (Prefix'li hata) ve upsert kayıtları.
+- Dosya yüklemeyi `curl` ile gerçek multipart POST olarak test ettik: geçerli PNG kaydedildi; içi metin olan sahte `.jpg` ve 2.5 MB'lık dosya reddedildi ve diske hiçbir şey yazılmadı. Proje silinince görsel de silindi. Token'sız silme isteği `400` ile reddedildi.
+
+---
+
+## Faz 5: Bildirim altyapısı (SweetAlert2 ve TempData)
+
+### Ne yaptık?
+- `Infrastructure/NotificationExtensions.cs`: `TempData.Success("...")`, `TempData.Error("...")`, `TakeSuccess()`, `TakeError()`. Controller'lardaki 22 adet `TempData["Success"]` bu metotlara çevrildi.
+- SweetAlert2 11.14.5 (sabit sürüm) eklendi ve tasarım diline temalandı: cam yüzey, bizim `btn` sınıflarımız, renkli ikonlar yerine tipografi.
+- `wwwroot/js/admin-ui.js`:
+  1. `data-confirm` niteliği taşıyan her form gönderilmeden önce onay penceresi açılıyor. Pencerede silinecek kaydın adı yazıyor, odak "Vazgeç"te.
+  2. Sunucunun bastığı `data-flash` uyarı kutuları sağ altta toast'a çevriliyor. Hata mesajları daha uzun ekranda kalıyor.
+- 6 liste sayfasındaki `onsubmit="return confirm(...)"` kaldırıldı, yerine `data-confirm` ve `data-confirm-title` geldi.
+
+### Neden?
+- **Magic string yerine extension metot:** `TempData["Sucess"]` gibi bir yazım hatası derlenir ama mesaj sessizce kaybolur. `TempData.Success(...)` yanlış yazılırsa derleme hatası olur. Anahtar tek yerde (`Notify.Success`) tutulduğu için ileride değiştirmek de kolay.
+- **TempData nasıl çalışır?** Değer çerezde (varsayılan provider) bir sonraki isteğe taşınır. Indexer ile okunduğu an "silinmek üzere" işaretlenir; `TempData.Peek()` ise silmeden okur. Bizim akışımız PRG: POST'ta yaz, redirect et, GET'te bir kez göster.
+- **Neden `data-*` nitelikleri?** HTML yalnızca niyeti ("bu form onay ister") söylüyor, davranışı tek bir JS dosyası ekliyor. Yeni bir silme formuna onay eklemek için tek satır nitelik yeterli. Inline `onsubmit` her sayfaya JS kopyalamak demekti.
+- **Event delegation:** Her forma ayrı dinleyici bağlamak yerine `document`'a tek bir `submit` dinleyicisi koyduk. Olay form'dan yukarı kabarıyor (bubbling); sayfaya sonradan eklenen formlar da otomatik kapsanıyor.
+- **Kademeli iyileştirme:** SweetAlert2 CDN'den yüklenemezse onay tarayıcının `confirm()` penceresine düşüyor. JS hiç çalışmazsa sunucunun bastığı uyarı kutusu sayfada görünür kalıyor. Yani hiçbir durumda bilgi kaybolmuyor.
+- **XSS güvenliği:** Onay metni ve toast mesajı kullanıcı verisi içeriyor (ör. kategori adı). SweetAlert2'ye `html` yerine `text` olarak veriyoruz ve toast'ta `textContent` kullanıyoruz. Adı `<script>` olan bir kategori bile kod olarak çalışmaz.
+- **Güvenli varsayılan:** Onay penceresinde odak "Vazgeç"te (`focusCancel`). Yanlışlıkla Enter'a basmak silme yapmaz. Onaydan sonra buton devre dışı kalıyor ki çift tıklama iki istek göndermesin.
+
+### Tarayıcıda ne denedik?
+- Yetenek ekle: başarı toast'ı çıktı, düz uyarı kutusu kaldırıldı.
+- Silmede "Vazgeç": kayıt duruyor. "Sil": kayıt silindi ve toast çıktı.
+- İçinde proje olan kategoriyi silme: kırmızı hata toast'ı çıktı.
+- SweetAlert2'nin kendi `.swal2-html-container` kuralı metni ortalıyordu. Seçicimizi daha spesifik yaparak (`.swal2-popup .pa-swal-text`) düzelttik. Ders: Bir kütüphaneyi temalarken CSS spesifikliği önemli.
+- *Denenmedi:* CDN'in yüklenemediği durumdaki `confirm()` yedeği; kodu okunarak doğrulandı.
