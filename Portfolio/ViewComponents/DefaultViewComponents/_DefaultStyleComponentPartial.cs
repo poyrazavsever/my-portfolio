@@ -1,6 +1,14 @@
-﻿namespace Portfolio.ViewComponents.DefaultViewComponents
+﻿using Microsoft.AspNetCore.Mvc;
+
+namespace Portfolio.ViewComponents.DefaultViewComponents
 {
-    public class _DefaultStyleComponentPartial
+    public class _DefaultStyleComponentPartial : ViewComponent
     {
+
+        public IViewComponentResult Invoke()
+        {
+            return View();
+        }
+
     }
 }

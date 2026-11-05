@@ -25,7 +25,6 @@
     <Folder Include="Areas\Admin\Models\" />
     <Folder Include="ViewComponents\AdminViewComponents\" />
     <Folder Include="ViewComponents\StatisticsViewComponents\" />
-    <Folder Include="Views\Shared\Components\" />
   </ItemGroup>
 
 </Project>

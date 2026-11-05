@@ -1,6 +1,13 @@
-﻿namespace Portfolio.ViewComponents.DefaultViewComponents
+﻿using Microsoft.AspNetCore.Mvc;
+
+namespace Portfolio.ViewComponents.DefaultViewComponents
 {
-    public class _DefaultEducationComponentPartial
+    public class _DefaultEducationComponentPartial : ViewComponent
     {
+
+        public IViewComponentResult Invoke()
+        {
+            return View();
+        }
     }
 }
