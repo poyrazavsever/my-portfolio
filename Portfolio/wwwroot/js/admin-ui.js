@@ -104,6 +104,30 @@
         }
     });
 
+    /* ---------- 3b. Dosya boyutunu yüklemeden önce kontrol et ----------
+       <input type="file" data-max-bytes="5242880" data-max-label="5 MB">
+       Sunucu yine kontrol ediyor; bu yalnızca kullanıcıyı büyük bir dosyayı boşuna yüklemekten kurtarır. */
+    document.addEventListener("change", function (event) {
+        const input = event.target;
+        if (!(input instanceof HTMLInputElement) || input.type !== "file" || !input.dataset.maxBytes) return;
+
+        const file = input.files && input.files[0];
+        if (file && file.size > Number(input.dataset.maxBytes)) {
+            const message = "Seçilen dosya " + (file.size / 1048576).toFixed(1) + " MB. En fazla " + (input.dataset.maxLabel || "") + " yükleyebilirsiniz.";
+            input.value = ""; // seçimi temizle
+            if (toast) {
+                toast.fire({
+                    html: '<i class="bi bi-exclamation-octagon"></i><span></span>',
+                    customClass: { popup: "pa-toast is-error", timerProgressBar: "pa-toast-bar" },
+                    timer: 6000,
+                    didRender: function (popup) { popup.querySelector(".swal2-html-container span").textContent = message; }
+                });
+            } else {
+                window.alert(message);
+            }
+        }
+    });
+
     /* ---------- 4. Gelen kutusu: modal açılınca mesajı okundu işaretle (AJAX) ----------
        Bootstrap her modal açılırken "show.bs.modal" olayını yayınlar; tek dinleyiciyle hepsini yakalıyoruz. */
     document.addEventListener("show.bs.modal", function (event) {

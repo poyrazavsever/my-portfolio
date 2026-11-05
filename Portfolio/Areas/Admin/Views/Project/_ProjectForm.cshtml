@@ -44,7 +44,7 @@
                 </div>
             }
             <div class="flex-grow-1">
-                <input id="coverImage" name="coverImage" type="file" class="form-control" accept=".jpg,.jpeg,.png,.webp" />
+                <input id="coverImage" name="coverImage" type="file" class="form-control" accept=".jpg,.jpeg,.png,.webp" data-max-bytes="2097152" data-max-label="2 MB" />
                 <div class="form-text">JPG, PNG veya WEBP, en fazla 2 MB. 16:10 oranı kartlarda en iyi görünür.</div>
                 <span asp-validation-for="CoverImageUrl"></span>
             </div>

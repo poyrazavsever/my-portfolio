@@ -37,7 +37,7 @@
                 }
                 <div class="flex-grow-1">
                     <input id="profileImage" name="profileImage" type="file" class="form-control"
-                           accept=".jpg,.jpeg,.png,.webp" />
+                           accept=".jpg,.jpeg,.png,.webp" data-max-bytes="2097152" data-max-label="2 MB" />
                     <div class="form-text">JPG, PNG veya WEBP, en fazla 2 MB. Boş bırakırsanız mevcut görsel kalır.</div>
                     <span asp-validation-for="Hero.ImageUrl"></span>
                 </div>
