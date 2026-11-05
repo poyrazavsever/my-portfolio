@@ -21,5 +21,33 @@ Her fazdan sonra "ne yaptık, neden yaptık" notu. Proje sonunda soru-cevap ve v
 - **Migration nedir?** C# entity'lerindeki değişikliğin veritabanı şemasına çevrilmiş, versiyonlanmış hali. `Up()` değişikliği uygular, `Down()` geri alır. `ModelSnapshot` dosyası EF'in "modelin son hali" hafızasıdır; yeni migration oluştururken farkı buna bakarak hesaplar. Bu yüzden migration dosyaları da repoya commit'lenir.
 - **Bire-çok ilişki:** `Project.CategoryId` foreign key'dir (FK). `Project.Category` ve `Category.Projects` ise navigation property'lerdir; C# tarafında ilişkili nesnelere bunlar üzerinden ulaşırız. EF, FK'yı isimlendirme kuralından (convention) kendisi tanır. `onDelete: Cascade` olduğu için kategori silinince ona bağlı projeler de silinir (Faz 4'te bunu kısıtlayacağız).
 
-### Akılda kalsın
+### Akılda kalsın (Faz 0)
 - `ViewDataDictionary` büyük/küçük harf duyarsızdır, bu yüzden `ViewBag.subTitle` ile `ViewBag.subtitle` aynı değeri okur. İleride ViewBag yerine strongly-typed model kullanacağız; o zaman yazım hatalarını derleyici yakalar.
+
+---
+
+## Faz 1: Veri modelini tamamlama
+
+### Ne yaptık?
+- Yeni entity'ler: `Skill` (ad, seviye %, sıra, aktif) ve `SiteSetting` (tek satırlık ayarlar: site başlığı, CV dosya yolu).
+- `Experience` ve `Education`'a `StartDate` / `EndDate` (`DateOnly`) ekledik. `Education`'daki string `Duration` alanını kaldırdık. `Project`'e `IsActive` ve `CreatedDate` ekledik. `About.OpenToWork`'ü `string` yerine `bool` yaptık.
+- Bütün entity'lere Data Annotations yazdık: `Required`, `StringLength`, `Range`, `EmailAddress`, `Url`, `Display`.
+- Kategori silme davranışını Fluent API ile `Cascade`'den `Restrict`'e çevirdik.
+- Admin deneyim formlarına tarih alanlarını, `CreateExperience` POST'una da `ModelState.IsValid` kontrolü ve `[ValidateAntiForgeryToken]` ekledik. Liste artık başlangıç tarihine göre sıralanıyor.
+
+### Neden?
+- **Tarih neden string değil?** "2021 - 2023" gibi bir metin sıralanamaz ve filtrelenemez. Case "tarih sırasına göre listele" diyor, bunun için gerçek bir tarih tipi gerekir. `DateOnly` saat bilgisi taşımaz ve SQL Server'da `date` kolonuna denk gelir. `EndDate = null` "hâlâ devam ediyor" demektir.
+- **Data Annotations iki iş yapar:**
+  1. *Validasyon:* `ModelState.IsValid` bu kurallara bakar. `asp-validation-for` hata mesajını formda gösterir.
+  2. *Şema:* `[Required]` kolonu `NOT NULL`, `[StringLength(100)]` kolonu `nvarchar(100)` yapar. Kural yoksa her şey `nvarchar(max) NULL` olur.
+  `[Range]`, `[EmailAddress]` ve `[Url]` ise yalnızca validasyondur, DB'ye yansımaz.
+- **`Category? Category` neden nullable?** `<Nullable>enable</Nullable>` açıkken MVC, non-nullable bir referans tipini otomatik olarak *zorunlu* sayar. Formdan sadece `CategoryId` gelir, `Category` nesnesi gelmez. Navigation property non-nullable olsaydı form her seferinde "Category alanı zorunlu" diye reddedilirdi.
+- **Kategori seçimi neden `[Range(1, ...)]`?** `int` hiçbir zaman null olmaz. Dropdown'da seçim yapılmazsa değer 0 gelir. "0'dan büyük olmalı" kuralı aslında "bir kategori seç" demek.
+- **Data Annotation mı, Fluent API mı?** Basit kurallar (zorunlu, uzunluk) entity üstünde annotation olarak yazılır. İlişki davranışı (silme kuralı, bileşik anahtar vb.) annotation ile ifade edilemez; onlar `OnModelCreating` içinde Fluent API ile yazılır.
+- **Restrict neden?** `Cascade` ile bir kategori silinince ona bağlı bütün projeler de sessizce silinirdi. `Restrict` ile DB bunu reddeder; Faz 4'te admin'e "Bu kategoride X proje var" diye anlamlı bir mesaj göstereceğiz.
+
+### Yaşadığımız hata ve dersi
+- İlk `database update` şu hatayla düştü: *"String or binary data would be truncated… HeroSections.ImageUrl"*. Mevcut görsel URL'i 320 karakterdi, biz kolonu 300'e daraltmaya çalışmıştık.
+- **Ders 1:** Kolon daraltırken önce mevcut veriye bak (`SELECT MAX(LEN(...))`). EF'in "may result in the loss of data" uyarısı ciddiye alınmalı.
+- **Ders 2:** EF Core migration'ı SQL Server'da transaction içinde çalıştırır. Hata alınca hiçbir değişiklik kalmadı ve DB `mig3`'te kaldı. `migrations remove` ile migration'ı silip limitleri 500'e çıkardık, yeniden oluşturduk ve sorunsuz uyguladık.
+- Uygulanmamış bir migration `migrations remove` ile güvenle silinebilir. Uygulanmış bir migration'ı geri almak içinse önce `database update <öncekiMigration>` gerekir.
