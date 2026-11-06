@@ -3,6 +3,8 @@
 ASP.NET Core MVC (.NET 10) ve Entity Framework Core ile geliştirilmiş, tüm içeriği bir yönetim panelinden düzenlenebilen kişisel portfolyo sitesi.
 M&Y Yazılım Eğitim Akademi · 12. Dönem Akşam Grubu · **1. Proje: Portfolyo Case** çalışması olarak hazırlandı.
 
+**Canlı:** https://myportfolio.poyrazavsever.com
+
 ![Portfolio CMS demo](docs/demo.webp)
 
 <sub>40 saniyelik tanıtım · İngilizce seslendirmeli sürüm: [docs/demo.mp4](docs/demo.mp4)</sub>
@@ -135,13 +137,22 @@ LEARNING_NOTES.md           Her fazda ne yaptık, neden yaptık
 - **Kurallar:** Tek vurgu rengi (kırmızı `#E5322D`), gradyan yok, emoji yok, başlık üstü etiket yok. Mühendislik dili ızgara zemin, köşe işaretleri, cetvel göstergeleri ve mono tipografiyle kuruldu.
 - **Hareketli cam ikonlar:** `design/icons/generate.py` tek bir prompt şablonuyla görsel üretir (GPT Image 2.5), görseli döngüsel olarak canlandırır (MiniMax H3) ve ffmpeg ile koyu arka planı silip alfa kanallı WebM'e çevirir. `<glass-icon>` Tag Helper'ı önce şeffaf PNG basar; destekleyen tarayıcılarda bunu videoya yükseltir (Safari'de ve "azaltılmış hareket" tercihinde PNG kalır).
 
+## Yayın
+
+Docker ile bir Linux sunucusunda çalışıyor ve Cloudflare Tunnel üzerinden yayınlanıyor; sunucuda dışarıya açık port yok.
+
+- `Dockerfile`: çok aşamalı build, root olmayan kullanıcı. `deploy/compose.yaml`: uygulama + kalıcı volume'lar (yüklemeler, CV, Data Protection anahtarları).
+- Veritabanı paylaşılan bir SQL Server 2022 konteynerinde; uygulama yalnızca kendi veritabanına yetkili ayrı bir kullanıcıyla bağlanıyor.
+- Admin şifresinin yalnızca PBKDF2 hash'i ortam değişkeninde tutuluyor. Hash üretmek için: `dotnet run -- --hash-password`
+- Yerel geliştirmede admin bilgisi repoda değil, **User Secrets**'ta: `dotnet user-secrets set "AdminAuth:Username" admin` ve `AdminAuth:PasswordHash` için `--hash-password` çıktısı.
+
 ## Güvenlik notları
 
 - Veri değiştiren bütün işlemler POST ve `[ValidateAntiForgeryToken]` ile korunuyor; AJAX isteklerinde token header'da gönderiliyor.
 - İletişim formunda `[Bind]` ile overposting koruması ve honeypot ile bot koruması var.
 - Dosya yüklemede uzantı beyaz listesi, boyut sınırı ve dosya imzası (magic bytes) kontrolü yapılıyor; dosyalar Guid ile yeniden adlandırılıyor ve path traversal'a karşı kök klasör doğrulanıyor.
 - `returnUrl` yönlendirmelerinde `Url.IsLocalUrl` ile open redirect engelleniyor.
-- **Kimlik doğrulama yok:** Case kapsamında zorunlu değil; yönetim paneli şu an herkese açık. Canlıya alınmadan önce ASP.NET Core Identity veya cookie authentication ile korunmalı.
+- **Admin girişi:** Cookie tabanlı oturum (HttpOnly, SameSite=Lax, HTTPS'te Secure), PBKDF2 (210.000 tur) şifre hash'i, sabit zamanlı karşılaştırma ve IP başına dakikada 5 deneme sınırı.
 
 ## Öğrenme notları
 

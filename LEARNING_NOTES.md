@@ -381,3 +381,48 @@ Her fazdan sonra "ne yaptık, neden yaptık" notu. Proje sonunda soru-cevap ve v
 - **İlk seslendirme 53 saniyeydi:** Konuşma saniyede yaklaşık 2 kelime. Altı cümleyi kısaltıp yeniden ürettik (yalnızca onlar için ~12 kredi). Bütün klipleri baştan/sondan sessizliği kırpıp perdeyi bozmadan %10 hızlandırdık (`atempo=1.1`). Sonuç: 40.6 saniye.
 - **Telefon sahnesi:** 390×844 görüntü 300 px'e ölçeklenince 649.2 px yüksekliğe düşüyordu; 650 px'lik kırpma geçersiz oldu. `scale=300:-2` ile yüksekliği çift sayıya yuvarladık.
 - **WebP süre doğrulaması:** Pillow kare sürelerini 0 okudu. Dosyayı Chrome'un `ImageDecoder` API'siyle (GitHub'ın kullanacağı motorla aynı) okuyunca 229 kare, 40.6 saniye ve sonsuz döngü doğrulandı. Ders: Bir dosyayı, onu gerçekten kullanacak araçla test et.
+
+---
+
+## Yayına alma: M&Y Akademi sunucusu
+
+**Canlı adres:** https://myportfolio.poyrazavsever.com
+
+### Ne yaptık?
+- **Sunucu temizliği:** Eski 14 self-hosted uygulamanın verileri önce tek bir arşive yedeklendi (`/root/backups`), sonra uygulamalar, imajlar ve build cache kaldırıldı. Cloudflare'da bu uygulamalara giden 12 route ve DNS kaydı silindi.
+- **Yeni düzen (`/opt/myakademi`):**
+  - `shared/` altında tek bir paylaşılan SQL Server 2022 (Express, RAM 1.5 GB ile sınırlı, `internal` Docker ağında).
+  - `apps/<proje>/` her projenin compose dosyası, `.env`'i ve kalıcı verisi.
+  - `scripts/create-db.sh` projeye özel veritabanı ve yalnızca o veritabanına yetkili kullanıcı açar; `backup-dbs.sh` elle yedek alır.
+- **Uygulama tarafı:**
+  - Admin girişi: Cookie oturumu, PBKDF2 hash, IP başına dakikada 5 deneme sınırı.
+  - Forwarded headers, kalıcı Data Protection anahtarları ve `--migrate` / `--hash-password` komutları.
+  - Çok aşamalı Dockerfile; uygulama konteyneri root olmayan kullanıcıyla çalışıyor.
+- **Yayın:** Cloudflare Tunnel route'u `myportfolio.poyrazavsever.com → http://portfolio:8080`. Sunucuda hiçbir port dışarıya açılmadı.
+
+### Neden böyle?
+- **Şifreyle değil SSH anahtarıyla bağlandık.** Projeye özel bir anahtar oluşturduk (`~/.ssh/portfolio_deploy`); gerekirse diğer erişimleri etkilemeden tek başına iptal edilebilir.
+- **Neden silmeden önce yedek?** Geri alınamaz bir işlemden önce veriyi korumak; "artık kullanmıyorum" kararı sonradan değişebilir. Yedek 9 MB'tı.
+- **Paylaşılan SQL Server:** Her proje için ayrı bir SQL Server en az 1–2 GB RAM ister; 3.8 GB'lık sunucuya iki projeden fazlası sığmazdı. Tek sunucu üzerinde her proje kendi veritabanında, kendi kullanıcısıyla çalışıyor ve birbirinin verisine erişemiyor (en az yetki ilkesi).
+- **`internal: true` ağ:** Veritabanı konteyneri internete ne çıkabiliyor ne de internetten erişilebiliyor; sadece aynı ağdaki uygulamalar bağlanabiliyor.
+- **Cloudflare Tunnel:** Sunucu dışarıya bağlantıyı kendisi açıyor; içeriye hiçbir port açılmıyor. HTTPS sertifikası Cloudflare'da.
+- **Forwarded headers:** Tunnel, uygulamaya HTTP ile bağlanıyor. `X-Forwarded-Proto` olmadan uygulama kendini HTTP'de sanır; yönlendirmeler `http://` olur ve "Secure" cookie'ler düzgün çalışmaz.
+- **Data Protection anahtarları:** Oturum cookie'si ve form token'ları bu anahtarlarla şifreleniyor. Konteyner her yeniden başladığında anahtarlar kaybolsaydı herkesin oturumu düşerdi; anahtarlar kalıcı bir volume'da.
+- **PBKDF2 ve sabit zamanlı karşılaştırma:** Hızlı hash'ler (SHA-256) saniyede milyarlarca denemeye izin verir; PBKDF2 210.000 turla her denemeyi kasıtlı olarak yavaşlatır. `FixedTimeEquals` ise karşılaştırma süresinden ipucu sızdırmaz.
+- **Şifre kimde?** Admin şifresini sen belirledin ve sadece hash'i sunucuya gitti. Veritabanı şifreleri sunucuda rastgele üretildi ve yalnızca root'un okuyabildiği `.env` dosyalarında; hiçbiri sohbete ya da repoya girmedi.
+
+### Yaşadıklarımız
+- **Çıktıyı `head` ile kesmek:** Seed komutunun çıktısını `| head -5` ile kesince sonraki komutlar görünmedi. İşlemin yarıda kesilip kesilmediğini veritabanını sayarak doğruladık (6 migration, 14 proje).
+- **Git Bash yol dönüşümü, yine:** `ReturnUrl=/Admin/...` argümanı MSYS tarafından dosya yolu sanılıp bozuldu ve girişten sonra yanlış sayfaya gidiliyormuş gibi göründü. `MSYS_NO_PATHCONV=1` ile doğru davranış görüldü.
+- **`$` ve Docker Compose:** Hash formatındaki `$` ayracı `.env` dosyasında değişken sanılıp bozulacaktı. Ayracı `:` yaptık.
+- **Repoya şifre koymamak:** Yerel geliştirme şifresini önce `appsettings.Development.json`'a yazmıştık; repo herkese açık olduğu için .NET User Secrets'a (`%APPDATA%\Microsoft\UserSecrets`) taşıdık. Bu dosya repoya girmez ve yalnızca Development ortamında okunur.
+- **Antiforgery cookie'si `Secure` değildi:** ASP.NET varsayılanı bu bayrağı koymuyor; canlı ortamda `curl` ile cookie'leri incelerken fark ettik ve `SameAsRequest` yaptık.
+
+### Güncelleme nasıl yapılır?
+Kodu sunucuya gönder, imajı yeniden build et ve konteyneri yeniden başlat:
+
+```bash
+git ls-files -co --exclude-standard -z | tar --null -T - -czf - | ssh -i ~/.ssh/portfolio_deploy root@91.151.95.3 'cd /opt/myakademi/apps/portfolio && rm -rf src && mkdir src && tar xzf - -C src && docker compose up -d --build'
+```
+
+Yeni bir migration varsa ek olarak: `docker compose run --rm portfolio --migrate`
