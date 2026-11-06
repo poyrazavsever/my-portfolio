@@ -1,0 +1,13 @@
+**/bin/
+**/obj/
+**/.vs/
+.git/
+.claude/
+design/
+docs/
+*.md
+Portfolio/wwwroot/uploads/
+Portfolio/App_Data/
+Portfolio/appsettings.Development.json
+Portfolio/Properties/launchSettings.json
+**/*.user

@@ -1,0 +1,29 @@
+# Sunucuda: /opt/myakademi/apps/portfolio/compose.yaml
+# Kaynak kod ./src altında; değerler aynı klasördeki .env dosyasından gelir (compose otomatik okur):
+#   DB_CONNECTION        -> /opt/myakademi/scripts/create-db.sh portfolio  (db.env'den kopyalanır)
+#   ADMIN_USERNAME       -> yönetici kullanıcı adı
+#   ADMIN_PASSWORD_HASH  -> "dotnet run -- --hash-password" çıktısı
+services:
+  portfolio:
+    build:
+      context: ./src
+    image: myakademi/portfolio:latest
+    container_name: portfolio
+    restart: unless-stopped
+    environment:
+      ConnectionStrings__PortfolioConnection: ${DB_CONNECTION}
+      AdminAuth__Username: ${ADMIN_USERNAME:-}
+      AdminAuth__PasswordHash: ${ADMIN_PASSWORD_HASH:-}
+    volumes:
+      - ./data/uploads:/app/wwwroot/uploads   # admin'den yüklenen görseller
+      - ./data/cv:/app/App_Data               # CV (wwwroot dışında)
+      - ./data/keys:/app/keys                 # Data Protection anahtarları (oturumlar yeniden başlatmada düşmesin)
+    networks:
+      - proxy          # Cloudflare Tunnel buradan "http://portfolio:8080" ile ulaşır
+      - myakademi-db   # paylaşılan SQL Server'a erişim (internete kapalı ağ)
+
+networks:
+  proxy:
+    external: true
+  myakademi-db:
+    external: true
