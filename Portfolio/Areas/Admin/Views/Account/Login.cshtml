@@ -1,0 +1,53 @@
+@model LoginViewModel
+
+@{
+    // Giriş sayfası admin kabuğunu (sidebar) kullanmaz.
+    Layout = null;
+    ViewData["Title"] = "Giriş";
+}
+
+<!DOCTYPE html>
+<html lang="tr" data-bs-theme="dark">
+@await Component.InvokeAsync("_AdminLayoutHeadComponentPartial")
+<body class="pa-grid-bg login-page">
+    <main class="login-shell">
+        <div class="login-brand">
+            <partial name="_BrandLogo" />Poyraz Avsever
+        </div>
+
+        <form asp-action="Login" method="post" class="glass ticks login-card" novalidate>
+            <glass-icon name="about" size="72" class="login-icon" />
+            <h1>Yönetim paneli</h1>
+            <p class="login-sub">Devam etmek için giriş yapın.</p>
+
+            <input type="hidden" asp-for="ReturnUrl" />
+            <div asp-validation-summary="ModelOnly"></div>
+
+            <div class="mb-3">
+                <label asp-for="Username" class="form-label"></label>
+                <input asp-for="Username" class="form-control" autocomplete="username" autofocus />
+                <span asp-validation-for="Username"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Password" class="form-label"></label>
+                <input asp-for="Password" class="form-control" autocomplete="current-password" />
+                <span asp-validation-for="Password"></span>
+            </div>
+
+            <div class="form-check form-switch mb-4">
+                <input asp-for="RememberMe" class="form-check-input" role="switch" />
+                <label asp-for="RememberMe" class="form-check-label"></label>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100"><i class="bi bi-box-arrow-in-right"></i>Giriş yap</button>
+        </form>
+
+        <a class="login-back" href="/"><i class="bi bi-arrow-left"></i>Portfolyoya dön</a>
+    </main>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/glass-icon.js" asp-append-version="true"></script>
+</body>
+</html>

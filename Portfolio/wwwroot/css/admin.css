@@ -254,6 +254,25 @@
 .pa-section-title { font-size: 17px; margin: 0 0 4px; }
 .pa-section-sub { color: var(--pa-muted); font-size: 14px; margin: 0 0 24px; }
 
+/* ---------- Giriş sayfası ---------- */
+.login-shell {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    padding: 32px 16px;
+}
+.login-brand { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 16px; }
+.login-card { width: min(400px, 100%); padding: 32px 28px 28px; }
+.login-icon { width: 72px; height: 72px; margin: -10px 0 8px -10px; }
+.login-card h1 { font-size: 24px; margin: 0; }
+.login-sub { color: var(--pa-muted); font-size: 14px; margin: 6px 0 24px; }
+.login-back { display: inline-flex; align-items: center; gap: 8px; color: var(--pa-muted); font-size: 14px; }
+
+.admin-logout { margin-left: auto; }
+
 /* ---------- Dashboard ---------- */
 /* 7 kart: geniş ekranda tek satır, orta genişlikte 4+3 (5+2 gibi yarım bir satır kalmasın) */
 .dash-stats {

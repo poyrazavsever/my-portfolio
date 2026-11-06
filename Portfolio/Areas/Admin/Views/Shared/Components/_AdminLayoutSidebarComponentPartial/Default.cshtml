@@ -52,6 +52,12 @@
     <img class="admin-avatar" src="/assets/brand/avatar-96.webp" width="34" height="34" alt="" />
     <div>
         <b>Poyraz Avsever</b>
-        <small>Yönetici</small>
+        <small>@(User.Identity?.Name ?? "Yönetici")</small>
     </div>
+    @* Çıkış POST ile: GET bir link olsaydı başka bir site <img src="/Admin/Account/Logout"> ile oturumu kapatabilirdi. *@
+    <form method="post" asp-area="Admin" asp-controller="Account" asp-action="Logout" class="admin-logout">
+        <button type="submit" class="btn btn-ghost btn-icon" title="Çıkış yap" aria-label="Çıkış yap">
+            <i class="bi bi-box-arrow-right"></i>
+        </button>
+    </form>
 </div>
